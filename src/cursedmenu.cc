@@ -18,8 +18,8 @@
 #include <curses.h>
 #include <menu.h>
 #include "MenuConfig.hh"
-#include "debug.h"
-#include "ActionLogger.h"
+#include "debug.hh"
+#include "ActionLogger.hh"
 
 using namespace std;
 typedef string String;

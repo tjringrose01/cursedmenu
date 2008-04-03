@@ -15,7 +15,7 @@
 #include <curses.h>
 #include "MenuConfig.hh"
 #include "MenuItem.hh"
-#include "debug.h"
+#include "debug.hh"
 
 using namespace std;
 typedef string String;

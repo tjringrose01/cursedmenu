@@ -11,7 +11,7 @@
 #include <string>
 #include <time.h>
 #include <stdio.h>
-#include "ActionLogger.h"
+#include "ActionLogger.hh"
 
 using namespace std;
 typedef string String;
