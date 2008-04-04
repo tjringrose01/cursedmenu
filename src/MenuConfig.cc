@@ -1,11 +1,25 @@
 /**
- * MenuConfig.cc
+ *  MenuConfig.cc - MenuConfig Class Implementation - This class is
+ *                  responsible for reading in the configuration file and
+ *                  storing it's informtion within it's class members
  *
- * MenuConfig Class Implementation - This class is responsible for reading in
- * the configuration file and storing it's informtion within it's class members
+ *  Copyright 2007, 2008 Timothy Ringrose
  *
- * Written by: Timothy Ringrose
- * Date:       08/07/2007
+ *  This file is part of cursedmenu.
+ *
+ *  cursedmenu is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  cursedmenu is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with cursedmenu.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 #include <vector>
