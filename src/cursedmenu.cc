@@ -430,7 +430,7 @@ int main( int argc, char** argv ) {
     stack<MenuConfig> menus;
     MenuConfig currentMenu;
  
-    String menuFile = "default.mdf";
+    String menuFile = "default.cmd";
     bool debugIsOn = false;
     String buffer;
 
