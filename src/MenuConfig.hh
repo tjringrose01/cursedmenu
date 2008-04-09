@@ -64,7 +64,6 @@ public:
     MenuConfig(bool debugFlag, String configFile);
     ~MenuConfig();
     int getNumOfItems();
-    String getMenuTitle();
     String toString();
     MenuItem getItem( int index );
     MenuItem getItem( String name );
@@ -73,6 +72,15 @@ public:
     int getForeColor();
     int getBackColor();
     int getMenuCenterX();
+
+    void setForeColor(int foreColor);
+    void setBackColor(int backColor);
+
+    String getMenuTitle();
+    void setMenuTitle(String menuTitle);
+
+    String getMenuName();
+    void setMenuName(String menuName);
 };
 
 #endif

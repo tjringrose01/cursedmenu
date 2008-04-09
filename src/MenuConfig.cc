@@ -255,13 +255,6 @@ int MenuConfig::getNumOfItems() {
 }
 
 /**
- * Return the number of items in the config arrays.
- */
-String MenuConfig::getMenuTitle() {
-    return(menuTitle);
-}
-
-/**
  * Housekeeping
  */
 MenuConfig::~MenuConfig() {
@@ -360,4 +353,40 @@ int MenuConfig::getMenuCenterX() {
     }
 
     return(lengthOfLongestItem);
+}
+
+/**
+ * Returns the title of this menu.
+ */
+String MenuConfig::getMenuTitle() {
+    return(menuTitle);
+}
+
+/**
+ * Sets class member menuTitle.
+ */
+void MenuConfig::setMenuTitle(String menuTitle) {
+    this->menuTitle = menuTitle;
+}
+
+/**
+ * Returns the name of this menu.
+ */
+String MenuConfig::getMenuName() {
+    return(menuName);
+}
+
+/**
+ * Sets class member menuName.
+ */
+void MenuConfig::setMenuName(String menuName) {
+    this->menuName = menuName;
+}
+
+void MenuConfig::setForeColor(int foreColor) {
+    this->foreMenuColor = foreColor;
+}
+
+void MenuConfig::setBackColor(int backColor) {
+    this->backMenuColor = backColor;
 }
