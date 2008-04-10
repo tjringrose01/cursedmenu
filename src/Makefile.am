@@ -9,6 +9,7 @@ cursedmenu_SOURCES = \
 	debug.cc \
 	MenuConfig.cc \
 	MenuItem.cc \
-	ActionLogger.cc
+	ActionLogger.cc \
+	CursedMenuLoader.cc
 
-EXTRA_DIST = *.hh *.cmd
+EXTRA_DIST = *.h *.hh *.cmd

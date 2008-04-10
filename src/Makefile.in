@@ -52,7 +52,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_cursedmenu_OBJECTS = cursedmenu.$(OBJEXT) debug.$(OBJEXT) \
-	MenuConfig.$(OBJEXT) MenuItem.$(OBJEXT) ActionLogger.$(OBJEXT)
+	MenuConfig.$(OBJEXT) MenuItem.$(OBJEXT) ActionLogger.$(OBJEXT) \
+	CursedMenuLoader.$(OBJEXT)
 cursedmenu_OBJECTS = $(am_cursedmenu_OBJECTS)
 cursedmenu_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -79,9 +80,9 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
-CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
+CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -150,9 +151,10 @@ cursedmenu_SOURCES = \
 	debug.cc \
 	MenuConfig.cc \
 	MenuItem.cc \
-	ActionLogger.cc
+	ActionLogger.cc \
+	CursedMenuLoader.cc
 
-EXTRA_DIST = *.hh *.cmd
+EXTRA_DIST = *.h *.hh *.cmd
 all: all-am
 
 .SUFFIXES:
@@ -220,6 +222,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ActionLogger.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CursedMenuLoader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MenuConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MenuItem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cursedmenu.Po@am__quote@
