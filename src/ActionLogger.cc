@@ -25,6 +25,7 @@
 #include <time.h>
 #include <stdio.h>
 #include "ActionLogger.hh"
+#include "../config.h"
 
 using namespace std;
 typedef string String;
@@ -60,7 +61,8 @@ int ActionLogger::getPid() {
  */
 ActionLogger::ActionLogger() {
     this->debugMode = false;
-    this->logFile = "curmenu.log";
+    this->logFile = PACKAGE_NAME;
+    this->logFile += ".log";
     this->userId = getUserId();
     this->pid = getPid();
 }

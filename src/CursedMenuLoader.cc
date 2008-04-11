@@ -4,6 +4,31 @@
  *                        configuration file and returning it's informtion
  *                        within class members.
  *
+ *  Caution - This class uses recursion!!!
+ *
+ *  Load Menu Logic:
+ *  1. Initial call to loadConfig() is made.
+ *  2. Before the Main Menu has completed, a sub menu is detected.
+ *      a. A recursive call to loadConfig() is made for the sub menu file
+ *      b. Before the sub menu has completed, a sub menu is detected
+ *          i. A recursive call to loadConfig() is made for the sub menu file
+ *         ii. When loadConfig() returns with the array of MenuConfig's, this
+ *             is appended to the current array(which should be empty).
+ *        iii. Then this instance of loadConfig() is returned with the
+ *             appended array.
+ *      c. When loadConfig() returns with the array of MenuConfig's, this
+ *         is appended to the current array(We now have 1 menus).
+ *      d. Then this instance of loadConfig() is returned with the
+ *         appended array.
+ *  3. When loadConfig() returns with the array of MenuConfig's, this
+ *     is appended to the current array(We now have 2 menus).
+ *  4. Then this instance of loadConfig() is returned with the
+ *     appended array.
+ *  5. The Main Menu completes it's processing and is added to the end
+ *     of the vector.
+ * 
+ * ---------------------------------------------------------------------------
+ *
  *  Copyright 2007, 2008 Timothy Ringrose
  *
  *  This file is part of cursedmenu.
@@ -39,7 +64,10 @@ typedef string String;
 #define PROGRAM "CursedMenuLoader"
 
 vector<MenuConfig> CursedMenuLoader::loadConfig(const String configFile, const bool debugFlag) {
+
+    cout << "CursedMenuLoader::loadConfig(" << configFile << ", " << debugFlag << ");" << endl;
     vector<MenuConfig> menus;
+    vector<MenuConfig> tmp_menus;
 
     MenuConfig* curMenu = new MenuConfig();
 
@@ -130,8 +158,6 @@ vector<MenuConfig> CursedMenuLoader::loadConfig(const String configFile, const b
                     }
                     color = temp_color;
  
-                    cerr << "Foreground color: \"" << color << "\"" << endl;
-
                     if ( color == "BLACK" )
                         curMenu->setForeColor(COLOR_BLACK);
                     else if ( color == "RED" )
@@ -167,8 +193,6 @@ vector<MenuConfig> CursedMenuLoader::loadConfig(const String configFile, const b
                         temp_color += (char)toupper((int)color[x]);
                     }
                     color = temp_color;
-
-                    cerr << "Background color: \"" << color << "\"" << endl;
 
                     if ( color == "BLACK" )
                         curMenu->setBackColor(COLOR_BLACK);
@@ -212,7 +236,16 @@ vector<MenuConfig> CursedMenuLoader::loadConfig(const String configFile, const b
                     if ( i != String::npos ) {
                         i = buffer.find("=");
                         exec = buffer.substr( i+1, buffer.length() - i - 1);
+
                     if (debugFlag) debug(PROGRAM, 2, "found exec = " + exec);
+                    // Parse out the exec and look for sub menu to parse
+                    i = exec.find("MenuSub ");
+                    if (i != String::npos)
+                    {
+                        tmp_menus = loadConfig(exec.substr(8), debugFlag);
+                        menus.insert(menus.end(), tmp_menus.begin(), tmp_menus.end());
+                        tmp_menus.clear();
+                    }
 					    continue;
 					} else {
                         i = buffer.find("ItemEnd");

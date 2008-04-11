@@ -35,22 +35,42 @@
 #include "MenuConfig.hh"
 #include "debug.hh"
 #include "ActionLogger.hh"
+#include "CursedMenuLoader.h"
+#include "../config.h"
 
 using namespace std;
 typedef string String;
 
-#define PROGRAM "curmenu"
+#define PROGRAM "cursedmenu"
 
 /***************************************************************************
  * Function to display the proper program usage.
  ***************************************************************************/
 void displayUsage() {
-   cerr << PROGRAM << " [-m <menu file>]" << endl
+   cout << PACKAGE_NAME << " - " << PACKAGE_STRING << endl
         << endl
-        << "Options:" << endl
-        << "  -m <menu file>  - specify the connection url for John Deere's "
-        <<               "transaction" << endl
-        << "              processing service."
+        << "Copyright 2007, 2008 Timothy Ringrose" << endl
+        << endl
+        << PACKAGE_NAME << " is free software: you can redistribute it and/or modify" << endl
+        << "it under the terms of the GNU General Public License as published by" << endl
+        << "the Free Software Foundation, either version 3 of the License, or" << endl
+        << "(at your option) any later version." << endl
+        << endl
+        << PACKAGE_NAME << " is distributed in the hope that it will be useful," << endl
+        << "but WITHOUT ANY WARRANTY; without even the implied warranty of" << endl
+        << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the" << endl
+        << "GNU General Public License for more details." << endl
+        << endl
+        << "You should have received a copy of the GNU General Public License" << endl
+        << "along with " << PACKAGE_NAME << ".  If not, see <http://www.gnu.org/licenses/>." << endl
+        << endl
+        << "usage: " << PACKAGE_NAME << "[-h or --help] | [-m <menu file>] [-c]" << endl
+        << endl
+        << "options:" << endl
+        << "  -h or --help    - show program usage" << endl
+        << "  -m <menu file>  - specify the cursed menu definition" << endl
+        << "  -c              - check all menu definition files then validate" << endl
+        << "                    and display all menu and menu item syntax" << endl
         << endl;
 }
 
@@ -59,18 +79,30 @@ void displayUsage() {
  */
 int parse_args( int argc,
              char** argv,
-            String* mVal) {
+            String* mVal,
+              bool* cVal) {
+ 
+    String arg;
 
     for ( int x = 1; x < argc; x++) {
         if (argv[x][0] == '-') {
+            arg = argv[x];
+            if (arg.compare("--help") == 0
+            ||  arg.compare("-h")     == 0)
+            { 
+                displayUsage();
+                exit(SUCCESS);
+            }
             switch (argv[x][1]) {
                 case 'm':   *mVal = argv[++x];
                     break;
+                case 'c':   *cVal = true;
+                    break;
                 default:
-                 cerr << "Error: Invalid usage" << endl
-                      << "Unknown option \'-" << argv[x][1] << "\'" << endl;
-                 displayUsage();
-                 exit(ERROR_INVALID_USAGE);
+                    cerr << "Error: Invalid usage" << endl
+                         << "Unknown option \'" << arg << "\'" << endl;
+                    displayUsage();
+                    exit(ERROR_INVALID_USAGE);
             }
         }
     }
@@ -427,33 +459,54 @@ int main( int argc, char** argv ) {
 
     ActionLogger* log = new ActionLogger();
     log->log("curmenu begin");
+
     stack<MenuConfig> menus;
     MenuConfig currentMenu;
  
     String menuFile = "default.cmd";
+    bool performMenuCheck = false;
     bool debugIsOn = false;
     String buffer;
 
     // Read arguments from command line //
-    if ( parse_args(argc,argv,&menuFile) != 0 ) {
+    if ( parse_args(argc,argv,&menuFile,&performMenuCheck) != 0 ) {
         cerr << "Error: Invalid usage" << endl;
         displayUsage();
         return(ERROR_INVALID_USAGE);
     }
 
-    // Read in the items from the menu file
-    menus.push(MenuConfig(debugIsOn, menuFile));
+    //
+    // There are two paths of execution based on command line arguments
+    //   1) Perform a menu configuration check
+    //   2) Run the menu
+    //
+    if (performMenuCheck)
+    {
+        vector<MenuConfig> menus = CursedMenuLoader::loadConfig(menuFile, debugIsOn);
 
-    // If we don't have any items in the menu, we've got a problem
-    if ( menus.top().getNumOfItems() == 0 ) {
-        cerr << "No menu found..." << endl;
-        exit(0);
+        for (int itr=0; itr < menus.size(); itr++)
+        {
+            cout << menus.at(itr).toString() << endl;
+        }
+
+        cout << "Number of menus correctly parsed: " << menus.size() << endl;
+
+    } else {
+
+        // Read in the items from the menu file
+        menus.push(MenuConfig(debugIsOn, menuFile));
+
+        // If we don't have any items in the menu, we've got a problem
+        if ( menus.top().getNumOfItems() == 0 ) {
+            cerr << "No menu found..." << endl;
+            exit(0);
+        }
+
+        //
+        // Start the menu loops
+        //
+        runMenu(log, &menus);
     }
-
-    //
-    // Start the menu loops
-    //
-    runMenu(log, &menus);
 
     return(0);
 }

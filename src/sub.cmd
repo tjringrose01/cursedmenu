@@ -24,6 +24,11 @@ pause_after_execution = no;
       ItemDesc=This is a very nice 2nd item
       ItemExec=echo "Item #2"; sleep 5
       ItemEnd
+
+      ItemName=Sub Menu Two
+      ItemDesc=Sub Menu Two
+      ItemExec=MenuSub sub2.cmd
+      ItemEnd
     
       ItemName=Exit
       ItemDesc=Exit this menu
