@@ -8,4 +8,4 @@
 
 	* Minimize and Standardize Distribution
 	
-	* Clean up command line options and usage
+	* Clean up command line options and usage: Addded '-c' option to perform menu check. Also added --help and -h to show the program usage. Modified program usage to display the license information when the usage is displayed.
