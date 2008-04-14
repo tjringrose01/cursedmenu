@@ -63,6 +63,12 @@ typedef string String;
 
 #define PROGRAM "CursedMenuLoader"
 
+CursedMenu CursedMenuLoader::load(const String configFile, const bool debugFlag)
+{
+    vector<CursedMenu> menus = loadConfig(configFile, debugFlag);
+    return(menus.at(menus.size() - 1));
+}
+
 vector<CursedMenu> CursedMenuLoader::loadConfig(const String configFile, const bool debugFlag) {
 
     cout << "CursedMenuLoader::loadConfig(" << configFile << ", " << debugFlag << ");" << endl;
@@ -220,6 +226,10 @@ vector<CursedMenu> CursedMenuLoader::loadConfig(const String configFile, const b
                 if ( i != String::npos ) {
                     i = buffer.find("=");
                     name = buffer.substr( i+1, buffer.length() - i - 1);
+                    while (name.substr(0,1).compare(" ") == 0)
+                    {
+                        name = name.substr(1);
+                    }
 					getItem = true;
                     if (debugFlag) debug(PROGRAM, 2, "found item = " + name);
 					continue;
@@ -229,13 +239,22 @@ vector<CursedMenu> CursedMenuLoader::loadConfig(const String configFile, const b
                 if ( i != String::npos ) {
                     i = buffer.find("=");
                     desc = buffer.substr( i+1, buffer.length() - i - 1);
+                    while (desc.substr(0,1).compare(" ") == 0)
+                    {
+                        desc = desc.substr(1);
+                    }
                     if (debugFlag) debug(PROGRAM, 2, "found desc = " + desc);
 					continue;
 				} else {
                     i = buffer.find("ItemExec");
-                    if ( i != String::npos ) {
+                    if (i != String::npos) {
                         i = buffer.find("=");
-                        exec = buffer.substr( i+1, buffer.length() - i - 1);
+                        exec = buffer.substr(i+1, buffer.length() - i - 1);
+                        while (exec.substr(0,1).compare(" ") == 0)
+                        {
+                            exec = exec.substr(1);
+                        }
+                       
 
                     if (debugFlag) debug(PROGRAM, 2, "found exec = " + exec);
                     // Parse out the exec and look for sub menu to parse

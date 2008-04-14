@@ -48,6 +48,7 @@ public:
     /* Public Members */
 
     /* Public Methods */
+    static CursedMenu load(const String configFile, const bool debugFlag);
     static vector<CursedMenu> loadConfig(const String configFile, const bool debugFlag);
 };
 

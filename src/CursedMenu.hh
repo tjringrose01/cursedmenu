@@ -53,7 +53,6 @@ private:
     bool debugFlag;
 
     /* Private Methods */
-    void readConfig(String configFile);
 
 public:
     /* Public Members */
@@ -81,6 +80,7 @@ public:
 
     String getMenuName();
     void setMenuName(String menuName);
+    CursedMenu& operator=(const CursedMenu& cm);
 };
 
 #endif
