@@ -12,15 +12,15 @@
  *      a. A recursive call to loadConfig() is made for the sub menu file
  *      b. Before the sub menu has completed, a sub menu is detected
  *          i. A recursive call to loadConfig() is made for the sub menu file
- *         ii. When loadConfig() returns with the array of MenuConfig's, this
+ *         ii. When loadConfig() returns with the array of CursedMenu's, this
  *             is appended to the current array(which should be empty).
  *        iii. Then this instance of loadConfig() is returned with the
  *             appended array.
- *      c. When loadConfig() returns with the array of MenuConfig's, this
+ *      c. When loadConfig() returns with the array of CursedMenu's, this
  *         is appended to the current array(We now have 1 menus).
  *      d. Then this instance of loadConfig() is returned with the
  *         appended array.
- *  3. When loadConfig() returns with the array of MenuConfig's, this
+ *  3. When loadConfig() returns with the array of CursedMenu's, this
  *     is appended to the current array(We now have 2 menus).
  *  4. Then this instance of loadConfig() is returned with the
  *     appended array.
@@ -54,7 +54,7 @@
 #include <cctype> //std::toupper
 #include <curses.h>
 #include "CursedMenuLoader.h"
-#include "MenuConfig.hh"
+#include "CursedMenu.hh"
 #include "CursedMenuItem.hh"
 #include "debug.hh"
 
@@ -63,13 +63,13 @@ typedef string String;
 
 #define PROGRAM "CursedMenuLoader"
 
-vector<MenuConfig> CursedMenuLoader::loadConfig(const String configFile, const bool debugFlag) {
+vector<CursedMenu> CursedMenuLoader::loadConfig(const String configFile, const bool debugFlag) {
 
     cout << "CursedMenuLoader::loadConfig(" << configFile << ", " << debugFlag << ");" << endl;
-    vector<MenuConfig> menus;
-    vector<MenuConfig> tmp_menus;
+    vector<CursedMenu> menus;
+    vector<CursedMenu> tmp_menus;
 
-    MenuConfig* curMenu = new MenuConfig();
+    CursedMenu* curMenu = new CursedMenu();
 
     //Removed for compatability on older g++ compilers
     //menus.clear();

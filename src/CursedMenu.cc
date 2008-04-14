@@ -1,5 +1,5 @@
 /**
- *  MenuConfig.cc - MenuConfig Class Implementation - This class is
+ *  CursedMenu.cc - CursedMenu Class Implementation - This class is
  *                  responsible for reading in the configuration file and
  *                  storing it's informtion within it's class members
  *
@@ -27,16 +27,16 @@
 #include <string>
 #include <cctype> //std::toupper
 #include <curses.h>
-#include "MenuConfig.hh"
+#include "CursedMenu.hh"
 #include "CursedMenuItem.hh"
 #include "debug.hh"
 
 using namespace std;
 typedef string String;
 
-#define PROGRAM "MenuConfig"
+#define PROGRAM "CursedMenu"
 
-void MenuConfig::readConfig(const String configFile) {
+void CursedMenu::readConfig(const String configFile) {
     menuItems.reserve(25);
 
     //Removed for compatability on older g++ compilers
@@ -233,16 +233,16 @@ void MenuConfig::readConfig(const String configFile) {
     }
 }
 
-MenuConfig::MenuConfig(const bool debugFlag, const String configFile) {
+CursedMenu::CursedMenu(const bool debugFlag, const String configFile) {
     setDebugFlag(debugFlag);
     readConfig(configFile);
 }
 
-MenuConfig::MenuConfig() {
+CursedMenu::CursedMenu() {
     setDebugFlag(false);
 }
 
-MenuConfig::MenuConfig(const String configFile) {
+CursedMenu::CursedMenu(const String configFile) {
     setDebugFlag(false);
     readConfig(configFile);
 }
@@ -250,17 +250,17 @@ MenuConfig::MenuConfig(const String configFile) {
 /**
  * Return the number of items in the config arrays.
  */
-int MenuConfig::getNumOfItems() {
+int CursedMenu::getNumOfItems() {
     return(menuItems.size());
 }
 
 /**
  * Housekeeping
  */
-MenuConfig::~MenuConfig() {
+CursedMenu::~CursedMenu() {
 }
 
-CursedMenuItem MenuConfig::getItem( int index ) {
+CursedMenuItem CursedMenu::getItem( int index ) {
     int i = 0;
 
     vector<CursedMenuItem>::iterator it;
@@ -276,7 +276,7 @@ CursedMenuItem MenuConfig::getItem( int index ) {
     return( menuItems[menuItems.size() - 1] );
 }
 
-CursedMenuItem MenuConfig::getItem( String name ) {
+CursedMenuItem CursedMenu::getItem( String name ) {
     vector<CursedMenuItem>::iterator it;
 
     for( it = menuItems.begin(); it != menuItems.end(); it++ ) {
@@ -291,9 +291,9 @@ CursedMenuItem MenuConfig::getItem( String name ) {
 /**
  * Method to try and show te object in string form.
  */
-String MenuConfig::toString() {
+String CursedMenu::toString() {
 
-    if (debugFlag) cerr << "Entered MenuConfig::toString()" << endl;
+    if (debugFlag) cerr << "Entered CursedMenu::toString()" << endl;
     ostringstream sout;
 
     unsigned int itemCount = 0;
@@ -317,7 +317,7 @@ String MenuConfig::toString() {
 /**
  * Method to add an additional item to the vector
  */
-void MenuConfig::addItem( CursedMenuItem item ) {
+void CursedMenu::addItem( CursedMenuItem item ) {
     vector<CursedMenuItem>::iterator it;
 
     for( it = menuItems.begin(); it != menuItems.end(); it++ ) {
@@ -330,20 +330,20 @@ void MenuConfig::addItem( CursedMenuItem item ) {
     return;
 }
 
-void MenuConfig::setDebugFlag(bool debugFlag) {
+void CursedMenu::setDebugFlag(bool debugFlag) {
     this->debugFlag = debugFlag;
     return;
 }
 
-int MenuConfig::getForeColor() {
+int CursedMenu::getForeColor() {
     return(foreMenuColor);
 }
 
-int MenuConfig::getBackColor() {
+int CursedMenu::getBackColor() {
     return(backMenuColor);
 }
 
-int MenuConfig::getMenuCenterX() {
+int CursedMenu::getMenuCenterX() {
     vector<CursedMenuItem>::iterator it;
     unsigned int lengthOfLongestItem = 0;
 
@@ -358,35 +358,35 @@ int MenuConfig::getMenuCenterX() {
 /**
  * Returns the title of this menu.
  */
-String MenuConfig::getMenuTitle() {
+String CursedMenu::getMenuTitle() {
     return(menuTitle);
 }
 
 /**
  * Sets class member menuTitle.
  */
-void MenuConfig::setMenuTitle(String menuTitle) {
+void CursedMenu::setMenuTitle(String menuTitle) {
     this->menuTitle = menuTitle;
 }
 
 /**
  * Returns the name of this menu.
  */
-String MenuConfig::getMenuName() {
+String CursedMenu::getMenuName() {
     return(menuName);
 }
 
 /**
  * Sets class member menuName.
  */
-void MenuConfig::setMenuName(String menuName) {
+void CursedMenu::setMenuName(String menuName) {
     this->menuName = menuName;
 }
 
-void MenuConfig::setForeColor(int foreColor) {
+void CursedMenu::setForeColor(int foreColor) {
     this->foreMenuColor = foreColor;
 }
 
-void MenuConfig::setBackColor(int backColor) {
+void CursedMenu::setBackColor(int backColor) {
     this->backMenuColor = backColor;
 }

@@ -1,5 +1,5 @@
 /**
- *  MenuConfig.hh - MenuConfig Class Definition - This class is responsible
+ *  CursedMenu.hh - CursedMenu Class Definition - This class is responsible
  *                  for reading in the configureation file and storing it's
  *                  informtion within it's class members.
  *
@@ -22,8 +22,8 @@
  *
  */
 
-#ifndef __MenuConfig__
-#define __MenuConfig__
+#ifndef __CursedMenu__
+#define __CursedMenu__
 
 #include <stdlib.h>
 #include <vector>
@@ -40,7 +40,7 @@ using namespace std;
 
 typedef string String;
 
-class MenuConfig {
+class CursedMenu {
 private:
     /* Private Members */
     String menuName;
@@ -59,10 +59,10 @@ public:
     /* Public Members */
 
     /* Public Methods */
-    MenuConfig();
-    MenuConfig(String configFile);
-    MenuConfig(bool debugFlag, String configFile);
-    ~MenuConfig();
+    CursedMenu();
+    CursedMenu(String configFile);
+    CursedMenu(bool debugFlag, String configFile);
+    ~CursedMenu();
     int getNumOfItems();
     String toString();
     CursedMenuItem getItem( int index );

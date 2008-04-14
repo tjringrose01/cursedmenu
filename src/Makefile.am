@@ -7,7 +7,7 @@ bin_PROGRAMS = cursedmenu
 cursedmenu_SOURCES = \
 	cursedmenu.cc \
 	debug.cc \
-	MenuConfig.cc \
+	CursedMenu.cc \
 	CursedMenuItem.cc \
 	ActionLogger.cc \
 	CursedMenuLoader.cc

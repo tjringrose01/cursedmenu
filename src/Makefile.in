@@ -52,7 +52,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_cursedmenu_OBJECTS = cursedmenu.$(OBJEXT) debug.$(OBJEXT) \
-	MenuConfig.$(OBJEXT) CursedMenuItem.$(OBJEXT) \
+	CursedMenu.$(OBJEXT) CursedMenuItem.$(OBJEXT) \
 	ActionLogger.$(OBJEXT) CursedMenuLoader.$(OBJEXT)
 cursedmenu_OBJECTS = $(am_cursedmenu_OBJECTS)
 cursedmenu_LDADD = $(LDADD)
@@ -149,7 +149,7 @@ target_alias = @target_alias@
 cursedmenu_SOURCES = \
 	cursedmenu.cc \
 	debug.cc \
-	MenuConfig.cc \
+	CursedMenu.cc \
 	CursedMenuItem.cc \
 	ActionLogger.cc \
 	CursedMenuLoader.cc
@@ -222,9 +222,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ActionLogger.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CursedMenu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CursedMenuItem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CursedMenuLoader.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MenuConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cursedmenu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug.Po@am__quote@
 

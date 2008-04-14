@@ -32,7 +32,7 @@
 #include <stdio.h>
 #include <curses.h>
 #include <menu.h>
-#include "MenuConfig.hh"
+#include "CursedMenu.hh"
 #include "debug.hh"
 #include "ActionLogger.hh"
 #include "CursedMenuLoader.h"
@@ -136,7 +136,7 @@ int xCtr( String str, int width ) { return((int)((width-str.length())/2)); }
 /**
  * Function to display the menu title at the top of the screen.
  */
-void dispMenuTitle(MenuConfig mc, WINDOW* menu_window) {
+void dispMenuTitle(CursedMenu mc, WINDOW* menu_window) {
     String title = mc.getMenuTitle();
 
     if ( title.length() == 0 )
@@ -189,12 +189,12 @@ void clearScreen(WINDOW* win, int LINES, int COLS) {
     }
 }
 
-void loadMenuColor(MenuConfig* menu) {
+void loadMenuColor(CursedMenu* menu) {
     // Define colors
     init_pair(1, menu->getForeColor(), menu->getBackColor());
 }
 
-void loadCurses(MenuConfig* menu) {
+void loadCurses(CursedMenu* menu) {
     // Initialize curses
     initscr();
 
@@ -217,7 +217,7 @@ void refreshWin(WINDOW* win, MENU* menu) {
     return;
 }
 
-void runMenu(ActionLogger* al, stack<MenuConfig>* menus ) {
+void runMenu(ActionLogger* al, stack<CursedMenu>* menus ) {
     //String logEntry = "entering menu: ";
     //logEntry += menus->top().getMenuTitle().c_str();
     al->logMenu(COMING, menus->top().getMenuTitle());
@@ -233,7 +233,7 @@ void runMenu(ActionLogger* al, stack<MenuConfig>* menus ) {
     WINDOW* menu_window;
     ITEM** menu_items;
 
-    MenuConfig currentMenu = menus->top();
+    CursedMenu currentMenu = menus->top();
 
     //
     // Initialize curses
@@ -365,7 +365,7 @@ void runMenu(ActionLogger* al, stack<MenuConfig>* menus ) {
                 String subMenuFile = temp.substr(8+z);
  
                 // Add new menu from file into vector
-                menus->push(MenuConfig(debugIsOn, subMenuFile));
+                menus->push(CursedMenu(debugIsOn, subMenuFile));
  
                 // Update iterator
                 currentMenu = menus->top();
@@ -460,8 +460,8 @@ int main( int argc, char** argv ) {
     ActionLogger* log = new ActionLogger();
     log->log("curmenu begin");
 
-    stack<MenuConfig> menus;
-    MenuConfig currentMenu;
+    stack<CursedMenu> menus;
+    CursedMenu currentMenu;
  
     String menuFile = "default.cmd";
     bool performMenuCheck = false;
@@ -482,7 +482,7 @@ int main( int argc, char** argv ) {
     //
     if (performMenuCheck)
     {
-        vector<MenuConfig> menus = CursedMenuLoader::loadConfig(menuFile, debugIsOn);
+        vector<CursedMenu> menus = CursedMenuLoader::loadConfig(menuFile, debugIsOn);
 
         for (int itr=0; itr < menus.size(); itr++)
         {
@@ -494,7 +494,7 @@ int main( int argc, char** argv ) {
     } else {
 
         // Read in the items from the menu file
-        menus.push(MenuConfig(debugIsOn, menuFile));
+        menus.push(CursedMenu(debugIsOn, menuFile));
 
         // If we don't have any items in the menu, we've got a problem
         if ( menus.top().getNumOfItems() == 0 ) {

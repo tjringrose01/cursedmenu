@@ -32,7 +32,7 @@
 #include <fstream>
 #include <sstream>
 #include "CursedMenuItem.hh"
-#include "MenuConfig.hh"
+#include "CursedMenu.hh"
 
 using namespace std;
 
@@ -48,7 +48,7 @@ public:
     /* Public Members */
 
     /* Public Methods */
-    static vector<MenuConfig> loadConfig(const String configFile, const bool debugFlag);
+    static vector<CursedMenu> loadConfig(const String configFile, const bool debugFlag);
 };
 
 #endif
