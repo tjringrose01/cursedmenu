@@ -150,7 +150,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 AUTOMAKE_OPTIONS = no-dependencies foreign dist-bzip2
 ACLOCAL_AMFLAGS = 
-EXTRA_DIST = AUTHORS COPYING CHANGELOG
+EXTRA_DIST = AUTHORS COPYING ChangeLog
 SUBDIRS = src
 AM_CXXFLAGS = -O2
 all: config.h

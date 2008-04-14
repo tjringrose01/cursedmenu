@@ -6,7 +6,7 @@ AUTOMAKE_OPTIONS = no-dependencies foreign dist-bzip2
 
 ACLOCAL_AMFLAGS = 
 
-EXTRA_DIST = AUTHORS COPYING CHANGELOG
+EXTRA_DIST = AUTHORS COPYING ChangeLog
 
 ## Proceed to subdirs
 
