@@ -1,3 +1,14 @@
+2008-04-14	Timothy Ringrose	tjringrose01@users.sourceforge.net
+        * v1.0.4 release
+
+	* cursedmenu.cc (Renamed File): Renamed cursedmenu.cc to main.cc
+
+	* MenuConfig (Renamed Class): Renamed class to CursedMenu
+
+	* MenuItem (Renamed Class): Renamed class to CursedMenuItem
+
+        * CursedMenuLoader (load): Moved menu file loading functions to the Loader class. Removed functions from the MenuConfig class. 
+
 2008-04-11	Timothy Ringrose	tjringrose01@users.sourceforge.net
 
 	* cursedmenu.cc (parse_args): Added command line option '-c' to perform a menu check
