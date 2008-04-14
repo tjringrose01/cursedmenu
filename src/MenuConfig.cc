@@ -28,7 +28,7 @@
 #include <cctype> //std::toupper
 #include <curses.h>
 #include "MenuConfig.hh"
-#include "MenuItem.hh"
+#include "CursedMenuItem.hh"
 #include "debug.hh"
 
 using namespace std;
@@ -211,8 +211,8 @@ void MenuConfig::readConfig(const String configFile) {
                         if ( i != String::npos ) {
                             getItem = false;
                             /* store name, desc, and exec in item object */
-                            //menuItems.push_back( MenuItem(name,desc,exec) );
-                            addItem( MenuItem(name,desc,exec) );
+                            //menuItems.push_back( CursedMenuItem(name,desc,exec) );
+                            addItem( CursedMenuItem(name,desc,exec) );
       
                             name = "";
                             desc = "";
@@ -260,10 +260,10 @@ int MenuConfig::getNumOfItems() {
 MenuConfig::~MenuConfig() {
 }
 
-MenuItem MenuConfig::getItem( int index ) {
+CursedMenuItem MenuConfig::getItem( int index ) {
     int i = 0;
 
-    vector<MenuItem>::iterator it;
+    vector<CursedMenuItem>::iterator it;
 
     for( it = menuItems.begin(); it != menuItems.end(); it++ ) {
         if ( index == i )
@@ -276,8 +276,8 @@ MenuItem MenuConfig::getItem( int index ) {
     return( menuItems[menuItems.size() - 1] );
 }
 
-MenuItem MenuConfig::getItem( String name ) {
-    vector<MenuItem>::iterator it;
+CursedMenuItem MenuConfig::getItem( String name ) {
+    vector<CursedMenuItem>::iterator it;
 
     for( it = menuItems.begin(); it != menuItems.end(); it++ ) {
         if ( it->getName() == name )
@@ -301,7 +301,7 @@ String MenuConfig::toString() {
     sout << "Menu: ==================================================" << endl;
     sout << "Title: " << menuTitle << endl;
 
-    vector<MenuItem>::iterator it;
+    vector<CursedMenuItem>::iterator it;
    
     for( it = menuItems.begin(); it != menuItems.end(); it++ ) {
         sout << "-----------------" << endl;
@@ -317,8 +317,8 @@ String MenuConfig::toString() {
 /**
  * Method to add an additional item to the vector
  */
-void MenuConfig::addItem( MenuItem item ) {
-    vector<MenuItem>::iterator it;
+void MenuConfig::addItem( CursedMenuItem item ) {
+    vector<CursedMenuItem>::iterator it;
 
     for( it = menuItems.begin(); it != menuItems.end(); it++ ) {
         if ( it->getName() == item.getName() ) {
@@ -344,7 +344,7 @@ int MenuConfig::getBackColor() {
 }
 
 int MenuConfig::getMenuCenterX() {
-    vector<MenuItem>::iterator it;
+    vector<CursedMenuItem>::iterator it;
     unsigned int lengthOfLongestItem = 0;
 
     for( it = menuItems.begin(); it != menuItems.end(); it++ ) {

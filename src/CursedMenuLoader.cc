@@ -55,7 +55,7 @@
 #include <curses.h>
 #include "CursedMenuLoader.h"
 #include "MenuConfig.hh"
-#include "MenuItem.hh"
+#include "CursedMenuItem.hh"
 #include "debug.hh"
 
 using namespace std;
@@ -252,7 +252,7 @@ vector<MenuConfig> CursedMenuLoader::loadConfig(const String configFile, const b
                         if ( i != String::npos ) {
                             getItem = false;
                             /* store name, desc, and exec in item object */
-                            curMenu->addItem(MenuItem(name,desc,exec));
+                            curMenu->addItem(CursedMenuItem(name,desc,exec));
       
                             name = "";
                             desc = "";

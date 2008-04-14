@@ -31,7 +31,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "MenuItem.hh"
+#include "CursedMenuItem.hh"
 #include "MenuConfig.hh"
 
 using namespace std;

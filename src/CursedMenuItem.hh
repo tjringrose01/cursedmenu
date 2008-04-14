@@ -1,6 +1,7 @@
 /**
- * MenuItem.hh - MenuItem Class Definition - This class is responsible for
- *               storing an item that will be accessable from the menu.
+ * CursedMenuItem.hh - CursedMenuItem Class Definition - This class is
+ *                     responsible for storing an item that will be
+ *                     accessable from the menu.
  *
  *  Copyright 2007, 2008 Timothy Ringrose
  *
@@ -21,8 +22,8 @@
  *
  */
 
-#ifndef __MenuItem__
-#define __MenuItem__
+#ifndef __CursedMenuItem__
+#define __CursedMenuItem__
 
 #include <stdlib.h>
 #include <string>
@@ -33,7 +34,7 @@
 using namespace std;
 typedef string String;
 
-class MenuItem {
+class CursedMenuItem {
 private:
     /* Private Members */
     String name;
@@ -47,9 +48,9 @@ public:
     /* Public Members */
 
     /* Public Methods */
-    MenuItem(const String name, const String description, const String command);
-    MenuItem(const String name, const String description, const String command, const bool postCommandPause);
-    ~MenuItem();
+    CursedMenuItem(const String name, const String description, const String command);
+    CursedMenuItem(const String name, const String description, const String command, const bool postCommandPause);
+    ~CursedMenuItem();
     String getName();
     String getDesc();
     String getExec();

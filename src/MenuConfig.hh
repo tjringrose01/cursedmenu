@@ -31,7 +31,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "MenuItem.hh"
+#include "CursedMenuItem.hh"
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
 #define CTRLD 4
@@ -49,7 +49,7 @@ private:
     int foreMenuColor;
     int backMenuColor;
 
-    vector<MenuItem> menuItems;
+    vector<CursedMenuItem> menuItems;
     bool debugFlag;
 
     /* Private Methods */
@@ -65,9 +65,9 @@ public:
     ~MenuConfig();
     int getNumOfItems();
     String toString();
-    MenuItem getItem( int index );
-    MenuItem getItem( String name );
-    void addItem( MenuItem item );
+    CursedMenuItem getItem( int index );
+    CursedMenuItem getItem( String name );
+    void addItem( CursedMenuItem item );
     void setDebugFlag(bool debugFlag);
     int getForeColor();
     int getBackColor();

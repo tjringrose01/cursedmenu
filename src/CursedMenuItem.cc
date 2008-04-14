@@ -1,6 +1,7 @@
 /**
- * MenuItem.cc - MenuItem Class Implementation - This class is responsible
- *               for storing an item that will be accessable from the menu.
+ * CursedMenuItem.cc - CursedMenuItem Class Implementation - This class is
+ *                     responsible for storing an item that will be accessable
+ *                     from the menu.
  *
  *  Copyright 2007, 2008 Timothy Ringrose
  *
@@ -26,7 +27,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "MenuItem.hh"
+#include "CursedMenuItem.hh"
 
 using namespace std;
 typedef string String;
@@ -37,35 +38,35 @@ typedef string String;
  *     String command;
  */
 
-MenuItem::MenuItem(const String name, const String desc, const String exec) {
+CursedMenuItem::CursedMenuItem(const String name, const String desc, const String exec) {
     this->name = name;
     this->description = desc;
     this->command = exec;
     this->postCommandPause = false;
 }
 
-MenuItem::MenuItem(const String name, const String desc, const String exec, const bool postCommandPause) {
+CursedMenuItem::CursedMenuItem(const String name, const String desc, const String exec, const bool postCommandPause) {
     this->name = name;
     this->description = desc;
     this->command = exec;
     this->postCommandPause = postCommandPause;
 }
 
-MenuItem::~MenuItem() {}
+CursedMenuItem::~CursedMenuItem() {}
 
-String MenuItem::getName() {
+String CursedMenuItem::getName() {
     return( this->name );
 }
 
-String MenuItem::getDesc() {
+String CursedMenuItem::getDesc() {
     return( this->description);
 }
 
-String MenuItem::getExec() {
+String CursedMenuItem::getExec() {
     return( this->command);
 }
 
-String MenuItem::toString() {
+String CursedMenuItem::toString() {
     ostringstream sout;
     sout << "Name:        \"" << name << "\"" << endl
          << "Description: \"" << description << "\"" << endl
