@@ -273,7 +273,7 @@ PACKAGE_VERSION='1.0.4'
 PACKAGE_STRING='cursedmenu 1.0.4'
 PACKAGE_BUGREPORT='tjringrose01@users.sourceforge.net'
 
-ac_unique_file="src/cursedmenu.cc"
+ac_unique_file="src/main.cc"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>

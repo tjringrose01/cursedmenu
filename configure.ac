@@ -2,7 +2,7 @@
 AC_INIT([cursedmenu], [1.0.4], [tjringrose01@users.sourceforge.net])
 
 # Verify that the src/ folder is available
-AC_CONFIG_SRCDIR(src/cursedmenu.cc)
+AC_CONFIG_SRCDIR(src/main.cc)
 
 # For automake
 AM_CONFIG_HEADER(config.h)

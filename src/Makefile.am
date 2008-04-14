@@ -4,12 +4,12 @@
 
 bin_PROGRAMS = cursedmenu
 
-cursedmenu_SOURCES = \
-	cursedmenu.cc \
-	debug.cc \
-	CursedMenu.cc \
-	CursedMenuItem.cc \
-	ActionLogger.cc \
+cursedmenu_SOURCES =		\
+	main.cc			\
+	debug.cc		\
+	ActionLogger.cc		\
+	CursedMenu.cc		\
+	CursedMenuItem.cc	\
 	CursedMenuLoader.cc
 
 EXTRA_DIST = *.h *.hh *.cmd

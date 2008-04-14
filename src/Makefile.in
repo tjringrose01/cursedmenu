@@ -51,9 +51,9 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_cursedmenu_OBJECTS = cursedmenu.$(OBJEXT) debug.$(OBJEXT) \
-	CursedMenu.$(OBJEXT) CursedMenuItem.$(OBJEXT) \
-	ActionLogger.$(OBJEXT) CursedMenuLoader.$(OBJEXT)
+am_cursedmenu_OBJECTS = main.$(OBJEXT) debug.$(OBJEXT) \
+	ActionLogger.$(OBJEXT) CursedMenu.$(OBJEXT) \
+	CursedMenuItem.$(OBJEXT) CursedMenuLoader.$(OBJEXT)
 cursedmenu_OBJECTS = $(am_cursedmenu_OBJECTS)
 cursedmenu_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -147,11 +147,11 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 cursedmenu_SOURCES = \
-	cursedmenu.cc \
-	debug.cc \
-	CursedMenu.cc \
-	CursedMenuItem.cc \
-	ActionLogger.cc \
+	main.cc			\
+	debug.cc		\
+	ActionLogger.cc		\
+	CursedMenu.cc		\
+	CursedMenuItem.cc	\
 	CursedMenuLoader.cc
 
 EXTRA_DIST = *.h *.hh *.cmd
@@ -225,8 +225,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CursedMenu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CursedMenuItem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CursedMenuLoader.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cursedmenu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
