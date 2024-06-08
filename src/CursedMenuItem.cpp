@@ -1,9 +1,9 @@
 /**
- * CursedMenuItem.cc - CursedMenuItem Class Implementation - This class is
+ * CursedMenuItem.cpp - CursedMenuItem Class Implementation - This class is
  *                     responsible for storing an item that will be accessable
  *                     from the menu.
  *
- *  Copyright 2007, 2008 Timothy Ringrose
+ *  Copyright 2007, 2008, 2024 Timothy Ringrose
  *
  *  This file is part of cursedmenu.
  *
@@ -22,30 +22,23 @@
  *
  */
 
-#include <stdlib.h>
 #include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include "CursedMenuItem.hh"
-
-using namespace std;
-typedef string String;
+#include "CursedMenuItem.hpp"
 
 /* Private Members:
- *     String name;
- *     String description;
- *     String command;
+ *     std::string name;
+ *     std::string description;
+ *     std::string command;
  */
 
-CursedMenuItem::CursedMenuItem(const String name, const String desc, const String exec) {
+CursedMenuItem::CursedMenuItem(const std::string name, const std::string desc, const std::string exec) {
     this->name = name;
     this->description = desc;
     this->command = exec;
     this->postCommandPause = false;
 }
 
-CursedMenuItem::CursedMenuItem(const String name, const String desc, const String exec, const bool postCommandPause) {
+CursedMenuItem::CursedMenuItem(const std::string name, const std::string desc, const std::string exec, const bool postCommandPause) {
     this->name = name;
     this->description = desc;
     this->command = exec;
@@ -54,23 +47,23 @@ CursedMenuItem::CursedMenuItem(const String name, const String desc, const Strin
 
 CursedMenuItem::~CursedMenuItem() {}
 
-String CursedMenuItem::getName() {
+std::string CursedMenuItem::getName() {
     return( this->name );
 }
 
-String CursedMenuItem::getDesc() {
+std::string CursedMenuItem::getDesc() {
     return( this->description);
 }
 
-String CursedMenuItem::getExec() {
+std::string CursedMenuItem::getExec() {
     return( this->command);
 }
 
-String CursedMenuItem::toString() {
-    ostringstream sout;
-    sout << "Name:        \"" << name << "\"" << endl
-         << "Description: \"" << description << "\"" << endl
-         << "Command:     \"" << command << "\"" << endl;
+std::string CursedMenuItem::toString() {
+    std::ostringstream sout;
+    sout << "Name:        \"" << name << "\"" << std::endl
+         << "Description: \"" << description << "\"" << std::endl
+         << "Command:     \"" << command << "\"" << std::endl;
 
     return(sout.str());
 }

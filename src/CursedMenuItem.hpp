@@ -1,9 +1,9 @@
 /**
- * CursedMenuItem.hh - CursedMenuItem Class Definition - This class is
+ * CursedMenuItem.hpp - CursedMenuItem Class Definition - This class is
  *                     responsible for storing an item that will be
  *                     accessable from the menu.
  *
- *  Copyright 2007, 2008 Timothy Ringrose
+ *  Copyright 2007, 2008, 2024 Timothy Ringrose
  *
  *  This file is part of cursedmenu.
  *
@@ -25,21 +25,14 @@
 #ifndef __CursedMenuItem__
 #define __CursedMenuItem__
 
-#include <stdlib.h>
 #include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
-using namespace std;
-typedef string String;
 
 class CursedMenuItem {
 private:
     /* Private Members */
-    String name;
-    String description;
-    String command;
+    std::string name;
+    std::string description;
+    std::string command;
     bool   postCommandPause;
 
     /* Private Methods */
@@ -48,13 +41,13 @@ public:
     /* Public Members */
 
     /* Public Methods */
-    CursedMenuItem(const String name, const String description, const String command);
-    CursedMenuItem(const String name, const String description, const String command, const bool postCommandPause);
+    CursedMenuItem(const std::string name, const std::string description, const std::string command);
+    CursedMenuItem(const std::string name, const std::string description, const std::string command, const bool postCommandPause);
     ~CursedMenuItem();
-    String getName();
-    String getDesc();
-    String getExec();
-    String toString();
+    std::string getName();
+    std::string getDesc();
+    std::string getExec();
+    std::string toString();
 };
 
 #endif
