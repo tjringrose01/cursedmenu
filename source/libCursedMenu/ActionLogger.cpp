@@ -23,7 +23,9 @@
 #include <fstream>
 #include <time.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "ActionLogger.hpp"
+#define PACKAGE_NAME "cursedmenu"
 
 std::string ActionLogger::getSysTime() {
     char * timeStr = new char[25];

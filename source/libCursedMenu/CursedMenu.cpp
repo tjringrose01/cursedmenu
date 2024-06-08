@@ -24,6 +24,9 @@
 
 #include <string>
 #include <curses.h>
+#include <iostream>
+#include <ostream>
+#include <sstream>
 #include "CursedMenu.hpp"
 #include "CursedMenuItem.hpp"
 #include "CursedMenuLoader.hpp"

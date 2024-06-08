@@ -50,6 +50,10 @@
 
 #include <vector>
 #include <string>
+#include <fstream>
+#include <ostream>
+#include <iostream>
+#include <curses.h>
 #include "CursedMenuLoader.hpp"
 #include "CursedMenu.hpp"
 #include "CursedMenuItem.hpp"

@@ -23,6 +23,8 @@
  */
 
 #include <string>
+#include <ostream>
+#include <sstream>
 #include "CursedMenuItem.hpp"
 
 /* Private Members:

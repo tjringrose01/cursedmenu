@@ -23,7 +23,7 @@
 #ifndef __DEBUG__
 #define __DEBUG__
 
-void debug( String program, int indent, String message );
+void debug( std::string program, int indent, std::string message );
 
 #define SUCCESS                                   0
 #define NET_UNRESOLVED_HOSTNAME                  10

@@ -27,6 +27,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <stack>
 #include <string>
 #include <curses.h>
 #include <menu.h>
@@ -36,6 +37,8 @@
 #include "CursedMenuLoader.hpp"
 
 #define PROGRAM "cursedmenu"
+#define PACKAGE_NAME "cursedmenu"
+#define PACKAGE_STRING "cursedmenu"
 
 /***************************************************************************
  * Function to display the proper program usage.
