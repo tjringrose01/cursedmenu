@@ -1,7 +1,7 @@
 /**
- *  ActionLogger.cc - ActionLogger Class Implementation
+ *  ActionLogger.cpp - ActionLogger Class Implementation
  *
- *  Copyright 2007, 2008 Timothy Ringrose
+ *  Copyright 2007, 2008, 2024 Timothy Ringrose
  *
  *  This file is part of cursedmenu.
  *
@@ -21,16 +21,11 @@
  */
 
 #include <fstream>
-#include <string>
 #include <time.h>
 #include <stdio.h>
-#include "ActionLogger.hh"
-#include "../config.h"
+#include "ActionLogger.hpp"
 
-using namespace std;
-typedef string String;
-
-String ActionLogger::getSysTime() {
+std::string ActionLogger::getSysTime() {
     char * timeStr = new char[25];
     struct tm *ptr;
     time_t tm;
@@ -40,12 +35,12 @@ String ActionLogger::getSysTime() {
 
     strftime(timeStr, 25, "%Y/%m/%d %H:%M:%S", ptr);
     
-    String returnStr = timeStr;
+    std::string returnStr = timeStr;
     return(returnStr);
 }
 
-String ActionLogger::getUserId() {
-    String logname = getenv("LOGNAME");
+std::string ActionLogger::getUserId() {
+    std::string logname = getenv("LOGNAME");
     if ( logname.size() <= 0 )
         logname = "unknown";
 
@@ -67,7 +62,7 @@ ActionLogger::ActionLogger() {
     this->pid = getPid();
 }
 
-ActionLogger::ActionLogger(bool debugMode, String logFile) {
+ActionLogger::ActionLogger(bool debugMode, std::string logFile) {
     this->debugMode = debugMode;
     this->logFile = logFile;
     this->userId = getUserId();
@@ -86,50 +81,50 @@ bool ActionLogger::getDebugMode() {
  * Log straight text to logfile.
  * Note: For menu calls and program execution, please use logMnu and logCmd
  */
-void ActionLogger::log(String logText) {
-    ofstream logf(logFile.c_str(), ios::app);
+void ActionLogger::log(std::string logText) {
+    std::ofstream logf(logFile.c_str(), std::ios::app);
 
     logf << getSysTime() << " " << pid << " " << userId << ": " << logText
-         << endl;
+         << std::endl;
 
     logf.close();
 
     return;
 }
 
-String ActionLogger::toString() {
-    String returnStr = "";
+std::string ActionLogger::toString() {
+    std::string returnStr = "";
     return(returnStr);
 }
 
-void ActionLogger::logCmd(String logText) {
-    ofstream logf(logFile.c_str(), ios::app);
+void ActionLogger::logCmd(std::string logText) {
+    std::ofstream logf(logFile.c_str(), std::ios::app);
 
     logf << getSysTime() << " " << pid << " " << userId << ": " 
          << "command ran: ["
          << logText
          << "]"
-         << endl;
+         << std::endl;
 
     logf.close();
     return;
 }
 
-void ActionLogger::logMenu(bool coming, String menuTitle) {
-    ofstream logf(logFile.c_str(), ios::app);
+void ActionLogger::logMenu(bool coming, std::string menuTitle) {
+    std::ofstream logf(logFile.c_str(), std::ios::app);
 
     if ( coming )
         logf << getSysTime() << " " << pid << " " << userId << ": " 
              << "menu entered: ["
              << menuTitle
              << "]"
-             << endl;
+             << std::endl;
     else
         logf << getSysTime() << " " << pid << " " << userId << ": " 
              << "menu exited:  ["
              << menuTitle
              << "]"
-             << endl;
+             << std::endl;
 
     logf.close();
     return;
