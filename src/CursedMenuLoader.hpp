@@ -1,9 +1,9 @@
 /**
- *  CursedMenuLoader.h - CursedMenuLoader Class Definition - This class is
+ *  CursedMenuLoader.hpp - CursedMenuLoader Class Definition - This class is
  *                  responsible for reading in the configuration file and
  *                  returning it's informtion within class members.
  *
- *  Copyright 2007, 2008 Timothy Ringrose
+ *  Copyright 2007, 2008, 2024 Timothy Ringrose
  *
  *  This file is part of cursedmenu.
  *
@@ -22,34 +22,26 @@
  *
  */
 
-#ifndef __CursedMenuLoader_h__
-#define __CursedMenuLoader_h__
+#ifndef __CURSEDMENULOADER__
+#define __CURSEDMENULOADER__
 
-#include <stdlib.h>
 #include <vector>
 #include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include "CursedMenuItem.hh"
-#include "CursedMenu.hh"
+#include "CursedMenu.hpp"
 
-using namespace std;
+class CursedMenuLoader
+{
+    private:
+        /* Private Members */
 
-typedef string String;
+        /* Private Methods */
 
-class CursedMenuLoader {
-private:
-    /* Private Members */
+    public:
+        /* Public Members */
 
-    /* Private Methods */
-
-public:
-    /* Public Members */
-
-    /* Public Methods */
-    static CursedMenu load(const String configFile, const bool debugFlag);
-    static vector<CursedMenu> loadConfig(const String configFile, const bool debugFlag);
+        /* Public Methods */
+        static CursedMenu load(const std::string configFile, const bool debugFlag);
+        static std::vector<CursedMenu> loadConfig(const std::string configFile, const bool debugFlag);
 };
 
-#endif
+#endif // __CURSEDMENULOADER__
