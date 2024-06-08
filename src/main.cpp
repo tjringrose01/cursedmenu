@@ -1,11 +1,11 @@
 /**
- *  cursedmenu.cpp - Menu Program using ncurses
+ *  main.cpp - Menu Program using ncurses
  *
  *  Program Flow:
  *    1. Load the initial menu into the array
  *    2. Recursivly use runMenu()
  *
- *  Copyright 2007, 2008 Timothy Ringrose
+ *  Copyright 2007, 2008, 2024 Timothy Ringrose
  *
  *  This file is part of cursedmenu.
  *
@@ -27,19 +27,13 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <stack>
 #include <string>
-#include <stdio.h>
 #include <curses.h>
 #include <menu.h>
 #include "CursedMenu.hh"
 #include "debug.hh"
 #include "ActionLogger.hh"
 #include "CursedMenuLoader.h"
-#include "../config.h"
-
-using namespace std;
-typedef string String;
 
 #define PROGRAM "cursedmenu"
 
@@ -47,31 +41,31 @@ typedef string String;
  * Function to display the proper program usage.
  ***************************************************************************/
 void displayUsage() {
-   cout << PACKAGE_NAME << " - " << PACKAGE_STRING << endl
-        << endl
-        << "Copyright 2007, 2008 Timothy Ringrose" << endl
-        << endl
-        << PACKAGE_NAME << " is free software: you can redistribute it and/or modify" << endl
-        << "it under the terms of the GNU General Public License as published by" << endl
-        << "the Free Software Foundation, either version 3 of the License, or" << endl
-        << "(at your option) any later version." << endl
-        << endl
-        << PACKAGE_NAME << " is distributed in the hope that it will be useful," << endl
-        << "but WITHOUT ANY WARRANTY; without even the implied warranty of" << endl
-        << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the" << endl
-        << "GNU General Public License for more details." << endl
-        << endl
-        << "You should have received a copy of the GNU General Public License" << endl
-        << "along with " << PACKAGE_NAME << ".  If not, see <http://www.gnu.org/licenses/>." << endl
-        << endl
-        << "usage: " << PACKAGE_NAME << "[-h or --help] | [-m <menu file>] [-c]" << endl
-        << endl
-        << "options:" << endl
-        << "  -h or --help    - show program usage" << endl
-        << "  -m <menu file>  - specify the cursed menu definition" << endl
-        << "  -c              - check all menu definition files then validate" << endl
-        << "                    and display all menu and menu item syntax" << endl
-        << endl;
+   std::cout << PACKAGE_NAME << " - " << PACKAGE_STRING << std::endl
+        << std::endl
+        << "Copyright 2007, 2008 Timothy Ringrose" << std::endl
+        << std::endl
+        << PACKAGE_NAME << " is free software: you can redistribute it and/or modify" << std::endl
+        << "it under the terms of the GNU General Public License as published by" << std::endl
+        << "the Free Software Foundation, either version 3 of the License, or" << std::endl
+        << "(at your option) any later version." << std::endl
+        << std::endl
+        << PACKAGE_NAME << " is distributed in the hope that it will be useful," << std::endl
+        << "but WITHOUT ANY WARRANTY; without even the implied warranty of" << std::endl
+        << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the" << std::endl
+        << "GNU General Public License for more details." << std::endl
+        << std::endl
+        << "You should have received a copy of the GNU General Public License" << std::endl
+        << "along with " << PACKAGE_NAME << ".  If not, see <http://www.gnu.org/licenses/>." << std::endl
+        << std::endl
+        << "usage: " << PACKAGE_NAME << "[-h or --help] | [-m <menu file>] [-c]" << std::endl
+        << std::endl
+        << "options:" << std::endl
+        << "  -h or --help    - show program usage" << std::endl
+        << "  -m <menu file>  - specify the cursed menu definition" << std::endl
+        << "  -c              - check all menu definition files then validate" << std::endl
+        << "                    and display all menu and menu item syntax" << std::endl
+        << std::endl;
 }
 
 /**
@@ -79,10 +73,10 @@ void displayUsage() {
  */
 int parse_args( int argc,
              char** argv,
-            String* mVal,
+            std::string* mVal,
               bool* cVal) {
  
-    String arg;
+    std::string arg;
 
     for ( int x = 1; x < argc; x++) {
         if (argv[x][0] == '-') {
@@ -99,8 +93,8 @@ int parse_args( int argc,
                 case 'c':   *cVal = true;
                     break;
                 default:
-                    cerr << "Error: Invalid usage" << endl
-                         << "Unknown option \'" << arg << "\'" << endl;
+                    std::cerr << "Error: Invalid usage" << std::endl
+                         << "Unknown option \'" << arg << "\'" << std::endl;
                     displayUsage();
                     exit(ERROR_INVALID_USAGE);
             }
@@ -109,7 +103,7 @@ int parse_args( int argc,
 
     // Check for values
     if ( mVal->empty() ) {
-        cerr << "Error: Invalid argument value for option '-m'" << endl;
+        std::cerr << "Error: Invalid argument value for option '-m'" << std::endl;
         displayUsage();
         exit(ERROR_INVALID_ARG_VALUES);
     }
@@ -120,7 +114,7 @@ int parse_args( int argc,
 /**
  * Function to display the description at the bottom of the window
  */
-void dispDesc(WINDOW* win, String desc, int pos_x, int pos_y) {
+void dispDesc(WINDOW* win, std::string desc, int pos_x, int pos_y) {
     /* Fill in all the emppty space with color */
     for ( int y = 1; y < pos_x - 1; y++ )
         mvwprintw(win, pos_y - 2, y, " ");
@@ -131,13 +125,13 @@ void dispDesc(WINDOW* win, String desc, int pos_x, int pos_y) {
 /**
  * Return centering x position for display
  */
-int xCtr( String str, int width ) { return((int)((width-str.length())/2)); }
+int xCtr( std::string str, int width ) { return((int)((width-str.length())/2)); }
 
 /**
  * Function to display the menu title at the top of the screen.
  */
 void dispMenuTitle(CursedMenu mc, WINDOW* menu_window) {
-    String title = mc.getMenuTitle();
+    std::string title = mc.getMenuTitle();
 
     if ( title.length() == 0 )
         title = "Cursed Menu";
@@ -217,13 +211,13 @@ void refreshWin(WINDOW* win, MENU* menu) {
     return;
 }
 
-void runMenu(ActionLogger* al, stack<CursedMenu>* menus ) {
-    //String logEntry = "entering menu: ";
+void runMenu(ActionLogger* al, std::stack<CursedMenu>* menus ) {
+    //std::string logEntry = "entering menu: ";
     //logEntry += menus->top().getMenuTitle().c_str();
     al->logMenu(COMING, menus->top().getMenuTitle());
 
     bool debugIsOn = al->getDebugMode();
-    String selName;
+    std::string selName;
 
     int menuCenter;
     int userInput;
@@ -348,7 +342,7 @@ void runMenu(ActionLogger* al, stack<CursedMenu>* menus ) {
                 if (debugIsOn) debug(PROGRAM, 2, "endwin()");
                 endwin();
 
-                //String logEntry = "leaving menu: ";
+                //std::string logEntry = "leaving menu: ";
                 //logEntry += menus->top().getMenuTitle().c_str();
                 al->logMenu(GOING, menus->top().getMenuTitle());
 
@@ -356,13 +350,13 @@ void runMenu(ActionLogger* al, stack<CursedMenu>* menus ) {
             }
 
             // Check for MenuSub itentifier
-            if ( menus->top().getItem(selName).getExec().find("MenuSub ") != String::npos ) {
+            if ( menus->top().getItem(selName).getExec().find("MenuSub ") != std::string::npos ) {
                 // Get filename to load
                 int z = 0;
-                String temp = currentMenu.getItem(selName).getExec();
+                std::string temp = currentMenu.getItem(selName).getExec();
                 z = temp.find("MenuSub ");
 
-                String subMenuFile = temp.substr(8+z);
+                std::string subMenuFile = temp.substr(8+z);
  
                 // Add new menu from file into vector
                 menus->push(CursedMenu(debugIsOn, subMenuFile));
@@ -407,28 +401,28 @@ void runMenu(ActionLogger* al, stack<CursedMenu>* menus ) {
 
                 al->logCmd(menus->top().getItem(selName).getExec());
                 retVal = system( menus->top().getItem(selName).getExec().c_str() );
-                String logmsg  = "command return code: ";
+                std::string logmsg  = "command return code: ";
                        logmsg += (char)(retVal);
                 al->log(logmsg);
 
                 if ( retVal != 0 ) {
-                    cerr << "Command String: \"" 
+                    std::cerr << "Command String: \"" 
                          << menus->top().getItem(selName).getExec()
-                         << "\"" << endl
-                         << "Return code: " << retVal << endl << endl
-                         << "Command execution error." << endl
-                         << "Press <ENTER> to continue..." << endl;
+                         << "\"" << std::endl
+                         << "Return code: " << retVal << std::endl << std::endl
+                         << "Command execution error." << std::endl
+                         << "Press <ENTER> to continue..." << std::endl;
 
                     userInput = getch();
                 } else {
                     if (debugIsOn) {
-                        cerr << "Command String: \"" 
+                        std::cerr << "Command String: \"" 
                              << currentMenu.getItem(selName).getExec()
-                             << "\"" << endl
-                             << "Return code: " << retVal << endl
-                             << endl
-                             << "Command completed successfully." << endl
-                             << "Press <ENTER> to continue..." << endl;
+                             << "\"" << std::endl
+                             << "Return code: " << retVal << std::endl
+                             << std::endl
+                             << "Command completed successfully." << std::endl
+                             << "Press <ENTER> to continue..." << std::endl;
                         userInput = getch();
                     }
                 }
@@ -460,17 +454,17 @@ int main( int argc, char** argv ) {
     ActionLogger* log = new ActionLogger();
     log->log("curmenu begin");
 
-    stack<CursedMenu> menus;
+    std::stack<CursedMenu> menus;
     CursedMenu currentMenu;
  
-    String menuFile = "default.cmd";
+    std::string menuFile = "default.cmd";
     bool performMenuCheck = false;
     bool debugIsOn = false;
-    String buffer;
+    std::string buffer;
 
     // Read arguments from command line //
     if ( parse_args(argc,argv,&menuFile,&performMenuCheck) != 0 ) {
-        cerr << "Error: Invalid usage" << endl;
+        std::cerr << "Error: Invalid usage" << std::endl;
         displayUsage();
         return(ERROR_INVALID_USAGE);
     }
@@ -482,14 +476,14 @@ int main( int argc, char** argv ) {
     //
     if (performMenuCheck)
     {
-        vector<CursedMenu> menus = CursedMenuLoader::loadConfig(menuFile, debugIsOn);
+        std::vector<CursedMenu> menus = CursedMenuLoader::loadConfig(menuFile, debugIsOn);
 
         for (int itr=0; itr < menus.size(); itr++)
         {
-            cout << menus.at(itr).toString() << endl;
+            std::cout << menus.at(itr).toString() << std::endl;
         }
 
-        cout << "Number of menus correctly parsed: " << menus.size() << endl;
+        std::cout << "Number of menus correctly parsed: " << menus.size() << std::endl;
 
     } else {
 
@@ -498,7 +492,7 @@ int main( int argc, char** argv ) {
 
         // If we don't have any items in the menu, we've got a problem
         if ( menus.top().getNumOfItems() == 0 ) {
-            cerr << "No menu found..." << endl;
+            std::cerr << "No menu found..." << std::endl;
             exit(0);
         }
 

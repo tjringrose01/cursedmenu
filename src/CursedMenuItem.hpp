@@ -22,8 +22,8 @@
  *
  */
 
-#ifndef __CursedMenuItem__
-#define __CursedMenuItem__
+#ifndef __CURSEDMENUITEM__
+#define __CURSEDMENUITEM__
 
 #include <string>
 
@@ -50,4 +50,4 @@ public:
     std::string toString();
 };
 
-#endif
+#endif // __CURSEDMENUITEM__

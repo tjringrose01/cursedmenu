@@ -20,6 +20,9 @@
  *
  */
 
+#ifndef __DEBUG__
+#define __DEBUG__
+
 void debug( String program, int indent, String message );
 
 #define SUCCESS                                   0
@@ -36,3 +39,5 @@ void debug( String program, int indent, String message );
 #define ERROR_INVALID_USAGE                      98
 #define ERROR_INVALID_ARG_VALUES                 99
 #define ERROR_UNKNOWN                           255
+
+#endif // __DEBUG__

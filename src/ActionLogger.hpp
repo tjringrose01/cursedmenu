@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef __ActionLogger__
-#define __ActionLogger__
+#ifndef __ACTIONLOGGER__
+#define __ACTIONLOGGER__
 
 #include <string>
 
@@ -49,4 +49,4 @@ class ActionLogger {
         std::string toString();
 };
 
-#endif
+#endif // __ACTIONLOGGER__

@@ -22,8 +22,8 @@
  *
  */
 
-#ifndef __CursedMenu__
-#define __CursedMenu__
+#ifndef __CURSEDMENU__
+#define __CURSEDMENU__
 
 #include <vector>
 #include <string>
@@ -75,4 +75,4 @@ public:
     CursedMenu& operator=(const CursedMenu& cm);
 };
 
-#endif
+#endif // __CURSEDMENU__
