@@ -30,10 +30,10 @@
 #include <string>
 #include <curses.h>
 #include <menu.h>
-#include "CursedMenu.hh"
-#include "debug.hh"
-#include "ActionLogger.hh"
-#include "CursedMenuLoader.h"
+#include "CursedMenu.hpp"
+#include "debug.hpp"
+#include "ActionLogger.hpp"
+#include "CursedMenuLoader.hpp"
 
 #define PROGRAM "cursedmenu"
 
