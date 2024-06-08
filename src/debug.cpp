@@ -1,7 +1,7 @@
 /**
- *  debug.cc - Debugging related functions.
+ *  debug.cpp - Debugging related functions.
  *
- *  Copyright 2007, 2008 Timothy Ringrose
+ *  Copyright 2007, 2008, 2024 Timothy Ringrose
  *
  *  This file is part of cursedmenu.
  *
@@ -22,13 +22,11 @@
 
 #include <iostream>
 #include <string>
+#include "debug.hpp"
 
-using namespace std;
-typedef string String;
-
-void debug( String program, int indent, String message ) {
-    cerr << program << ": ";
+void debug( std::string program, int indent, std::string message ) {
+    std::cerr << program << ": ";
     for ( int i = 0; i < indent; i++ )
-        cerr << " ";
-    cerr << message << endl;
+        std::cerr << " ";
+    std::cerr << message << std::endl;
 }

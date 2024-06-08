@@ -1,7 +1,7 @@
 /**
- *  debug.hh - Debugging variables and function definitions
+ *  debug.hpp - Debugging variables and function definitions
  *
- *  Copyright 2007, 2008 Timothy Ringrose
+ *  Copyright 2007, 2008, 2024 Timothy Ringrose
  *
  *  This file is part of cursedmenu.
  *
