@@ -1,19 +1,27 @@
 #!/bin/bash
+
+if [ "$1" = "-r" ]; then
+	PRESET="--preset=conan-release"
+	RELEASE_FOLDER="Release"
+else
+	PRESET="--preset=conan-release"
+	RELEASE_FOLDER="Release"
+fi
+
 ./clean
 
 git pull
 
-### In project root folder
 conan install . --build=missing
 
-### in build folder
-cd build
-cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=/home/timr/libobjs/build/Release/generators/conan_toolchain.cmake -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_BUILD_TYPE=Release
+cmake . "${PRESET}"
 
-source ./Release/generators/conanbuild.sh
+source build/${RELEASE_FOLDER}/generators/conanbuild.sh
 
-cmake --build .
+cmake --build . "${PRESET}"
+
+source build/${RELEASE_FOLDER}/generators/deactivate_conanbuild.sh
 
 #ctest --test-dir test
 
-source ./Release/generators/deactivate_conanbuild.sh
+#source ./Release/generators/deactivate_conanbuild.sh
