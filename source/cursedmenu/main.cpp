@@ -114,6 +114,28 @@ int parse_args( int argc,
     return(SUCCESS);
 }
 
+std::string getEnvironmentVariable(std::string variableName)
+{
+	std::string returnString = "";
+	char* variableValue = getenv(variableName.c_str());
+	if ( variableValue != NULL )
+		returnString = variableValue;
+
+	return returnString;
+}
+
+void setEnvironmentVariable( std::string variableName, std::string variableValue )
+{
+	int overwrite = 1;
+	int returnCode = setenv( variableName.c_str(), variableValue.c_str(), overwrite );
+}
+
+void ensureEnvironmentVariable( std::string variableName, std::string variableValue )
+{
+	if ( getEnvironmentVariable( variableName ).length() < 1 )
+		setEnvironmentVariable( variableName, variableValue );
+}
+
 /**
  * Function to display the description at the bottom of the window
  */
@@ -456,6 +478,9 @@ int main( int argc, char** argv ) {
 
     ActionLogger* log = new ActionLogger();
     log->log("curmenu begin");
+
+    ensureEnvironmentVariable( "TERMINFO", "/usr/share/terminfo" );
+    //std::cout << "TERMINFO: " << getEnvironmentVariable( "TERMINFO" ) << std::endl;
 
     std::stack<CursedMenu> menus;
     CursedMenu currentMenu;
