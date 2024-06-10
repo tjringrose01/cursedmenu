@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cp -v ./source/cursedmenu/*.cmd build/Release/source/cursedmenu/.
+
+cd build/Release/source/cursedmenu/ && ./cursedmenu
