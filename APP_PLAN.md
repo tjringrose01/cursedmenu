@@ -101,8 +101,10 @@ Suggested target structure:
 - `Environment` or `TerminalEnvironment` for TERMINFO and terminal setup.
 - `MenuRepository` or `MenuLoader` for reading menu definitions.
 - `MenuDefinition` or similar domain model for parsed menu data independent of file format.
-- `JsonMenuLoader` for JSON menu files.
-- `LegacyCmdMenuLoader` for existing `.cmd` menu files during migration.
+- `MenuParser` as a common parser abstraction for all menu file formats.
+- `JsonMenuParser` for JSON menu files.
+- `LegacyCmdMenuParser` for existing `.cmd` menu files during migration.
+- `MenuParserFactory` or registry for selecting the correct parser by extension or explicit format.
 - `CursedMenuRunner` in `libCursedMenu` for ncurses setup, menu rendering, input handling, and cleanup.
 - `Logger` for application logging.
 
@@ -112,7 +114,7 @@ Guiding direction:
 - ncurses-specific calls should be isolated behind `CursedMenuRunner` or closely related terminal UI classes.
 - The executable should call into `libCursedMenu` instead of owning terminal behavior itself.
 - Non-terminal logic such as parsing, validation, and option handling should remain testable without initializing ncurses.
-- Menu loading should produce a common in-memory model regardless of whether the source file is JSON or legacy `.cmd`.
+- Menu loading should produce a common in-memory model regardless of whether the source file is JSON, legacy `.cmd`, or a future menu format.
 
 Suggested tasks:
 
@@ -122,6 +124,8 @@ Suggested tasks:
 - Move ncurses setup and teardown into `CursedMenuRunner`.
 - Move menu event loop behavior into `CursedMenuRunner`.
 - Create a menu definition domain model that is independent of input file format.
+- Create an extensible `MenuParser` abstraction.
+- Implement `JsonMenuParser` and `LegacyCmdMenuParser` behind the same parser contract.
 - Replace direct `exit()` calls in helper functions with return codes or exceptions.
 - Create smaller functions/classes before changing behavior.
 
@@ -226,10 +230,10 @@ Migration and deprecation plan:
 
 1. Document the JSON format in `docs/menu-format.md`.
 2. Add JSON examples alongside existing `.cmd` examples.
-3. Introduce `JsonMenuLoader` that maps JSON into the common menu model.
+3. Introduce `JsonMenuParser` that maps JSON into the common menu model.
 4. Make default generated/sample menu files JSON.
 5. Update the default menu file lookup to prefer JSON, such as `default.json`, while falling back to legacy `.cmd` only during the migration window.
-6. Keep `LegacyCmdMenuLoader` or equivalent for the existing format.
+6. Keep `LegacyCmdMenuParser` or equivalent for the existing format.
 7. Add a converter utility or command-line option to convert `.cmd` files to JSON.
 8. Update validation/check mode to support both JSON and `.cmd` files.
 9. Emit a deprecation warning when loading `.cmd` files after JSON support is stable.
@@ -242,7 +246,83 @@ Dependency note:
 - Avoid adding a dependency until the build and packaging impact is reviewed.
 - If adding a dependency, document it clearly in build instructions and CI.
 
-### 7. Improve Legacy Menu File Parsing
+### 7. Design an Extensible MenuParser Architecture
+
+Menu parsing should use modern C++ best practices and support multiple menu definition formats without coupling the rest of the application to file-format details.
+
+Preferred direction:
+
+- Define a common `MenuParser` interface or concept that returns a common `MenuDefinition` model.
+- Implement JSON and legacy `.cmd` parsing as separate parser classes.
+- Select parsers through a small factory or registry rather than format-specific logic scattered across the app.
+- Keep parser implementations independent of ncurses.
+- Keep parser implementations deterministic and easy to unit test.
+
+Possible inheritance-based shape:
+
+```cpp
+class MenuParser {
+public:
+    virtual ~MenuParser() = default;
+
+    virtual bool supportsFile(const std::filesystem::path& path) const = 0;
+    virtual MenuParseResult parseFile(const std::filesystem::path& path) const = 0;
+};
+
+class JsonMenuParser final : public MenuParser {
+public:
+    bool supportsFile(const std::filesystem::path& path) const override;
+    MenuParseResult parseFile(const std::filesystem::path& path) const override;
+};
+
+class LegacyCmdMenuParser final : public MenuParser {
+public:
+    bool supportsFile(const std::filesystem::path& path) const override;
+    MenuParseResult parseFile(const std::filesystem::path& path) const override;
+};
+```
+
+Possible template/concept direction:
+
+- Consider templates or C++ concepts only if they simplify parser composition or validation.
+- Do not use templates just to be clever; prefer a simple runtime interface if it is easier to read and maintain.
+- A template-based parser helper may be useful for shared validation logic, test fixtures, or adapters, but parser selection by file type is likely clearer with an interface and factory.
+
+Error handling guidance:
+
+- Prefer a structured result type such as `MenuParseResult` over direct `exit()` or raw error strings.
+- Include the parsed `MenuDefinition` on success.
+- Include one or more structured errors on failure.
+- Errors should include file name, line/column or JSON path when practical, severity, and human-readable message.
+
+Ownership guidance:
+
+- Store parsers in `std::unique_ptr<MenuParser>` when using runtime polymorphism.
+- Avoid raw owning pointers.
+- Keep parser dependencies explicit through constructors.
+- Prefer `std::filesystem::path` for file paths.
+
+Suggested support classes:
+
+- `MenuDefinition`
+- `Menu`
+- `MenuItem`
+- `MenuAction`
+- `MenuParseResult`
+- `MenuParseError`
+- `MenuParser`
+- `JsonMenuParser`
+- `LegacyCmdMenuParser`
+- `MenuParserFactory`
+- `MenuValidator`
+
+Future extensibility:
+
+- Future formats such as YAML, TOML, XML, or database-backed menu definitions should be added by implementing the same parser contract.
+- The runtime menu runner should not need to know which parser created the `MenuDefinition`.
+- Format-specific validation should happen inside the parser; shared semantic validation should happen in `MenuValidator`.
+
+### 8. Improve Legacy Menu File Parsing
 
 The existing `.cmd` format remains important during migration and should be maintained until JSON is stable.
 
@@ -257,7 +337,7 @@ Suggested tasks:
 - Add conversion tests to verify `.cmd` files convert into equivalent JSON menu definitions.
 - Add deprecation notices in documentation and runtime warnings when appropriate.
 
-### 8. Improve Logging and Diagnostics
+### 9. Improve Logging and Diagnostics
 
 Logging should help diagnose terminal and menu definition issues without noisy output in normal use.
 
@@ -269,7 +349,7 @@ Suggested tasks:
 - Add clear startup diagnostics when terminal setup fails.
 - Avoid unused return values from environment or setup calls.
 
-### 9. Improve Terminal Environment Handling
+### 10. Improve Terminal Environment Handling
 
 TERMINFO handling is important, but should be isolated and testable.
 
@@ -282,7 +362,7 @@ Suggested tasks:
 - Document why `/usr/share/terminfo` is used as the fallback.
 - Consider allowing an override through command-line options or config.
 
-### 10. Move ncurses Runtime into libCursedMenu
+### 11. Move ncurses Runtime into libCursedMenu
 
 The ncurses dependency should be owned by the reusable CursedMenu library layer, not the executable entry point.
 
@@ -322,7 +402,7 @@ public:
 
 The final design may change after inspecting existing class names and build layout, but the direction should remain: `main.cpp` delegates runtime behavior and ncurses references to `libCursedMenu`.
 
-### 11. Establish C++ Formatting and Comment Standards
+### 12. Establish C++ Formatting and Comment Standards
 
 Modernization should improve both new code and existing code readability. Every change should follow a documented C++ style, and existing touched files should be cleaned up opportunistically without creating noisy, unrelated rewrites.
 
@@ -362,7 +442,7 @@ Suggested tasks:
 - Review existing headers and source files for stale comments and inconsistent style.
 - Update public API comments as classes are extracted.
 
-### 12. Add Tests Incrementally
+### 13. Add Tests Incrementally
 
 Start with tests around logic that does not require an interactive terminal.
 
@@ -374,6 +454,7 @@ Suggested initial tests:
 - JSON menu parser validation failure cases.
 - Legacy `.cmd` parser success cases.
 - Legacy `.cmd` parser failure cases.
+- Parser factory selection by file extension and explicit format.
 - Legacy `.cmd` to JSON conversion.
 - Recursive submenu loading.
 - Cycle detection in submenu loading.
@@ -384,7 +465,7 @@ Later tests:
 - Snapshot-style output test for `--help`.
 - Integration tests using sample menu definitions.
 
-### 13. Improve Documentation
+### 14. Improve Documentation
 
 Suggested documentation updates:
 
@@ -397,12 +478,13 @@ Suggested documentation updates:
 - Example menu files.
 - Migration guide from `.cmd` to JSON.
 - Deprecation timeline and compatibility notes for `.cmd` support.
+- Parser architecture and how to add future menu formats.
 - Troubleshooting terminal/TERMINFO problems.
 - Project roadmap.
 - Library/executable boundary, including the role of `CursedMenuRunner`.
 - C++ coding standards and commenting expectations.
 
-### 14. Prepare for Packaging
+### 15. Prepare for Packaging
 
 Longer-term packaging goals:
 
@@ -421,6 +503,7 @@ Longer-term packaging goals:
 - Add a `docs/menu-format.md` document covering the default JSON format and deprecated legacy `.cmd` format.
 - Add a `docs/developer-workflow.md` document.
 - Add a `docs/coding-standards.md` document.
+- Add parser architecture notes showing how JSON, `.cmd`, and future formats plug into `MenuParser`.
 - Confirm the project builds on current Ubuntu with ncurses installed.
 
 ### Phase 2: Build and CI Hygiene
@@ -432,14 +515,17 @@ Longer-term packaging goals:
 - Decide whether to introduce `.clang-format`.
 - Decide on the JSON library/dependency strategy.
 
-### Phase 3: Menu Model and JSON Support
+### Phase 3: Menu Model and Parser Architecture
 
 - Create a common menu domain model independent of file format.
+- Define `MenuParser`, `MenuParseResult`, and `MenuParseError`.
+- Add `MenuParserFactory` or equivalent parser selection mechanism.
+- Add parser factory tests.
 - Add JSON menu examples.
-- Add `JsonMenuLoader`.
+- Add `JsonMenuParser`.
 - Make JSON the default menu format.
 - Add JSON validation tests.
-- Keep legacy `.cmd` loading functional during the deprecation window.
+- Keep legacy `.cmd` loading functional during the deprecation window through `LegacyCmdMenuParser`.
 - Add a `.cmd` to JSON conversion path.
 - Add deprecation warnings for `.cmd` usage after JSON loading is stable.
 
@@ -474,6 +560,8 @@ Longer-term packaging goals:
 - Preserve behavior unless the commit message says otherwise.
 - Favor clear names over clever code.
 - Prefer readable and maintainable code over compact or clever implementations.
+- Use templates only when they make the code clearer, safer, or easier to maintain.
+- Prefer straightforward runtime polymorphism for interchangeable parser implementations unless a template/concept approach is clearly simpler.
 - Prefer standard C++ library features over custom helpers where practical.
 - Avoid introducing new dependencies unless they solve a clear problem.
 - Keep terminal-specific code isolated from parsing and app logic.
@@ -494,6 +582,7 @@ A task is done when:
 - Existing behavior is preserved or intentional behavior changes are documented.
 - New logic has tests when practical.
 - Code is readable, maintainable, and organized around clear responsibilities.
+- Parser changes return the common menu model and do not leak file-format details into runtime code.
 - JSON menu format changes include documentation and examples.
 - Any `.cmd` behavior changes include compatibility and deprecation notes.
 - New or touched code follows the project C++ formatting and comment standards.
@@ -508,13 +597,14 @@ A task is done when:
 3. Add coding standards documentation and decide on `.clang-format`.
 4. Decide on a JSON parser dependency strategy.
 5. Create a common menu domain model.
-6. Add JSON menu examples.
-7. Make the app prefer a JSON default menu file while keeping `.cmd` fallback support.
-8. Extract command-line parsing from `main.cpp`.
-9. Extract TERMINFO environment handling from `main.cpp`.
-10. Create `CursedMenuRunner` in `libCursedMenu` and move ncurses runtime behavior out of `main.cpp`.
-11. Add a first test target for non-interactive logic.
-12. Add CI that builds the project on Ubuntu.
+6. Define `MenuParser`, `MenuParseResult`, `MenuParseError`, and parser factory responsibilities.
+7. Add JSON menu examples.
+8. Make the app prefer a JSON default menu file while keeping `.cmd` fallback support.
+9. Extract command-line parsing from `main.cpp`.
+10. Extract TERMINFO environment handling from `main.cpp`.
+11. Create `CursedMenuRunner` in `libCursedMenu` and move ncurses runtime behavior out of `main.cpp`.
+12. Add a first test target for non-interactive logic.
+13. Add CI that builds the project on Ubuntu.
 
 ## Notes
 
