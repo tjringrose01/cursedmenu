@@ -15,4 +15,5 @@ target_include_directories(CursedMenu PRIVATE
 
 target_link_libraries(CursedMenu PUBLIC
     Curses::Curses
+    nlohmann_json::nlohmann_json
 )
