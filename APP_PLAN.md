@@ -30,6 +30,7 @@ The initial code review surfaced these areas:
 8. `main.cpp` should not directly own ncurses setup, teardown, or runtime menu handling. Those responsibilities should move into `libCursedMenu`.
 9. Existing code should be reviewed for consistent comments, naming, formatting, and maintainability as modernization proceeds.
 10. The existing custom `.cmd` menu definition format should be migrated toward a standard structured format, with JSON as the preferred and default target.
+11. Memory safety, input safety, and exception handling should be treated as core requirements for all modernization work.
 
 ## Modernization Goals
 
@@ -71,7 +72,63 @@ Review expectations:
 - Refactors should improve structure without mixing in unrelated behavior changes.
 - Any complex logic should have tests and explanatory comments.
 
-### 3. Improve Build and Developer Workflow
+### 3. Improve Memory Safety, Input Safety, and Exception Handling
+
+The application should be resistant to memory leaks, buffer mistakes, malformed input, and unexpected runtime failures. Menu files may come from users or administrators, so parsing must be defensive.
+
+Memory safety goals:
+
+- Eliminate raw owning pointers from modernized code.
+- Prefer stack allocation, RAII, `std::unique_ptr`, `std::vector`, `std::string`, and other standard library containers.
+- Avoid manual buffer management where possible.
+- Avoid C-style string copying and fixed-size buffers unless there is a documented reason.
+- Ensure ncurses setup and teardown are exception-safe through RAII wrappers.
+- Add sanitizer builds for AddressSanitizer and UndefinedBehaviorSanitizer where practical.
+- Periodically run leak checks using sanitizers or Valgrind.
+
+Buffer and input safety goals:
+
+- Treat menu files, file paths, command strings, and environment variables as untrusted input.
+- Validate all JSON and legacy `.cmd` input before execution.
+- Reject or clearly report malformed menu definitions.
+- Avoid unchecked indexing into strings, vectors, or arrays.
+- Prefer bounds-checked parsing logic and structured validation errors.
+- Limit recursion depth or track visited menus to prevent submenu recursion loops and stack exhaustion.
+- Detect cycles in submenu references before running a menu.
+- Avoid shell command execution surprises where possible; document current behavior and consider safer command execution later.
+- Do not allow malformed menu files to crash the application.
+
+Exception handling goals:
+
+- Define a consistent exception and error-handling strategy.
+- Catch exceptions at the application boundary so terminal state can be restored before exiting.
+- Do not throw exceptions across C callback boundaries or ncurses cleanup boundaries without clear ownership.
+- Prefer structured result types such as `MenuParseResult` for expected validation failures.
+- Use exceptions for exceptional runtime failures, not normal parser validation errors.
+- Log enough context for failures without exposing sensitive data unnecessarily.
+- Return meaningful process exit codes from the executable.
+
+Suggested support classes or patterns:
+
+- `TerminalSession` RAII wrapper for ncurses lifecycle.
+- `MenuParseResult` for parser success/failure.
+- `MenuParseError` for structured parser errors.
+- `CursedMenuException` or focused exception types for unrecoverable runtime failures.
+- `Expected`-style result type if the project adopts one.
+- Centralized app boundary that catches `std::exception` and unknown exceptions.
+
+Suggested security and reliability tasks:
+
+- Add compiler warnings that catch unsafe code patterns.
+- Add sanitizer build options in CMake.
+- Add CI job for sanitizer-friendly tests if feasible.
+- Review existing code for raw pointers, ignored allocation ownership, unchecked indexing, C string usage, and direct `exit()` calls.
+- Add tests for malformed JSON and malformed `.cmd` files.
+- Add tests for deeply nested or cyclic submenus.
+- Add tests that verify parser failures do not crash.
+- Add documentation for command execution behavior and risks.
+
+### 4. Improve Build and Developer Workflow
 
 Goals:
 
@@ -88,15 +145,16 @@ Suggested tasks:
 - Add Debug and Release build examples.
 - Document required dependencies, especially ncurses.
 - Add a simple GitHub Actions build for Ubuntu.
+- Add optional sanitizer build presets or CMake options.
 
-### 4. Separate Application Responsibilities
+### 5. Separate Application Responsibilities
 
 The main application entry point should eventually become thin and delegate to focused components.
 
 Suggested target structure:
 
 - `main.cpp` for minimal executable startup only.
-- `App` or `CursedMenuApp` for top-level orchestration.
+- `App` or `CursedMenuApp` for top-level orchestration and application-boundary exception handling.
 - `CommandLineOptions` for argument parsing.
 - `Environment` or `TerminalEnvironment` for TERMINFO and terminal setup.
 - `MenuRepository` or `MenuLoader` for reading menu definitions.
@@ -126,10 +184,10 @@ Suggested tasks:
 - Create a menu definition domain model that is independent of input file format.
 - Create an extensible `MenuParser` abstraction.
 - Implement `JsonMenuParser` and `LegacyCmdMenuParser` behind the same parser contract.
-- Replace direct `exit()` calls in helper functions with return codes or exceptions.
+- Replace direct `exit()` calls in helper functions with return codes, result objects, or exceptions according to the project error-handling strategy.
 - Create smaller functions/classes before changing behavior.
 
-### 5. Make Memory Ownership Safer
+### 6. Make Memory Ownership Safer
 
 Where code uses raw owning pointers, modernize toward stack allocation or smart pointers.
 
@@ -139,8 +197,9 @@ Suggested tasks:
 - Use `std::unique_ptr` only where dynamic allocation is required.
 - Avoid passing raw owning pointers between components.
 - Prefer references for required dependencies and pointers only for optional values.
+- Add tests or sanitizer coverage around refactored ownership-sensitive code.
 
-### 6. Standardize Menu Files on JSON
+### 7. Standardize Menu Files on JSON
 
 The long-term target menu format should be JSON. JSON is widely understood, easy to validate, easy to generate, and easier to document than a custom parser format.
 
@@ -246,7 +305,7 @@ Dependency note:
 - Avoid adding a dependency until the build and packaging impact is reviewed.
 - If adding a dependency, document it clearly in build instructions and CI.
 
-### 7. Design an Extensible MenuParser Architecture
+### 8. Design an Extensible MenuParser Architecture
 
 Menu parsing should use modern C++ best practices and support multiple menu definition formats without coupling the rest of the application to file-format details.
 
@@ -257,6 +316,7 @@ Preferred direction:
 - Select parsers through a small factory or registry rather than format-specific logic scattered across the app.
 - Keep parser implementations independent of ncurses.
 - Keep parser implementations deterministic and easy to unit test.
+- Keep parser implementations defensive against malformed, oversized, recursive, or hostile input.
 
 Possible inheritance-based shape:
 
@@ -294,6 +354,7 @@ Error handling guidance:
 - Include the parsed `MenuDefinition` on success.
 - Include one or more structured errors on failure.
 - Errors should include file name, line/column or JSON path when practical, severity, and human-readable message.
+- Parser validation errors should not require exceptions for normal control flow.
 
 Ownership guidance:
 
@@ -322,7 +383,7 @@ Future extensibility:
 - The runtime menu runner should not need to know which parser created the `MenuDefinition`.
 - Format-specific validation should happen inside the parser; shared semantic validation should happen in `MenuValidator`.
 
-### 8. Improve Legacy Menu File Parsing
+### 9. Improve Legacy Menu File Parsing
 
 The existing `.cmd` format remains important during migration and should be maintained until JSON is stable.
 
@@ -337,7 +398,7 @@ Suggested tasks:
 - Add conversion tests to verify `.cmd` files convert into equivalent JSON menu definitions.
 - Add deprecation notices in documentation and runtime warnings when appropriate.
 
-### 9. Improve Logging and Diagnostics
+### 10. Improve Logging and Diagnostics
 
 Logging should help diagnose terminal and menu definition issues without noisy output in normal use.
 
@@ -348,8 +409,9 @@ Suggested tasks:
 - Make log file location configurable.
 - Add clear startup diagnostics when terminal setup fails.
 - Avoid unused return values from environment or setup calls.
+- Log parser and runtime failures consistently through the application boundary.
 
-### 10. Improve Terminal Environment Handling
+### 11. Improve Terminal Environment Handling
 
 TERMINFO handling is important, but should be isolated and testable.
 
@@ -362,7 +424,7 @@ Suggested tasks:
 - Document why `/usr/share/terminfo` is used as the fallback.
 - Consider allowing an override through command-line options or config.
 
-### 11. Move ncurses Runtime into libCursedMenu
+### 12. Move ncurses Runtime into libCursedMenu
 
 The ncurses dependency should be owned by the reusable CursedMenu library layer, not the executable entry point.
 
@@ -402,7 +464,7 @@ public:
 
 The final design may change after inspecting existing class names and build layout, but the direction should remain: `main.cpp` delegates runtime behavior and ncurses references to `libCursedMenu`.
 
-### 12. Establish C++ Formatting and Comment Standards
+### 13. Establish C++ Formatting and Comment Standards
 
 Modernization should improve both new code and existing code readability. Every change should follow a documented C++ style, and existing touched files should be cleaned up opportunistically without creating noisy, unrelated rewrites.
 
@@ -423,13 +485,13 @@ Comment and documentation guidelines:
 - Add file header comments where appropriate and keep existing license/copyright headers intact.
 - Public classes and public methods should have clear documentation comments.
 - Prefer comments that explain why code exists, not comments that merely repeat what the code does.
-- Complex parsing, ncurses lifecycle handling, and terminal/environment assumptions should be documented.
+- Complex parsing, ncurses lifecycle handling, terminal/environment assumptions, and exception-safety boundaries should be documented.
 - Keep comments current when behavior changes.
 - Avoid leaving commented-out debug code in committed changes.
 
 Review guidelines for existing code:
 
-- When touching an existing file, review nearby code for formatting inconsistencies, stale comments, unsafe ownership, unclear naming, and unnecessary complexity.
+- When touching an existing file, review nearby code for formatting inconsistencies, stale comments, unsafe ownership, unclear naming, unchecked indexing, C-style buffers, direct `exit()` calls, and unnecessary complexity.
 - Do not perform massive formatting-only rewrites mixed with behavior changes.
 - If broad formatting cleanup is needed, do it in a separate commit.
 - Add TODO comments only when they are specific, actionable, and preferably tied to a plan item.
@@ -442,7 +504,7 @@ Suggested tasks:
 - Review existing headers and source files for stale comments and inconsistent style.
 - Update public API comments as classes are extracted.
 
-### 13. Add Tests Incrementally
+### 14. Add Tests Incrementally
 
 Start with tests around logic that does not require an interactive terminal.
 
@@ -458,14 +520,17 @@ Suggested initial tests:
 - Legacy `.cmd` to JSON conversion.
 - Recursive submenu loading.
 - Cycle detection in submenu loading.
+- Malformed input that previously might have crashed.
+- Exception boundary behavior and non-zero exit codes.
 
 Later tests:
 
 - Non-interactive smoke test for app startup.
 - Snapshot-style output test for `--help`.
 - Integration tests using sample menu definitions.
+- Sanitizer-enabled test job.
 
-### 14. Improve Documentation
+### 15. Improve Documentation
 
 Suggested documentation updates:
 
@@ -479,12 +544,13 @@ Suggested documentation updates:
 - Migration guide from `.cmd` to JSON.
 - Deprecation timeline and compatibility notes for `.cmd` support.
 - Parser architecture and how to add future menu formats.
+- Memory safety and exception-handling expectations.
 - Troubleshooting terminal/TERMINFO problems.
 - Project roadmap.
 - Library/executable boundary, including the role of `CursedMenuRunner`.
 - C++ coding standards and commenting expectations.
 
-### 15. Prepare for Packaging
+### 16. Prepare for Packaging
 
 Longer-term packaging goals:
 
@@ -504,9 +570,10 @@ Longer-term packaging goals:
 - Add a `docs/developer-workflow.md` document.
 - Add a `docs/coding-standards.md` document.
 - Add parser architecture notes showing how JSON, `.cmd`, and future formats plug into `MenuParser`.
+- Add memory safety and exception-handling guidelines.
 - Confirm the project builds on current Ubuntu with ncurses installed.
 
-### Phase 2: Build and CI Hygiene
+### Phase 2: Build, CI, and Safety Hygiene
 
 - Modernize `CMakeLists.txt` without changing app behavior.
 - Add compiler warning flags.
@@ -514,6 +581,8 @@ Longer-term packaging goals:
 - Add a basic formatting/linting decision, even if enforcement waits.
 - Decide whether to introduce `.clang-format`.
 - Decide on the JSON library/dependency strategy.
+- Add optional sanitizer build configuration.
+- Add an initial memory-safety review checklist.
 
 ### Phase 3: Menu Model and Parser Architecture
 
@@ -524,7 +593,7 @@ Longer-term packaging goals:
 - Add JSON menu examples.
 - Add `JsonMenuParser`.
 - Make JSON the default menu format.
-- Add JSON validation tests.
+- Add JSON validation tests, including hostile/malformed inputs.
 - Keep legacy `.cmd` loading functional during the deprecation window through `LegacyCmdMenuParser`.
 - Add a `.cmd` to JSON conversion path.
 - Add deprecation warnings for `.cmd` usage after JSON loading is stable.
@@ -535,16 +604,18 @@ Longer-term packaging goals:
 - Extract terminal environment setup.
 - Create `CursedMenuRunner` in `libCursedMenu`.
 - Move ncurses setup/teardown and menu runtime behavior out of `main.cpp`.
-- Extract app startup orchestration.
+- Add RAII handling for terminal lifecycle.
+- Extract app startup orchestration and top-level exception handling.
 - Remove unused variables and ignored return values where safe.
-- Review touched code for readability, maintainability, comment quality, and C++ formatting consistency.
+- Review touched code for readability, maintainability, comment quality, memory safety, exception safety, and C++ formatting consistency.
 
-### Phase 5: Parser Improvements
+### Phase 5: Parser and Security Improvements
 
 - Add parser tests.
 - Add parser error reporting with line numbers or JSON paths.
 - Add submenu recursion guard.
 - Improve handling of invalid menu files.
+- Add malformed-input and fuzz-style parser test cases where practical.
 - Document parser behavior and edge cases.
 
 ### Phase 6: Runtime/UI Improvements
@@ -570,7 +641,7 @@ Longer-term packaging goals:
 - Keep legacy `.cmd` support working during the deprecation window.
 - Do not add new `.cmd` examples unless specifically documenting migration or legacy compatibility.
 - Follow the project C++ formatting and comment standards for all new changes.
-- Review existing touched code for formatting, comments, ownership, complexity, and maintainability.
+- Review existing touched code for formatting, comments, ownership, complexity, memory safety, input safety, exception safety, and maintainability.
 - Add tests before or during behavior changes.
 - Update documentation with user-visible changes.
 
@@ -582,6 +653,9 @@ A task is done when:
 - Existing behavior is preserved or intentional behavior changes are documented.
 - New logic has tests when practical.
 - Code is readable, maintainable, and organized around clear responsibilities.
+- New code avoids raw owning pointers and manual buffer management.
+- Parser and input-handling changes reject malformed input without crashing.
+- Exceptions are handled at appropriate boundaries and terminal state is restored on failure.
 - Parser changes return the common menu model and do not leak file-format details into runtime code.
 - JSON menu format changes include documentation and examples.
 - Any `.cmd` behavior changes include compatibility and deprecation notes.
@@ -595,16 +669,19 @@ A task is done when:
 1. Update `README.md` with current build and run instructions.
 2. Add menu format documentation with default JSON syntax and deprecated legacy `.cmd` notes.
 3. Add coding standards documentation and decide on `.clang-format`.
-4. Decide on a JSON parser dependency strategy.
-5. Create a common menu domain model.
-6. Define `MenuParser`, `MenuParseResult`, `MenuParseError`, and parser factory responsibilities.
-7. Add JSON menu examples.
-8. Make the app prefer a JSON default menu file while keeping `.cmd` fallback support.
-9. Extract command-line parsing from `main.cpp`.
-10. Extract TERMINFO environment handling from `main.cpp`.
-11. Create `CursedMenuRunner` in `libCursedMenu` and move ncurses runtime behavior out of `main.cpp`.
-12. Add a first test target for non-interactive logic.
-13. Add CI that builds the project on Ubuntu.
+4. Add memory safety and exception-handling guidelines.
+5. Decide on a JSON parser dependency strategy.
+6. Create a common menu domain model.
+7. Define `MenuParser`, `MenuParseResult`, `MenuParseError`, and parser factory responsibilities.
+8. Add JSON menu examples.
+9. Make the app prefer a JSON default menu file while keeping `.cmd` fallback support.
+10. Extract command-line parsing from `main.cpp`.
+11. Extract TERMINFO environment handling from `main.cpp`.
+12. Create `CursedMenuRunner` in `libCursedMenu` and move ncurses runtime behavior out of `main.cpp`.
+13. Add RAII terminal lifecycle handling and top-level exception handling.
+14. Add a first test target for non-interactive logic.
+15. Add CI that builds the project on Ubuntu.
+16. Add sanitizer-enabled build/test support.
 
 ## Notes
 
