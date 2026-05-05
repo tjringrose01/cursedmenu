@@ -4,7 +4,7 @@
 
 This document captures the working plan for modernizing CursedMenu while preserving the original goal: a lightweight ncurses-based menu system for character terminal sessions such as SSH, telnet, and other text-based clients.
 
-The modernization effort should favor small, reviewable changes that keep the app usable while improving maintainability, safety, testability, and packaging.
+The modernization effort should favor small, reviewable changes that keep the app usable while improving maintainability, safety, testability, and packaging. Code should be easy to read, easy to reason about, and easy for a future maintainer to safely change.
 
 ## Working Branch
 
@@ -47,7 +47,31 @@ Guidelines:
 - Provide conversion tooling before removing support for older `.cmd` files.
 - Treat `.cmd` as deprecated once JSON loading is stable and documented.
 
-### 2. Improve Build and Developer Workflow
+### 2. Improve Readability and Maintainability
+
+Readable, maintainable code is a core modernization goal, not a secondary cleanup task.
+
+Guidelines:
+
+- Prefer clear, descriptive names for classes, methods, variables, and files.
+- Keep functions small and focused on one responsibility.
+- Keep classes cohesive; avoid dumping unrelated behavior into large utility classes.
+- Reduce hidden side effects where practical.
+- Prefer straightforward control flow over clever or overly compact code.
+- Keep error handling visible and predictable.
+- Avoid deeply nested conditionals by extracting helper functions when useful.
+- Keep comments useful and current.
+- Organize code so new contributors can understand the program flow from `main.cpp` into app orchestration, menu loading, and menu running.
+- Review existing touched code for readability improvements as part of each modernization task.
+
+Review expectations:
+
+- Changes should be understandable without requiring deep knowledge of the whole codebase.
+- A reviewer should be able to tell what changed, why it changed, and how behavior is preserved.
+- Refactors should improve structure without mixing in unrelated behavior changes.
+- Any complex logic should have tests and explanatory comments.
+
+### 3. Improve Build and Developer Workflow
 
 Goals:
 
@@ -65,7 +89,7 @@ Suggested tasks:
 - Document required dependencies, especially ncurses.
 - Add a simple GitHub Actions build for Ubuntu.
 
-### 3. Separate Application Responsibilities
+### 4. Separate Application Responsibilities
 
 The main application entry point should eventually become thin and delegate to focused components.
 
@@ -101,7 +125,7 @@ Suggested tasks:
 - Replace direct `exit()` calls in helper functions with return codes or exceptions.
 - Create smaller functions/classes before changing behavior.
 
-### 4. Make Memory Ownership Safer
+### 5. Make Memory Ownership Safer
 
 Where code uses raw owning pointers, modernize toward stack allocation or smart pointers.
 
@@ -112,7 +136,7 @@ Suggested tasks:
 - Avoid passing raw owning pointers between components.
 - Prefer references for required dependencies and pointers only for optional values.
 
-### 5. Standardize Menu Files on JSON
+### 6. Standardize Menu Files on JSON
 
 The long-term target menu format should be JSON. JSON is widely understood, easy to validate, easy to generate, and easier to document than a custom parser format.
 
@@ -218,7 +242,7 @@ Dependency note:
 - Avoid adding a dependency until the build and packaging impact is reviewed.
 - If adding a dependency, document it clearly in build instructions and CI.
 
-### 6. Improve Legacy Menu File Parsing
+### 7. Improve Legacy Menu File Parsing
 
 The existing `.cmd` format remains important during migration and should be maintained until JSON is stable.
 
@@ -233,7 +257,7 @@ Suggested tasks:
 - Add conversion tests to verify `.cmd` files convert into equivalent JSON menu definitions.
 - Add deprecation notices in documentation and runtime warnings when appropriate.
 
-### 7. Improve Logging and Diagnostics
+### 8. Improve Logging and Diagnostics
 
 Logging should help diagnose terminal and menu definition issues without noisy output in normal use.
 
@@ -245,7 +269,7 @@ Suggested tasks:
 - Add clear startup diagnostics when terminal setup fails.
 - Avoid unused return values from environment or setup calls.
 
-### 8. Improve Terminal Environment Handling
+### 9. Improve Terminal Environment Handling
 
 TERMINFO handling is important, but should be isolated and testable.
 
@@ -258,7 +282,7 @@ Suggested tasks:
 - Document why `/usr/share/terminfo` is used as the fallback.
 - Consider allowing an override through command-line options or config.
 
-### 9. Move ncurses Runtime into libCursedMenu
+### 10. Move ncurses Runtime into libCursedMenu
 
 The ncurses dependency should be owned by the reusable CursedMenu library layer, not the executable entry point.
 
@@ -298,7 +322,7 @@ public:
 
 The final design may change after inspecting existing class names and build layout, but the direction should remain: `main.cpp` delegates runtime behavior and ncurses references to `libCursedMenu`.
 
-### 10. Establish C++ Formatting and Comment Standards
+### 11. Establish C++ Formatting and Comment Standards
 
 Modernization should improve both new code and existing code readability. Every change should follow a documented C++ style, and existing touched files should be cleaned up opportunistically without creating noisy, unrelated rewrites.
 
@@ -325,7 +349,7 @@ Comment and documentation guidelines:
 
 Review guidelines for existing code:
 
-- When touching an existing file, review nearby code for formatting inconsistencies, stale comments, unsafe ownership, and unclear naming.
+- When touching an existing file, review nearby code for formatting inconsistencies, stale comments, unsafe ownership, unclear naming, and unnecessary complexity.
 - Do not perform massive formatting-only rewrites mixed with behavior changes.
 - If broad formatting cleanup is needed, do it in a separate commit.
 - Add TODO comments only when they are specific, actionable, and preferably tied to a plan item.
@@ -338,7 +362,7 @@ Suggested tasks:
 - Review existing headers and source files for stale comments and inconsistent style.
 - Update public API comments as classes are extracted.
 
-### 11. Add Tests Incrementally
+### 12. Add Tests Incrementally
 
 Start with tests around logic that does not require an interactive terminal.
 
@@ -360,7 +384,7 @@ Later tests:
 - Snapshot-style output test for `--help`.
 - Integration tests using sample menu definitions.
 
-### 12. Improve Documentation
+### 13. Improve Documentation
 
 Suggested documentation updates:
 
@@ -378,7 +402,7 @@ Suggested documentation updates:
 - Library/executable boundary, including the role of `CursedMenuRunner`.
 - C++ coding standards and commenting expectations.
 
-### 13. Prepare for Packaging
+### 14. Prepare for Packaging
 
 Longer-term packaging goals:
 
@@ -427,7 +451,7 @@ Longer-term packaging goals:
 - Move ncurses setup/teardown and menu runtime behavior out of `main.cpp`.
 - Extract app startup orchestration.
 - Remove unused variables and ignored return values where safe.
-- Review touched code for comment quality and C++ formatting consistency.
+- Review touched code for readability, maintainability, comment quality, and C++ formatting consistency.
 
 ### Phase 5: Parser Improvements
 
@@ -449,6 +473,7 @@ Longer-term packaging goals:
 - Prefer small commits with one purpose.
 - Preserve behavior unless the commit message says otherwise.
 - Favor clear names over clever code.
+- Prefer readable and maintainable code over compact or clever implementations.
 - Prefer standard C++ library features over custom helpers where practical.
 - Avoid introducing new dependencies unless they solve a clear problem.
 - Keep terminal-specific code isolated from parsing and app logic.
@@ -457,7 +482,7 @@ Longer-term packaging goals:
 - Keep legacy `.cmd` support working during the deprecation window.
 - Do not add new `.cmd` examples unless specifically documenting migration or legacy compatibility.
 - Follow the project C++ formatting and comment standards for all new changes.
-- Review existing touched code for formatting, comments, ownership, and maintainability.
+- Review existing touched code for formatting, comments, ownership, complexity, and maintainability.
 - Add tests before or during behavior changes.
 - Update documentation with user-visible changes.
 
@@ -468,6 +493,7 @@ A task is done when:
 - The app still builds.
 - Existing behavior is preserved or intentional behavior changes are documented.
 - New logic has tests when practical.
+- Code is readable, maintainable, and organized around clear responsibilities.
 - JSON menu format changes include documentation and examples.
 - Any `.cmd` behavior changes include compatibility and deprecation notes.
 - New or touched code follows the project C++ formatting and comment standards.
