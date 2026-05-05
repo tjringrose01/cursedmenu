@@ -12,20 +12,36 @@ on:
 
 jobs:
   build:
-    name: Ubuntu CMake Build
+    name: Ubuntu Conan CMake Build
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cmake libncurses-dev
+          sudo apt-get install -y build-essential cmake ninja-build python3-pip
 
-      - name: Configure CMake
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+      - name: Install Conan
+        run: pip3 install --user conan
 
-      - name: Build
-        run: cmake --build build --verbose
+      - name: Add Conan to PATH
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Detect Conan profile
+        run: conan profile detect --force
+
+      - name: Install Conan dependencies
+        run: conan install . --build=missing
+
+      - name: Configure CMake with Conan preset
+        run: cmake . --preset=conan-release
+
+      - name: Build with Conan preset
+        shell: bash
+        run: |
+          source build/Release/generators/conanbuild.sh
+          cmake --build . --preset=conan-release --verbose
+          source build/Release/generators/deactivate_conanbuild.sh
