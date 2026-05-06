@@ -29,39 +29,43 @@
 #include "CursedMenuItem.hpp"
 
 CursedMenuItem::CursedMenuItem(
-    const std::string name,
-    const std::string desc,
-    const std::string exec) {
-    this->name = name;
-    this->description = desc;
-    this->command = exec;
-    this->postCommandPause = false;
+    const std::string& name,
+    const std::string& desc,
+    const std::string& exec)
+    : name(name),
+      description(desc),
+      command(exec),
+      postCommandPause(false) {
 }
 
 CursedMenuItem::CursedMenuItem(
-    const std::string name,
-    const std::string desc,
-    const std::string exec,
-    const bool postCommandPause) {
-    this->name = name;
-    this->description = desc;
-    this->command = exec;
-    this->postCommandPause = postCommandPause;
+    const std::string& name,
+    const std::string& desc,
+    const std::string& exec,
+    const bool postCommandPause)
+    : name(name),
+      description(desc),
+      command(exec),
+      postCommandPause(postCommandPause) {
 }
 
 CursedMenuItem::~CursedMenuItem() {
 }
 
-std::string CursedMenuItem::getName() const {
-    return this->name;
+const std::string& CursedMenuItem::getName() const {
+    return name;
 }
 
-std::string CursedMenuItem::getDesc() const {
-    return this->description;
+const std::string& CursedMenuItem::getDesc() const {
+    return description;
 }
 
-std::string CursedMenuItem::getExec() const {
-    return this->command;
+const std::string& CursedMenuItem::getExec() const {
+    return command;
+}
+
+bool CursedMenuItem::shouldPauseAfterCommand() const {
+    return postCommandPause;
 }
 
 std::string CursedMenuItem::toString() const {
