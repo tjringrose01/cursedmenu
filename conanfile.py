@@ -8,7 +8,7 @@ class CursedMenuRecipe(ConanFile):
 
     def requirements(self):
         self.requires("ncurses/6.5")
-        self.requires("nlohmann_json/3.11.3")
+        self.requires("rapidjson/1.1.0")
 
     def layout(self):
         cmake_layout(self)
