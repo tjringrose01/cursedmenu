@@ -2,24 +2,6 @@
  *  CursedMenu.cpp - CursedMenu Class Implementation - This class is
  *                  responsible for reading in the configuration file and
  *                  storing it's informtion within it's class members
- *
- *  Copyright 2007, 2008, 2024 Timothy Ringrose
- *
- *  This file is part of cursedmenu.
- *
- *  cursedmenu is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  cursedmenu is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with cursedmenu.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #include <curses.h>
@@ -38,7 +20,7 @@
 
 CursedMenu::CursedMenu(
     const bool debugFlag,
-    const std::string configFile) {
+    const std::string& configFile) {
     setDebugFlag(debugFlag);
 
     CursedMenu tmpMenu =
@@ -51,7 +33,7 @@ CursedMenu::CursedMenu() {
     setDebugFlag(false);
 }
 
-CursedMenu::CursedMenu(const std::string configFile) {
+CursedMenu::CursedMenu(const std::string& configFile) {
     setDebugFlag(false);
 
     CursedMenu tmpMenu =
@@ -60,11 +42,8 @@ CursedMenu::CursedMenu(const std::string configFile) {
     *this = tmpMenu;
 }
 
-int CursedMenu::getNumOfItems() const {
+int CursedMenu::getNumOfItems() const noexcept {
     return static_cast<int>(menuItems.size());
-}
-
-CursedMenu::~CursedMenu() {
 }
 
 CursedMenuItem CursedMenu::getItem(const int index) const {
@@ -92,31 +71,16 @@ CursedMenuItem CursedMenu::getItem(
 }
 
 std::string CursedMenu::toString() const {
-    if (debugFlag) {
-        std::cerr
-            << "Entered CursedMenu::toString()"
-            << std::endl;
-    }
-
     std::ostringstream sout;
 
     unsigned int itemCount = 0;
 
-    sout
-        << "Menu: =================================================="
-        << std::endl;
-
     sout << "Title: " << menuTitle << std::endl;
 
     for (const auto& item : menuItems) {
-        sout << "-----------------" << std::endl;
         sout << "Item Number: " << itemCount++ << std::endl;
         sout << item.toString();
     }
-
-    sout
-        << "========================================================"
-        << std::endl;
 
     return sout.str();
 }
@@ -131,19 +95,19 @@ void CursedMenu::addItem(const CursedMenuItem& item) {
     menuItems.push_back(item);
 }
 
-void CursedMenu::setDebugFlag(const bool debugFlag) {
+void CursedMenu::setDebugFlag(const bool debugFlag) noexcept {
     this->debugFlag = debugFlag;
 }
 
-int CursedMenu::getForeColor() const {
+int CursedMenu::getForeColor() const noexcept {
     return foreMenuColor;
 }
 
-int CursedMenu::getBackColor() const {
+int CursedMenu::getBackColor() const noexcept {
     return backMenuColor;
 }
 
-int CursedMenu::getMenuCenterX() const {
+int CursedMenu::getMenuCenterX() const noexcept {
     size_t lengthOfLongestItem = 0;
 
     for (const auto& item : menuItems) {
@@ -155,7 +119,7 @@ int CursedMenu::getMenuCenterX() const {
     return static_cast<int>(lengthOfLongestItem);
 }
 
-const std::string& CursedMenu::getMenuTitle() const {
+const std::string& CursedMenu::getMenuTitle() const noexcept {
     return menuTitle;
 }
 
@@ -164,7 +128,7 @@ void CursedMenu::setMenuTitle(
     this->menuTitle = menuTitle;
 }
 
-const std::string& CursedMenu::getMenuName() const {
+const std::string& CursedMenu::getMenuName() const noexcept {
     return menuName;
 }
 
@@ -173,11 +137,11 @@ void CursedMenu::setMenuName(
     this->menuName = menuName;
 }
 
-void CursedMenu::setForeColor(const int foreColor) {
+void CursedMenu::setForeColor(const int foreColor) noexcept {
     this->foreMenuColor = foreColor;
 }
 
-void CursedMenu::setBackColor(const int backColor) {
+void CursedMenu::setBackColor(const int backColor) noexcept {
     this->backMenuColor = backColor;
 }
 
