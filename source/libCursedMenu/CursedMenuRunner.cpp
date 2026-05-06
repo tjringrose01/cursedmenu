@@ -1,6 +1,7 @@
 #include "CursedMenuRunner.hpp"
 
 #include <iostream>
+#include <vector>
 
 #include <curses.h>
 #include <menu.h>
@@ -98,6 +99,8 @@ void runMenu(
     MENU* curses_menu;
     WINDOW* menu_window;
     ITEM** menu_items;
+    std::vector<std::string> itemNames;
+    std::vector<std::string> itemDescriptions;
 
     CursedMenu currentMenu = menus->top();
 
@@ -114,11 +117,17 @@ void runMenu(
     dispMenuTitle(currentMenu, menu_window);
 
     menu_items = new ITEM*[currentMenu.getNumOfItems() + 1];
+    itemNames.reserve(currentMenu.getNumOfItems());
+    itemDescriptions.reserve(currentMenu.getNumOfItems());
 
     for (int i = 0; i < currentMenu.getNumOfItems(); i++) {
+        CursedMenuItem currentItem = currentMenu.getItem(i);
+        itemNames.push_back(currentItem.getName());
+        itemDescriptions.push_back(currentItem.getDesc());
+
         menu_items[i] = new_item(
-            currentMenu.getItem(i).getName().c_str(),
-            currentMenu.getItem(i).getDesc().c_str());
+            itemNames.back().c_str(),
+            itemDescriptions.back().c_str());
     }
 
     menu_items[currentMenu.getNumOfItems()] = NULL;
