@@ -1,8 +1,10 @@
 #include "JsonMenuParser.hpp"
 
 #include <fstream>
+#include <sstream>
 
-#include <nlohmann/json.hpp>
+#include <rapidjson/document.h>
+#include <rapidjson/error/en.h>
 
 #include "MenuValidator.hpp"
 
@@ -23,10 +25,10 @@ void addError(
 }
 
 bool hasStringField(
-    const nlohmann::json& jsonObject,
+    const rapidjson::Value& jsonObject,
     const char* fieldName) {
-    return jsonObject.contains(fieldName)
-        && jsonObject[fieldName].is_string();
+    return jsonObject.HasMember(fieldName)
+        && jsonObject[fieldName].IsString();
 }
 
 } // namespace
@@ -52,21 +54,25 @@ MenuParseResult JsonMenuParser::parseFile(
         return result;
     }
 
-    nlohmann::json rootJson;
+    std::stringstream buffer;
+    buffer << inputFile.rdbuf();
 
-    try {
-        inputFile >> rootJson;
-    } catch (const std::exception& exception) {
+    rapidjson::Document document;
+
+    document.Parse(buffer.str().c_str());
+
+    if (document.HasParseError()) {
         addError(
             result,
             path,
             "json",
-            std::string("Failed to parse JSON: ") + exception.what());
+            std::string("Failed to parse JSON: ")
+                + rapidjson::GetParseError_En(document.GetParseError()));
 
         return result;
     }
 
-    if (!rootJson.is_object()) {
+    if (!document.IsObject()) {
         addError(
             result,
             path,
@@ -76,45 +82,46 @@ MenuParseResult JsonMenuParser::parseFile(
         return result;
     }
 
-    if (!rootJson.contains("version")
-        || !rootJson["version"].is_number_integer()) {
+    if (!document.HasMember("version")
+        || !document["version"].IsInt()) {
         addError(
             result,
             path,
             "version",
             "Missing or invalid integer version field");
     } else {
-        result.menuDefinition.version = rootJson["version"];
+        result.menuDefinition.version = document["version"].GetInt();
     }
 
-    if (!hasStringField(rootJson, "rootMenu")) {
+    if (!hasStringField(document, "rootMenu")) {
         addError(
             result,
             path,
             "rootMenu",
             "Missing or invalid rootMenu field");
     } else {
-        result.menuDefinition.rootMenu = rootJson["rootMenu"];
+        result.menuDefinition.rootMenu =
+            document["rootMenu"].GetString();
     }
 
-    if (rootJson.contains("settings")
-        && rootJson["settings"].is_object()) {
-        const auto& settings = rootJson["settings"];
+    if (document.HasMember("settings")
+        && document["settings"].IsObject()) {
+        const auto& settings = document["settings"];
 
-        if (settings.contains("debug")
-            && settings["debug"].is_boolean()) {
-            result.menuDefinition.debug = settings["debug"];
+        if (settings.HasMember("debug")
+            && settings["debug"].IsBool()) {
+            result.menuDefinition.debug = settings["debug"].GetBool();
         }
 
-        if (settings.contains("pauseAfterExecution")
-            && settings["pauseAfterExecution"].is_boolean()) {
+        if (settings.HasMember("pauseAfterExecution")
+            && settings["pauseAfterExecution"].IsBool()) {
             result.menuDefinition.pauseAfterExecution =
-                settings["pauseAfterExecution"];
+                settings["pauseAfterExecution"].GetBool();
         }
     }
 
-    if (!rootJson.contains("menus")
-        || !rootJson["menus"].is_array()) {
+    if (!document.HasMember("menus")
+        || !document["menus"].IsArray()) {
         addError(
             result,
             path,
@@ -124,14 +131,14 @@ MenuParseResult JsonMenuParser::parseFile(
         return result;
     }
 
-    const auto& menusJson = rootJson["menus"];
+    const auto& menusJson = document["menus"];
 
-    for (std::size_t menuIndex = 0;
-         menuIndex < menusJson.size();
+    for (rapidjson::SizeType menuIndex = 0;
+         menuIndex < menusJson.Size();
          ++menuIndex) {
         const auto& menuJson = menusJson[menuIndex];
 
-        if (!menuJson.is_object()) {
+        if (!menuJson.IsObject()) {
             addError(
                 result,
                 path,
@@ -153,22 +160,22 @@ MenuParseResult JsonMenuParser::parseFile(
             continue;
         }
 
-        menu.id = menuJson["id"];
+        menu.id = menuJson["id"].GetString();
 
         if (hasStringField(menuJson, "title")) {
-            menu.title = menuJson["title"];
+            menu.title = menuJson["title"].GetString();
         }
 
         if (hasStringField(menuJson, "foreground")) {
-            menu.foreground = menuJson["foreground"];
+            menu.foreground = menuJson["foreground"].GetString();
         }
 
         if (hasStringField(menuJson, "background")) {
-            menu.background = menuJson["background"];
+            menu.background = menuJson["background"].GetString();
         }
 
-        if (!menuJson.contains("items")
-            || !menuJson["items"].is_array()) {
+        if (!menuJson.HasMember("items")
+            || !menuJson["items"].IsArray()) {
             addError(
                 result,
                 path,
@@ -180,12 +187,12 @@ MenuParseResult JsonMenuParser::parseFile(
 
         const auto& itemsJson = menuJson["items"];
 
-        for (std::size_t itemIndex = 0;
-             itemIndex < itemsJson.size();
+        for (rapidjson::SizeType itemIndex = 0;
+             itemIndex < itemsJson.Size();
              ++itemIndex) {
             const auto& itemJson = itemsJson[itemIndex];
 
-            if (!itemJson.is_object()) {
+            if (!itemJson.IsObject()) {
                 addError(
                     result,
                     path,
@@ -215,28 +222,29 @@ MenuParseResult JsonMenuParser::parseFile(
                 continue;
             }
 
-            item.name = itemJson["name"];
+            item.name = itemJson["name"].GetString();
 
             if (hasStringField(itemJson, "description")) {
-                item.description = itemJson["description"];
+                item.description = itemJson["description"].GetString();
             }
 
             int actionCount = 0;
 
             if (hasStringField(itemJson, "command")) {
                 item.action.type = MenuActionType::Command;
-                item.action.value = itemJson["command"];
+                item.action.value = itemJson["command"].GetString();
                 ++actionCount;
             }
 
             if (hasStringField(itemJson, "submenu")) {
                 item.action.type = MenuActionType::Submenu;
-                item.action.value = itemJson["submenu"];
+                item.action.value = itemJson["submenu"].GetString();
                 ++actionCount;
             }
 
             if (hasStringField(itemJson, "action")) {
-                const std::string actionValue = itemJson["action"];
+                const std::string actionValue =
+                    itemJson["action"].GetString();
 
                 if (actionValue == "exit") {
                     item.action.type = MenuActionType::Exit;
