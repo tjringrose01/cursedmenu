@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "menus": [
+    {
+      "id": "main",
+      "title": "Main",
+      "items": [
+        {
+          "name": "Unsupported",
+          "action": "reboot-server"
+        }
+      ]
+    }
+  ],
+  "rootMenu": "main"
+}
