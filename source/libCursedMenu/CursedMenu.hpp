@@ -46,32 +46,32 @@ private:
 
 public:
     CursedMenu();
-    explicit CursedMenu(std::string configFile);
-    CursedMenu(bool debugFlag, std::string configFile);
-    ~CursedMenu();
+    explicit CursedMenu(const std::string& configFile);
+    CursedMenu(bool debugFlag, const std::string& configFile);
+    ~CursedMenu() noexcept = default;
 
-    int getNumOfItems() const;
+    [[nodiscard]] int getNumOfItems() const noexcept;
 
-    std::string toString() const;
+    [[nodiscard]] std::string toString() const;
 
-    CursedMenuItem getItem(int index) const;
-    CursedMenuItem getItem(const std::string& name) const;
+    [[nodiscard]] CursedMenuItem getItem(int index) const;
+    [[nodiscard]] CursedMenuItem getItem(const std::string& name) const;
 
     void addItem(const CursedMenuItem& item);
 
-    void setDebugFlag(bool debugFlag);
+    void setDebugFlag(bool debugFlag) noexcept;
 
-    int getForeColor() const;
-    int getBackColor() const;
-    int getMenuCenterX() const;
+    [[nodiscard]] int getForeColor() const noexcept;
+    [[nodiscard]] int getBackColor() const noexcept;
+    [[nodiscard]] int getMenuCenterX() const noexcept;
 
-    void setForeColor(int foreColor);
-    void setBackColor(int backColor);
+    void setForeColor(int foreColor) noexcept;
+    void setBackColor(int backColor) noexcept;
 
-    const std::string& getMenuTitle() const;
+    [[nodiscard]] const std::string& getMenuTitle() const noexcept;
     void setMenuTitle(const std::string& menuTitle);
 
-    const std::string& getMenuName() const;
+    [[nodiscard]] const std::string& getMenuName() const noexcept;
     void setMenuName(const std::string& menuName);
 
     CursedMenu& operator=(const CursedMenu& cm);
