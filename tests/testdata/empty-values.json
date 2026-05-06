@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "menus": [
+    {
+      "id": "",
+      "title": "",
+      "items": [
+        {
+          "name": "",
+          "command": ""
+        }
+      ]
+    }
+  ],
+  "rootMenu": ""
+}
