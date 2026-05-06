@@ -22,50 +22,58 @@
  *
  */
 
-#include <string>
 #include <ostream>
 #include <sstream>
+#include <string>
+
 #include "CursedMenuItem.hpp"
 
-/* Private Members:
- *     std::string name;
- *     std::string description;
- *     std::string command;
- */
-
-CursedMenuItem::CursedMenuItem(const std::string name, const std::string desc, const std::string exec) {
+CursedMenuItem::CursedMenuItem(
+    const std::string name,
+    const std::string desc,
+    const std::string exec) {
     this->name = name;
     this->description = desc;
     this->command = exec;
     this->postCommandPause = false;
 }
 
-CursedMenuItem::CursedMenuItem(const std::string name, const std::string desc, const std::string exec, const bool postCommandPause) {
+CursedMenuItem::CursedMenuItem(
+    const std::string name,
+    const std::string desc,
+    const std::string exec,
+    const bool postCommandPause) {
     this->name = name;
     this->description = desc;
     this->command = exec;
     this->postCommandPause = postCommandPause;
 }
 
-CursedMenuItem::~CursedMenuItem() {}
-
-std::string CursedMenuItem::getName() {
-    return( this->name );
+CursedMenuItem::~CursedMenuItem() {
 }
 
-std::string CursedMenuItem::getDesc() {
-    return( this->description);
+std::string CursedMenuItem::getName() const {
+    return this->name;
 }
 
-std::string CursedMenuItem::getExec() {
-    return( this->command);
+std::string CursedMenuItem::getDesc() const {
+    return this->description;
 }
 
-std::string CursedMenuItem::toString() {
+std::string CursedMenuItem::getExec() const {
+    return this->command;
+}
+
+std::string CursedMenuItem::toString() const {
     std::ostringstream sout;
-    sout << "Name:        \"" << name << "\"" << std::endl
-         << "Description: \"" << description << "\"" << std::endl
-         << "Command:     \"" << command << "\"" << std::endl;
 
-    return(sout.str());
+    sout
+        << "Name:        \"" << name << "\""
+        << std::endl
+        << "Description: \"" << description << "\""
+        << std::endl
+        << "Command:     \"" << command << "\""
+        << std::endl;
+
+    return sout.str();
 }
