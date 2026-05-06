@@ -11,8 +11,12 @@ add_library(CursedMenu SHARED
     debug.cpp
 )
 
-target_include_directories(CursedMenu PRIVATE
-    ../include
+target_include_directories(CursedMenu
+    PRIVATE
+        ../include
+
+    SYSTEM PRIVATE
+        ${CONAN_INCLUDE_DIRS_RAPIDJSON}
 )
 
 target_link_libraries(CursedMenu PUBLIC
