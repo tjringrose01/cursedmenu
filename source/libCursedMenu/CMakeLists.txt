@@ -3,6 +3,7 @@ add_library(CursedMenu SHARED
     CursedMenu.cpp
     CursedMenuItem.cpp
     CursedMenuLoader.cpp
+    CursedMenuRunner.cpp
     JsonMenuParser.cpp
     LegacyCmdMenuParser.cpp
     MenuParserFactory.cpp
