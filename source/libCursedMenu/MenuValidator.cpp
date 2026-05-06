@@ -25,11 +25,11 @@ bool detectCycle(
     const std::unordered_map<std::string, std::set<std::string>>& graph,
     std::unordered_set<std::string>& visited,
     std::unordered_set<std::string>& recursionStack) {
-    if (recursionStack.contains(menuId)) {
+    if (recursionStack.find(menuId) != recursionStack.end()) {
         return true;
     }
 
-    if (visited.contains(menuId)) {
+    if (visited.find(menuId) != visited.end()) {
         return false;
     }
 
@@ -76,7 +76,7 @@ std::vector<MenuParseError> MenuValidator::validate(
             continue;
         }
 
-        if (menuMap.contains(menu.id)) {
+        if (menuMap.find(menu.id) != menuMap.end()) {
             addError(
                 errors,
                 fileName,
@@ -141,7 +141,7 @@ std::vector<MenuParseError> MenuValidator::validate(
             fileName,
             "rootMenu",
             "Root menu cannot be empty");
-    } else if (!menuMap.contains(menuDefinition.rootMenu)) {
+    } else if (menuMap.find(menuDefinition.rootMenu) == menuMap.end()) {
         addError(
             errors,
             fileName,
@@ -152,7 +152,7 @@ std::vector<MenuParseError> MenuValidator::validate(
 
     for (const auto& [menuId, submenuTargets] : submenuGraph) {
         for (const auto& submenuTarget : submenuTargets) {
-            if (!menuMap.contains(submenuTarget)) {
+            if (menuMap.find(submenuTarget) == menuMap.end()) {
                 addError(
                     errors,
                     fileName,
@@ -198,7 +198,7 @@ bool MenuValidator::isKnownColor(
         "WHITE"
     };
 
-    return validColors.contains(colorName);
+    return validColors.find(colorName) != validColors.end();
 }
 
 } // namespace cursedmenu
