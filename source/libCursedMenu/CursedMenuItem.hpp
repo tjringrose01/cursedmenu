@@ -46,15 +46,15 @@ public:
         const std::string& command,
         bool postCommandPause);
 
-    ~CursedMenuItem();
+    ~CursedMenuItem() noexcept = default;
 
-    const std::string& getName() const;
-    const std::string& getDesc() const;
-    const std::string& getExec() const;
+    [[nodiscard]] const std::string& getName() const noexcept;
+    [[nodiscard]] const std::string& getDesc() const noexcept;
+    [[nodiscard]] const std::string& getExec() const noexcept;
 
-    bool shouldPauseAfterCommand() const;
+    [[nodiscard]] bool shouldPauseAfterCommand() const noexcept;
 
-    std::string toString() const;
+    [[nodiscard]] std::string toString() const;
 };
 
 #endif // __CURSEDMENUITEM__
