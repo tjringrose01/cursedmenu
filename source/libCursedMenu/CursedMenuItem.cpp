@@ -49,22 +49,19 @@ CursedMenuItem::CursedMenuItem(
       postCommandPause(postCommandPause) {
 }
 
-CursedMenuItem::~CursedMenuItem() {
-}
-
-const std::string& CursedMenuItem::getName() const {
+const std::string& CursedMenuItem::getName() const noexcept {
     return name;
 }
 
-const std::string& CursedMenuItem::getDesc() const {
+const std::string& CursedMenuItem::getDesc() const noexcept {
     return description;
 }
 
-const std::string& CursedMenuItem::getExec() const {
+const std::string& CursedMenuItem::getExec() const noexcept {
     return command;
 }
 
-bool CursedMenuItem::shouldPauseAfterCommand() const {
+bool CursedMenuItem::shouldPauseAfterCommand() const noexcept {
     return postCommandPause;
 }
 
