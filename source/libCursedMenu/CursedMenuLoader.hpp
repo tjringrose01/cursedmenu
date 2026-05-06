@@ -25,23 +25,20 @@
 #ifndef __CURSEDMENULOADER__
 #define __CURSEDMENULOADER__
 
-#include <vector>
 #include <string>
+#include <vector>
+
 #include "CursedMenu.hpp"
 
-class CursedMenuLoader
-{
-    private:
-        /* Private Members */
+class CursedMenuLoader {
+public:
+    static CursedMenu load(
+        const std::string& configFile,
+        bool debugFlag);
 
-        /* Private Methods */
-
-    public:
-        /* Public Members */
-
-        /* Public Methods */
-        static CursedMenu load(const std::string configFile, const bool debugFlag);
-        static std::vector<CursedMenu> loadConfig(const std::string configFile, const bool debugFlag);
+    static std::vector<CursedMenu> loadConfig(
+        const std::string& configFile,
+        bool debugFlag);
 };
 
 #endif // __CURSEDMENULOADER__
