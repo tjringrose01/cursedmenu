@@ -9,6 +9,7 @@ project(cursedmenu
 include(CTest)
 
 find_package(Curses REQUIRED)
+find_package(nlohmann_json REQUIRED)
 
 include_directories( ${CURSES_INCLUDE_DIR} ./source/libCursedMenu )
 
