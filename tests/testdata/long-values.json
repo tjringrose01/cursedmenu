@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "menus": [
+    {
+      "id": "main-menu-with-an-unusually-long-identifier-used-for-parser-validation-testing",
+      "title": "This is a very long title intended to validate that the parser safely handles large but valid string values without crashing or truncating unexpectedly during runtime validation or model construction.",
+      "foreground": "WHITE",
+      "background": "BLACK",
+      "items": [
+        {
+          "name": "This is a very long menu item name used to verify parser stability and memory safety when handling larger input payloads from menu definition files.",
+          "description": "Long descriptions should remain stable, parse correctly, and not cause unsafe behavior.",
+          "command": "echo 'Long command validation test'"
+        }
+      ]
+    }
+  ],
+  "rootMenu": "main-menu-with-an-unusually-long-identifier-used-for-parser-validation-testing"
+}

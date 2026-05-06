@@ -53,6 +53,7 @@
 #include <fstream>
 #include <ostream>
 #include <iostream>
+#include <filesystem>
 #include <curses.h>
 #include "CursedMenuLoader.hpp"
 #include "CursedMenu.hpp"
@@ -61,15 +62,49 @@
 
 #define PROGRAM "CursedMenuLoader"
 
+namespace {
+
+std::string resolveConfigPath(
+    const std::string& configFile,
+    const std::filesystem::path& parentConfigPath)
+{
+    namespace fs = std::filesystem;
+    fs::path candidate(configFile);
+
+    if (fs::exists(candidate)) {
+        return candidate.string();
+    }
+
+    if (!candidate.is_absolute() && !parentConfigPath.empty()) {
+        const fs::path relativeToParent =
+            parentConfigPath.parent_path() / candidate;
+        if (fs::exists(relativeToParent)) {
+            return relativeToParent.string();
+        }
+    }
+
+    return configFile;
+}
+
+} // namespace
+
 CursedMenu CursedMenuLoader::load(const std::string configFile, const bool debugFlag)
 {
     std::vector<CursedMenu> menus = loadConfig(configFile, debugFlag);
-    return(menus.at(menus.size() - 1));
+    if (menus.empty()) {
+        return CursedMenu();
+    }
+
+    return menus.back();
 }
 
 std::vector<CursedMenu> CursedMenuLoader::loadConfig(const std::string configFile, const bool debugFlag) {
 
-    std::cout << "CursedMenuLoader::loadConfig(" << configFile << ", " << debugFlag << ");" << std::endl;
+    const std::string resolvedConfigFile =
+        resolveConfigPath(configFile, std::filesystem::path());
+    const std::filesystem::path resolvedConfigPathObj(resolvedConfigFile);
+
+    std::cout << "CursedMenuLoader::loadConfig(" << resolvedConfigFile << ", " << debugFlag << ");" << std::endl;
     std::vector<CursedMenu> menus;
     std::vector<CursedMenu> tmp_menus;
 
@@ -90,10 +125,10 @@ std::vector<CursedMenu> CursedMenuLoader::loadConfig(const std::string configFil
     bool getTitl = false;
     bool getItem = false;
 
-    std::ifstream file_in( configFile.c_str() );
+    std::ifstream file_in( resolvedConfigFile.c_str() );
 
     if ( file_in.is_open() ) {
-        if (debugFlag) debug(PROGRAM, 0, "Reading config file - " + configFile);
+        if (debugFlag) debug(PROGRAM, 0, "Reading config file - " + resolvedConfigFile);
         while (! file_in.eof() ) {
             getline ( file_in, buffer );
 
@@ -259,7 +294,18 @@ std::vector<CursedMenu> CursedMenuLoader::loadConfig(const std::string configFil
                     i = exec.find("MenuSub ");
                     if (i != std::string::npos)
                     {
-                        tmp_menus = loadConfig(exec.substr(8), debugFlag);
+                        std::string subMenuConfigFile = exec.substr(8);
+                        while (!subMenuConfigFile.empty()
+                            && subMenuConfigFile.front() == ' ') {
+                            subMenuConfigFile.erase(0, 1);
+                        }
+
+                        subMenuConfigFile =
+                            resolveConfigPath(
+                                subMenuConfigFile,
+                                resolvedConfigPathObj);
+
+                        tmp_menus = loadConfig(subMenuConfigFile, debugFlag);
                         menus.insert(menus.end(), tmp_menus.begin(), tmp_menus.end());
                         tmp_menus.clear();
                     }
@@ -287,7 +333,7 @@ std::vector<CursedMenu> CursedMenuLoader::loadConfig(const std::string configFil
         if (debugFlag) debug(PROGRAM, 2, "close config file");
 
     } else {
-        std::cerr << "Unable to open file: " << configFile << std::endl;
+        std::cerr << "Unable to open file: " << resolvedConfigFile << std::endl;
     }
 
     return(menus);

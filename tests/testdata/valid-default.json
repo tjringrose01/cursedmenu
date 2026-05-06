@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "menus": [
+    {
+      "id": "main",
+      "title": "Main Menu",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Utilities",
+          "submenu": "utilities"
+        },
+        {
+          "name": "Exit",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "utilities",
+      "title": "Utilities",
+      "foreground": "GREEN",
+      "background": "BLACK",
+      "items": [
+        {
+          "name": "List Files",
+          "command": "ls -la"
+        }
+      ]
+    }
+  ],
+  "rootMenu": "main"
+}

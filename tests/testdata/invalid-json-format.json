@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "menus": [
+    {
+      "id": "main",
+      "title": "Broken Menu",
+      "items": [
+        {
+          "name": "Broken"
+          "command": "echo broken"
+        }
+      ]
+    }
+  ],
+  "rootMenu": "main"
+}

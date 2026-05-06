@@ -1,27 +1,27 @@
 #!/bin/bash
 
-if [ "$1" = "-r" ]; then
-	PRESET="--preset=conan-release"
-	RELEASE_FOLDER="Release"
+set -e
+
+if [ "$1" = "-d" ]; then
+    PRESET="cursedmenu-debug"
+    BUILD_FOLDER="Debug"
+    BUILD_TYPE="Debug"
 else
-	PRESET="--preset=conan-release"
-	RELEASE_FOLDER="Release"
+    PRESET="cursedmenu-release"
+    BUILD_FOLDER="Release"
+    BUILD_TYPE="Release"
 fi
 
 ./clean
 
-git pull
+conan install . --build=missing -s build_type=${BUILD_TYPE}
 
-conan install . --build=missing
+cmake --preset=${PRESET}
 
-cmake . "${PRESET}"
+source build/${BUILD_FOLDER}/generators/conanbuild.sh
 
-source build/${RELEASE_FOLDER}/generators/conanbuild.sh
+cmake --build --preset=${PRESET}
 
-cmake --build . "${PRESET}"
+source build/${BUILD_FOLDER}/generators/deactivate_conanbuild.sh
 
-source build/${RELEASE_FOLDER}/generators/deactivate_conanbuild.sh
-
-#ctest --test-dir test
-
-#source ./Release/generators/deactivate_conanbuild.sh
+ctest --preset=${PRESET}

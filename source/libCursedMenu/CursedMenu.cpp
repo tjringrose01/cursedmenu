@@ -22,11 +22,13 @@
  *
  */
 
-#include <string>
 #include <curses.h>
+
 #include <iostream>
 #include <ostream>
 #include <sstream>
+#include <string>
+
 #include "CursedMenu.hpp"
 #include "CursedMenuItem.hpp"
 #include "CursedMenuLoader.hpp"
@@ -34,9 +36,14 @@
 
 #define PROGRAM "CursedMenu"
 
-CursedMenu::CursedMenu(const bool debugFlag, const std::string configFile) {
+CursedMenu::CursedMenu(
+    const bool debugFlag,
+    const std::string configFile) {
     setDebugFlag(debugFlag);
-    CursedMenu tmpMenu = CursedMenuLoader::load(configFile, debugFlag);
+
+    CursedMenu tmpMenu =
+        CursedMenuLoader::load(configFile, debugFlag);
+
     *this = tmpMenu;
 }
 
@@ -46,142 +53,134 @@ CursedMenu::CursedMenu() {
 
 CursedMenu::CursedMenu(const std::string configFile) {
     setDebugFlag(false);
-    CursedMenu tmpMenu = CursedMenuLoader::load(configFile, debugFlag);
+
+    CursedMenu tmpMenu =
+        CursedMenuLoader::load(configFile, debugFlag);
+
     *this = tmpMenu;
 }
 
-/**
- * Return the number of items in the config arrays.
- */
 int CursedMenu::getNumOfItems() {
-    return(menuItems.size());
+    return menuItems.size();
 }
 
-/**
- * Housekeeping
- */
 CursedMenu::~CursedMenu() {
 }
 
-CursedMenuItem CursedMenu::getItem( int index ) {
+CursedMenuItem CursedMenu::getItem(int index) {
     int i = 0;
 
     std::vector<CursedMenuItem>::iterator it;
 
-    for( it = menuItems.begin(); it != menuItems.end(); it++ ) {
-        if ( index == i )
-            return( *it );
-        else 
-            ++i;
+    for (it = menuItems.begin(); it != menuItems.end(); it++) {
+        if (index == i) {
+            return *it;
+        }
+
+        ++i;
     }
 
     std::cerr << "Error: item out of bounds." << std::endl;
-    return( menuItems[menuItems.size() - 1] );
+
+    return menuItems[menuItems.size() - 1];
 }
 
-CursedMenuItem CursedMenu::getItem( std::string name ) {
+CursedMenuItem CursedMenu::getItem(std::string name) {
     std::vector<CursedMenuItem>::iterator it;
 
-    for( it = menuItems.begin(); it != menuItems.end(); it++ ) {
-        if ( it->getName() == name )
-            return( *it );
+    for (it = menuItems.begin(); it != menuItems.end(); it++) {
+        if (it->getName() == name) {
+            return *it;
+        }
     }
 
     std::cerr << "Error: item out of bounds." << std::endl;
-    return( menuItems[menuItems.size() - 1] );
+
+    return menuItems[menuItems.size() - 1];
 }
 
-/**
- * Method to try and show te object in string form.
- */
-std::string CursedMenu::toString() {
+std::string CursedMenu::toString() const {
+    if (debugFlag) {
+        std::cerr
+            << "Entered CursedMenu::toString()"
+            << std::endl;
+    }
 
-    if (debugFlag) std::cerr << "Entered CursedMenu::toString()" << std::endl;
     std::ostringstream sout;
 
     unsigned int itemCount = 0;
 
-    sout << "Menu: ==================================================" << std::endl;
+    sout
+        << "Menu: =================================================="
+        << std::endl;
+
     sout << "Title: " << menuTitle << std::endl;
 
-    std::vector<CursedMenuItem>::iterator it;
-   
-    for( it = menuItems.begin(); it != menuItems.end(); it++ ) {
+    std::vector<CursedMenuItem>::const_iterator it;
+
+    for (it = menuItems.begin(); it != menuItems.end(); it++) {
         sout << "-----------------" << std::endl;
         sout << "Item Number: " << itemCount++ << std::endl;
         sout << it->toString();
     }
 
-    sout << "========================================================" << std::endl;
+    sout
+        << "========================================================"
+        << std::endl;
 
-    return(sout.str());
+    return sout.str();
 }
 
-/**
- * Method to add an additional item to the vector
- */
-void CursedMenu::addItem( CursedMenuItem item ) {
+void CursedMenu::addItem(CursedMenuItem item) {
     std::vector<CursedMenuItem>::iterator it;
 
-    for( it = menuItems.begin(); it != menuItems.end(); it++ ) {
-        if ( it->getName() == item.getName() ) {
+    for (it = menuItems.begin(); it != menuItems.end(); it++) {
+        if (it->getName() == item.getName()) {
             return;
         }
     }
 
-    menuItems.push_back( item );
-    return;
+    menuItems.push_back(item);
 }
 
 void CursedMenu::setDebugFlag(bool debugFlag) {
     this->debugFlag = debugFlag;
-    return;
 }
 
 int CursedMenu::getForeColor() {
-    return(foreMenuColor);
+    return foreMenuColor;
 }
 
 int CursedMenu::getBackColor() {
-    return(backMenuColor);
+    return backMenuColor;
 }
 
 int CursedMenu::getMenuCenterX() {
     std::vector<CursedMenuItem>::iterator it;
+
     unsigned int lengthOfLongestItem = 0;
 
-    for( it = menuItems.begin(); it != menuItems.end(); it++ ) {
-        if ( it->getName().length() > lengthOfLongestItem )
+    for (it = menuItems.begin(); it != menuItems.end(); it++) {
+        if (it->getName().length() > lengthOfLongestItem) {
             lengthOfLongestItem = it->getName().length();
+        }
     }
 
-    return(lengthOfLongestItem);
+    return lengthOfLongestItem;
 }
 
-/**
- * Returns the title of this menu.
- */
 std::string CursedMenu::getMenuTitle() {
-    return(menuTitle);
+    return menuTitle;
 }
 
-/**
- * Sets class member menuTitle.
- */
 void CursedMenu::setMenuTitle(std::string menuTitle) {
     this->menuTitle = menuTitle;
 }
 
-/**
- * Returns the name of this menu.
- */
 std::string CursedMenu::getMenuName() {
-    return(menuName);
+    return menuName;
 }
 
-/**
- * Sets class member menuName.
- */
 void CursedMenu::setMenuName(std::string menuName) {
     this->menuName = menuName;
 }
@@ -195,8 +194,7 @@ void CursedMenu::setBackColor(int backColor) {
 }
 
 CursedMenu& CursedMenu::operator=(const CursedMenu& cm) {
-    if (this != &cm) // make sure not same object
-    {
+    if (this != &cm) {
         menuName = cm.menuName;
         menuTitle = cm.menuTitle;
         foreMenuColor = cm.foreMenuColor;
@@ -204,10 +202,11 @@ CursedMenu& CursedMenu::operator=(const CursedMenu& cm) {
         debugFlag = cm.debugFlag;
 
         menuItems.clear();
-        for (int x=0; x < cm.menuItems.size(); x++)
-        {
+
+        for (size_t x = 0; x < cm.menuItems.size(); x++) {
             menuItems.push_back(cm.menuItems.at(x));
         }
     }
-    return *this;    // Return ref for multiple assignment
+
+    return *this;
 }

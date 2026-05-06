@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "menus": [
+    {
+      "id": "main",
+      "title": "Main",
+      "foreground": "ORANGE",
+      "background": "PURPLE",
+      "items": [
+        {
+          "name": "Exit",
+          "action": "exit"
+        }
+      ]
+    }
+  ],
+  "rootMenu": "main"
+}

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "menus": [
+    {
+      "id": "main",
+      "title": "Main Menu",
+      "items": [
+        {
+          "name": "Exit",
+          "action": "exit"
+        }
+      ]
+    }
+  ]
+}

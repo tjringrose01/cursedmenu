@@ -25,8 +25,9 @@
 #ifndef __CURSEDMENU__
 #define __CURSEDMENU__
 
-#include <vector>
 #include <string>
+#include <vector>
+
 #include "CursedMenuItem.hpp"
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
@@ -44,22 +45,24 @@ private:
     std::vector<CursedMenuItem> menuItems;
     bool debugFlag;
 
-    /* Private Methods */
-
 public:
-    /* Public Members */
-
     /* Public Methods */
     CursedMenu();
     CursedMenu(std::string configFile);
     CursedMenu(bool debugFlag, std::string configFile);
     ~CursedMenu();
+
     int getNumOfItems();
-    std::string toString();
-    CursedMenuItem getItem( int index );
-    CursedMenuItem getItem( std::string name );
-    void addItem( CursedMenuItem item );
+
+    std::string toString() const;
+
+    CursedMenuItem getItem(int index);
+    CursedMenuItem getItem(std::string name);
+
+    void addItem(CursedMenuItem item);
+
     void setDebugFlag(bool debugFlag);
+
     int getForeColor();
     int getBackColor();
     int getMenuCenterX();
@@ -72,6 +75,7 @@ public:
 
     std::string getMenuName();
     void setMenuName(std::string menuName);
+
     CursedMenu& operator=(const CursedMenu& cm);
 };
 

@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - dev
+      - modernization-2026-05-05
+  pull_request:
+    branches:
+      - dev
+      - modernization-2026-05-05
+
+jobs:
+  build:
+    name: Ubuntu Conan CMake Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake ninja-build python3-pip
+
+      - name: Install Conan
+        run: pip3 install --user conan
+
+      - name: Add Conan to PATH
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Detect Conan profile
+        run: conan profile detect --force
+
+      - name: Install Conan dependencies
+        run: conan install . --build=missing -s build_type=Release
+
+      - name: Configure CMake with project preset
+        run: cmake . --preset=cursedmenu-release
+
+      - name: Build with project preset
+        shell: bash
+        run: |
+          source build/Release/generators/conanbuild.sh
+          cmake --build --preset=cursedmenu-release --verbose
+          source build/Release/generators/deactivate_conanbuild.sh
+
+      - name: Run parser tests
+        shell: bash
+        run: |
+          source build/Release/generators/conanbuild.sh
+          ctest --preset=cursedmenu-release --output-on-failure
+          source build/Release/generators/deactivate_conanbuild.sh

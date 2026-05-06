@@ -29,25 +29,30 @@
 
 class CursedMenuItem {
 private:
-    /* Private Members */
     std::string name;
     std::string description;
     std::string command;
-    bool   postCommandPause;
-
-    /* Private Methods */
+    bool postCommandPause;
 
 public:
-    /* Public Members */
+    CursedMenuItem(
+        const std::string name,
+        const std::string description,
+        const std::string command);
 
-    /* Public Methods */
-    CursedMenuItem(const std::string name, const std::string description, const std::string command);
-    CursedMenuItem(const std::string name, const std::string description, const std::string command, const bool postCommandPause);
+    CursedMenuItem(
+        const std::string name,
+        const std::string description,
+        const std::string command,
+        const bool postCommandPause);
+
     ~CursedMenuItem();
-    std::string getName();
-    std::string getDesc();
-    std::string getExec();
-    std::string toString();
+
+    std::string getName() const;
+    std::string getDesc() const;
+    std::string getExec() const;
+
+    std::string toString() const;
 };
 
 #endif // __CURSEDMENUITEM__

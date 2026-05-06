@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "menus": [
+    {
+      "id": "main",
+      "title": "Main",
+      "items": [
+        {
+          "name": "Go To Utilities",
+          "submenu": "utilities"
+        }
+      ]
+    },
+    {
+      "id": "utilities",
+      "title": "Utilities",
+      "items": [
+        {
+          "name": "Go To Main",
+          "submenu": "main"
+        }
+      ]
+    }
+  ],
+  "rootMenu": "main"
+}
