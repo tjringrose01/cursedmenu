@@ -9,9 +9,13 @@ project(cursedmenu
 include(CTest)
 
 find_package(Curses REQUIRED)
-find_package(nlohmann_json REQUIRED)
+find_package(RapidJSON REQUIRED)
 
-include_directories( ${CURSES_INCLUDE_DIR} ./source/libCursedMenu )
+include_directories(
+    ${CURSES_INCLUDE_DIR}
+    ${RapidJSON_INCLUDE_DIRS}
+    ./source/libCursedMenu
+)
 
 add_subdirectory( source )
 
