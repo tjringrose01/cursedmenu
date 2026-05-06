@@ -1,5 +1,7 @@
 #include "CursedMenuRunner.hpp"
 
+#include <iostream>
+
 #include <curses.h>
 #include <menu.h>
 
@@ -16,7 +18,7 @@ void dispDesc(WINDOW* win, std::string desc, int pos_x, int pos_y) {
         mvwprintw(win, pos_y - 2, y, " ");
     }
 
-    mvwprintw(win, pos_y - 2, 1, desc.c_str());
+    mvwprintw(win, pos_y - 2, 1, "%s", desc.c_str());
 }
 
 int xCtr(std::string str, int width) {
@@ -47,7 +49,7 @@ void dispMenuTitle(CursedMenu mc, WINDOW* menu_window) {
     wmove(menu_window, 4, centerX - 1);
     whline(menu_window, ACS_HLINE, titleLen + 2);
 
-    mvwprintw(menu_window, 3, centerX, title.c_str());
+    mvwprintw(menu_window, 3, centerX, "%s", title.c_str());
 }
 
 void clearScreen(WINDOW* win, int lines, int cols) {
