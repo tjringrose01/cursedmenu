@@ -6,6 +6,7 @@ add_library(CursedMenu SHARED
     JsonMenuParser.cpp
     LegacyCmdMenuParser.cpp
     MenuParserFactory.cpp
+    MenuValidator.cpp
     debug.cpp
 )
 
