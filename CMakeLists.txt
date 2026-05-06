@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.25)
 
 project(cursedmenu
     VERSION 2.0.0
@@ -6,8 +6,14 @@ project(cursedmenu
     LANGUAGES CXX
 )
 
+include(CTest)
+
 find_package(Curses REQUIRED)
 
 include_directories( ${CURSES_INCLUDE_DIR} ./source/libCursedMenu )
 
 add_subdirectory( source )
+
+if(BUILD_TESTING)
+    add_subdirectory( tests )
+endif()
