@@ -149,7 +149,7 @@ int main(int argc, char** argv) {
 
     if (menus.top().getNumOfItems() == 0) {
         std::cerr << "No menu found..." << std::endl;
-        return ERROR_INVALID_MENU;
+        return ERROR_INVALID_FILENAME;
     }
 
     cursedmenu::CursedMenuRunner runner(logger);
