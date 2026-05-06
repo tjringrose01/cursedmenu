@@ -12,17 +12,18 @@ namespace cursedmenu {
  */
 class MenuParser {
 public:
-    virtual ~MenuParser() = default;
+    virtual ~MenuParser() noexcept = default;
 
     /**
      * Returns true if this parser supports the provided file path.
      */
-    virtual bool supportsFile(const std::filesystem::path& path) const = 0;
+    [[nodiscard]] virtual bool supportsFile(
+        const std::filesystem::path& path) const noexcept = 0;
 
     /**
      * Parses the provided menu definition file.
      */
-    virtual MenuParseResult parseFile(
+    [[nodiscard]] virtual MenuParseResult parseFile(
         const std::filesystem::path& path) const = 0;
 };
 
