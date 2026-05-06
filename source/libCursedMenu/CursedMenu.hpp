@@ -35,7 +35,6 @@
 
 class CursedMenu {
 private:
-    /* Private Members */
     std::string menuName;
     std::string menuTitle;
 
@@ -46,35 +45,34 @@ private:
     bool debugFlag;
 
 public:
-    /* Public Methods */
     CursedMenu();
-    CursedMenu(std::string configFile);
+    explicit CursedMenu(std::string configFile);
     CursedMenu(bool debugFlag, std::string configFile);
     ~CursedMenu();
 
-    int getNumOfItems();
+    int getNumOfItems() const;
 
     std::string toString() const;
 
-    CursedMenuItem getItem(int index);
-    CursedMenuItem getItem(std::string name);
+    CursedMenuItem getItem(int index) const;
+    CursedMenuItem getItem(const std::string& name) const;
 
-    void addItem(CursedMenuItem item);
+    void addItem(const CursedMenuItem& item);
 
     void setDebugFlag(bool debugFlag);
 
-    int getForeColor();
-    int getBackColor();
-    int getMenuCenterX();
+    int getForeColor() const;
+    int getBackColor() const;
+    int getMenuCenterX() const;
 
     void setForeColor(int foreColor);
     void setBackColor(int backColor);
 
-    std::string getMenuTitle();
-    void setMenuTitle(std::string menuTitle);
+    const std::string& getMenuTitle() const;
+    void setMenuTitle(const std::string& menuTitle);
 
-    std::string getMenuName();
-    void setMenuName(std::string menuName);
+    const std::string& getMenuName() const;
+    void setMenuName(const std::string& menuName);
 
     CursedMenu& operator=(const CursedMenu& cm);
 };
