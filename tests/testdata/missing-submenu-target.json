@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "menus": [
+    {
+      "id": "main",
+      "title": "Main",
+      "items": [
+        {
+          "name": "Missing",
+          "submenu": "does-not-exist"
+        }
+      ]
+    }
+  ],
+  "rootMenu": "main"
+}
