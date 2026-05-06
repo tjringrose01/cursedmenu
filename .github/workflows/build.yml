@@ -45,3 +45,10 @@ jobs:
           source build/Release/generators/conanbuild.sh
           cmake --build --preset=cursedmenu-release --verbose
           source build/Release/generators/deactivate_conanbuild.sh
+
+      - name: Run parser tests
+        shell: bash
+        run: |
+          source build/Release/generators/conanbuild.sh
+          ctest --preset=cursedmenu-release --output-on-failure
+          source build/Release/generators/deactivate_conanbuild.sh
