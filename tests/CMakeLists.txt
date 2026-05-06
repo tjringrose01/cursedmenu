@@ -13,6 +13,7 @@ target_link_libraries(JsonMenuParserTests PRIVATE
 add_test(
     NAME JsonMenuParserTests
     COMMAND JsonMenuParserTests
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
 add_executable(MenuParserFactoryTests
@@ -30,4 +31,5 @@ target_link_libraries(MenuParserFactoryTests PRIVATE
 add_test(
     NAME MenuParserFactoryTests
     COMMAND MenuParserFactoryTests
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
