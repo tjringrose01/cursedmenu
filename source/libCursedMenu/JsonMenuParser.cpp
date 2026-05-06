@@ -4,6 +4,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include "MenuValidator.hpp"
+
 namespace cursedmenu {
 
 namespace {
@@ -272,6 +274,17 @@ MenuParseResult JsonMenuParser::parseFile(
 
         result.menuDefinition.menus.push_back(menu);
     }
+
+    MenuValidator validator;
+
+    auto validationErrors = validator.validate(
+        result.menuDefinition,
+        path.string());
+
+    result.errors.insert(
+        result.errors.end(),
+        validationErrors.begin(),
+        validationErrors.end());
 
     result.success = result.errors.empty();
 
