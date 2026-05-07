@@ -6,8 +6,13 @@ add_library(CursedMenu SHARED
     CursedMenuRunner.cpp
     JsonMenuParser.cpp
     LegacyCmdMenuParser.cpp
+    MenuRenderer.cpp
+    NcursesMenu.cpp
     MenuParserFactory.cpp
     MenuValidator.cpp
+    NcursesSession.cpp
+    NcursesWindow.cpp
+    RuntimeAction.cpp
     debug.cpp
 )
 

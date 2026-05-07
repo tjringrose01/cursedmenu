@@ -170,6 +170,22 @@ Long-term direction:
 - `CursedMenuRunner` should own terminal lifecycle and rendering.
 - Parser logic should remain independent of ncurses.
 
+Current ncurses runtime ownership boundaries:
+
+- `NcursesSession`
+  Handles `initscr()` / terminal mode setup and automatic teardown (`endwin()`),
+  plus runtime color application and input reads.
+- `NcursesWindow`
+  Owns top-level `WINDOW*` lifecycle for the interactive frame.
+- `NcursesMenu`
+  Owns `MENU*`, `ITEM*`, and submenu `WINDOW*` allocations and cleanup.
+- `MenuRenderer`
+  Owns rendering responsibilities (frame setup, title/description drawing,
+  and cursor/screen refresh behavior).
+- `CursedMenuRunner`
+  Orchestrates menu navigation and command/submenu flow while delegating
+  ncurses ownership and rendering details to the abstractions above.
+
 ## Coding Standards
 
 Follow:
@@ -191,6 +207,14 @@ Before submitting changes:
 - Ensure GitHub Actions CI passes.
 - Add tests for parser or validation changes when practical.
 - Verify malformed input does not crash the app.
+
+Runtime manual verification checklist (ncurses flows):
+
+- Launch the app and verify main menu renders correctly.
+- Navigate up/down and confirm selection and description updates.
+- Enter a submenu and return to parent menu.
+- Run at least one command action and confirm terminal resumes correctly.
+- Exit from submenu and root menu paths cleanly.
 
 ## CI Workflow
 

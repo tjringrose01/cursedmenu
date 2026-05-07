@@ -33,3 +33,21 @@ add_test(
     COMMAND MenuParserFactoryTests
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
+
+add_executable(RuntimeActionTests
+    RuntimeActionTests.cpp
+)
+
+target_include_directories(RuntimeActionTests PRIVATE
+    ../source/include
+)
+
+target_link_libraries(RuntimeActionTests PRIVATE
+    CursedMenu
+)
+
+add_test(
+    NAME RuntimeActionTests
+    COMMAND RuntimeActionTests
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
