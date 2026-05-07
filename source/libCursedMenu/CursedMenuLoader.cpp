@@ -74,6 +74,38 @@ std::string trimLeadingSpaces(std::string value) {
     }
 
     return value.substr(firstNonSpace);
+std::string resolveConfigPath(
+    const std::string& configFile,
+    const std::filesystem::path& parentConfigPath)
+{
+    namespace fs = std::filesystem;
+    fs::path candidate(configFile);
+
+    if (fs::exists(candidate)) {
+        return candidate.string();
+    }
+
+    if (!candidate.is_absolute() && !parentConfigPath.empty()) {
+        const fs::path relativeToParent =
+            parentConfigPath.parent_path() / candidate;
+        if (fs::exists(relativeToParent)) {
+            return relativeToParent.string();
+        }
+    }
+
+    return configFile;
+}
+
+} // namespace
+
+CursedMenu CursedMenuLoader::load(const std::string configFile, const bool debugFlag)
+{
+    std::vector<CursedMenu> menus = loadConfig(configFile, debugFlag);
+    if (menus.empty()) {
+        return CursedMenu();
+    }
+
+    return menus.back();
 }
 
 std::string toUpperAscii(const std::string& value) {
@@ -89,6 +121,13 @@ std::string toUpperAscii(const std::string& value) {
 
 int foregroundColorFromName(const std::string& colorName) {
     const std::string color = toUpperAscii(colorName);
+    const std::string resolvedConfigFile =
+        resolveConfigPath(configFile, std::filesystem::path());
+    const std::filesystem::path resolvedConfigPathObj(resolvedConfigFile);
+
+    std::cout << "CursedMenuLoader::loadConfig(" << resolvedConfigFile << ", " << debugFlag << ");" << std::endl;
+    std::vector<CursedMenu> menus;
+    std::vector<CursedMenu> tmp_menus;
 
     if (color == "BLACK") {
         return COLOR_BLACK;
@@ -220,6 +259,12 @@ std::vector<CursedMenu> CursedMenuLoader::loadConfig(
     if (debugFlag) {
         debug(PROGRAM, 0, "Reading config file - " + configFile);
     }
+    std::ifstream file_in( resolvedConfigFile.c_str() );
+
+    if ( file_in.is_open() ) {
+        if (debugFlag) debug(PROGRAM, 0, "Reading config file - " + resolvedConfigFile);
+        while (! file_in.eof() ) {
+            getline ( file_in, buffer );
 
     while (std::getline(fileInput, buffer)) {
         if (buffer.length() < 6) {
@@ -303,6 +348,76 @@ std::vector<CursedMenu> CursedMenuLoader::loadConfig(
 
                 if (debugFlag) {
                     debug(PROGRAM, 2, "found exec = " + exec);
+            if ( ! getItem ) {
+                i = buffer.find("ItemName");
+                if ( i != std::string::npos ) {
+                    i = buffer.find("=");
+                    name = buffer.substr( i+1, buffer.length() - i - 1);
+                    while (name.substr(0,1).compare(" ") == 0)
+                    {
+                        name = name.substr(1);
+                    }
+					getItem = true;
+                    if (debugFlag) debug(PROGRAM, 2, "found item = " + name);
+					continue;
+				}
+			} else {
+                i = buffer.find("ItemDesc");
+                if ( i != std::string::npos ) {
+                    i = buffer.find("=");
+                    desc = buffer.substr( i+1, buffer.length() - i - 1);
+                    while (desc.substr(0,1).compare(" ") == 0)
+                    {
+                        desc = desc.substr(1);
+                    }
+                    if (debugFlag) debug(PROGRAM, 2, "found desc = " + desc);
+					continue;
+				} else {
+                    i = buffer.find("ItemExec");
+                    if (i != std::string::npos) {
+                        i = buffer.find("=");
+                        exec = buffer.substr(i+1, buffer.length() - i - 1);
+                        while (exec.substr(0,1).compare(" ") == 0)
+                        {
+                            exec = exec.substr(1);
+                        }
+                       
+
+                    if (debugFlag) debug(PROGRAM, 2, "found exec = " + exec);
+                    // Parse out the exec and look for sub menu to parse
+                    i = exec.find("MenuSub ");
+                    if (i != std::string::npos)
+                    {
+                        std::string subMenuConfigFile = exec.substr(8);
+                        while (!subMenuConfigFile.empty()
+                            && subMenuConfigFile.front() == ' ') {
+                            subMenuConfigFile.erase(0, 1);
+                        }
+
+                        subMenuConfigFile =
+                            resolveConfigPath(
+                                subMenuConfigFile,
+                                resolvedConfigPathObj);
+
+                        tmp_menus = loadConfig(subMenuConfigFile, debugFlag);
+                        menus.insert(menus.end(), tmp_menus.begin(), tmp_menus.end());
+                        tmp_menus.clear();
+                    }
+					    continue;
+					} else {
+                        i = buffer.find("ItemEnd");
+                        if ( i != std::string::npos ) {
+                            getItem = false;
+                            /* store name, desc, and exec in item object */
+                            curMenu->addItem(CursedMenuItem(name,desc,exec));
+      
+                            name = "";
+                            desc = "";
+                            exec = "";
+
+                            continue;
+                        }
+                    }
                 }
 
                 const auto submenuPosition = exec.find("MenuSub ");
@@ -339,6 +454,8 @@ std::vector<CursedMenu> CursedMenuLoader::loadConfig(
 
     if (debugFlag) {
         debug(PROGRAM, 2, "close config file");
+    } else {
+        std::cerr << "Unable to open file: " << resolvedConfigFile << std::endl;
     }
 
     return menus;

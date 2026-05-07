@@ -24,4 +24,4 @@ cmake --build --preset=${PRESET}
 
 source build/${BUILD_FOLDER}/generators/deactivate_conanbuild.sh
 
-# ctest --preset=${PRESET}
+ctest --preset=${PRESET}

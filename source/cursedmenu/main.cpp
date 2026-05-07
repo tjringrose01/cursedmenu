@@ -7,6 +7,7 @@
  */
 
 #include <cstdlib>
+#include <filesystem>
 #include <iostream>
 #include <stack>
 #include <string>
@@ -99,6 +100,32 @@ void ensureEnvironmentVariable(
     }
 }
 
+std::string resolveMenuFilePath(const std::string& requestedMenuFile) {
+    namespace fs = std::filesystem;
+
+    if (requestedMenuFile.empty()) {
+        return requestedMenuFile;
+    }
+
+    const fs::path directPath(requestedMenuFile);
+    if (fs::exists(directPath)) {
+        return requestedMenuFile;
+    }
+
+    if (directPath.has_parent_path()) {
+        return requestedMenuFile;
+    }
+
+    const fs::path sourceMenuPath =
+        fs::path("source") / "cursedmenu" / requestedMenuFile;
+
+    if (fs::exists(sourceMenuPath)) {
+        return sourceMenuPath.string();
+    }
+
+    return requestedMenuFile;
+}
+
 } // namespace
 
 int main(int argc, char** argv) {
@@ -119,6 +146,8 @@ int main(int argc, char** argv) {
         argv,
         menuFile,
         performMenuCheck);
+
+    menuFile = resolveMenuFilePath(menuFile);
 
     if (parseResult != SUCCESS) {
         displayUsage();
