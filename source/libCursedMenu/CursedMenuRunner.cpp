@@ -7,6 +7,7 @@
 #include <menu.h>
 
 #include "MenuRenderer.hpp"
+#include "CursedMenuExceptions.hpp"
 #include "NcursesMenu.hpp"
 #include "NcursesSession.hpp"
 #include "NcursesWindow.hpp"
@@ -160,16 +161,15 @@ CursedMenuRunner::CursedMenuRunner(ActionLogger& actionLogger)
 void CursedMenuRunner::run(std::stack<CursedMenu>& menus) {
     try {
         runMenu(actionLogger, menus);
+    } catch (const RuntimeException&) {
+        throw;
     } catch (const std::exception& exception) {
-        std::cerr
-            << "Runtime error: " << exception.what()
-            << std::endl;
-        throw;
+        throw RuntimeException(
+            std::string("CursedMenuRunner failure: ")
+            + exception.what());
     } catch (...) {
-        std::cerr
-            << "Unknown runtime error in CursedMenuRunner"
-            << std::endl;
-        throw;
+        throw RuntimeException(
+            "CursedMenuRunner failure: unknown exception");
     }
 }
 

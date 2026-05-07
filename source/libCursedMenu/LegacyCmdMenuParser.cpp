@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+#include "CursedMenuExceptions.hpp"
+
 namespace cursedmenu {
 
 bool LegacyCmdMenuParser::supportsFile(
@@ -16,13 +18,8 @@ MenuParseResult LegacyCmdMenuParser::parseFile(
     std::ifstream inputFile(path);
 
     if (!inputFile.is_open()) {
-        result.errors.push_back({
-            path.string(),
-            "file",
-            "Unable to open legacy .cmd menu file"
-        });
-
-        return result;
+        throw ParserException(
+            "Unable to open legacy .cmd menu file: " + path.string());
     }
 
     // Placeholder implementation while the existing parser logic is migrated
