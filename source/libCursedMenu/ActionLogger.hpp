@@ -34,19 +34,19 @@ class ActionLogger {
         std::string userId;
         std::string logFile;
         int pid;
-        std::string getSysTime();
-        std::string getUserId();
-        int getPid();
+        std::string getSysTime() const;
+        std::string getUserId() const;
+        int getPid() const;
 
     public:
         ActionLogger();
-        ActionLogger(bool debugMode, std::string logFile);
-        bool debugModeIsOn();
-        bool getDebugMode();
-        void log(std::string logText);
-        void logCmd(std::string logText);
-        void logMenu(bool coming, std::string menuTitle);
-        std::string toString();
+        ActionLogger(bool debugMode, const std::string& logFile);
+        bool debugModeIsOn() const;
+        bool getDebugMode() const;
+        void log(const std::string& logText) const;
+        void logCmd(const std::string& logText) const;
+        void logMenu(bool coming, const std::string& menuTitle) const;
+        std::string toString() const;
 };
 
 #endif // __ACTIONLOGGER__
