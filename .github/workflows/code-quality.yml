@@ -87,12 +87,13 @@ jobs:
       - name: Install Conan dependencies
         run: |
           conan install . \
+            --output-folder=build/sanitized \
             --build=missing \
             -s build_type=Debug
 
       - name: Verify Conan toolchain
         run: |
-          test -f build/Debug/generators/conan_toolchain.cmake
+          test -f build/sanitized/generators/conan_toolchain.cmake
 
       - name: Configure sanitizer build
         env:
@@ -103,7 +104,8 @@ jobs:
           cmake -B build/sanitized \
             -S . \
             -G Ninja \
-            -DCMAKE_BUILD_TYPE=Debug
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_TOOLCHAIN_FILE=build/sanitized/generators/conan_toolchain.cmake
 
       - name: Build sanitizer target
         env:
