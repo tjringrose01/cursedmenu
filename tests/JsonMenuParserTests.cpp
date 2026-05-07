@@ -1,6 +1,7 @@
 #include <filesystem>
 #include <iostream>
 
+#include "CursedMenuExceptions.hpp"
 #include "JsonMenuParser.hpp"
 
 #define REQUIRE(condition)                                                     \
@@ -36,54 +37,24 @@ int main() {
         REQUIRE(result.menuDefinition.menus.size() == 2);
     }
 
-    {
-        auto result = parser.parseFile(testFile("invalid-json-format.json"));
+    auto requiresException = [&parser](const std::filesystem::path& path) {
+        try {
+            (void)parser.parseFile(path);
+            return false;
+        } catch (const ParserException&) {
+            return true;
+        } catch (const ValidationException&) {
+            return true;
+        }
+    };
 
-        REQUIRE(!result.success);
-        REQUIRE(!result.errors.empty());
-    }
-
-    {
-        auto result = parser.parseFile(testFile("missing-root-menu.json"));
-
-        REQUIRE(!result.success);
-        REQUIRE(!result.errors.empty());
-    }
-
-    {
-        auto result = parser.parseFile(testFile("duplicate-menu-id.json"));
-
-        REQUIRE(!result.success);
-        REQUIRE(!result.errors.empty());
-    }
-
-    {
-        auto result = parser.parseFile(testFile("missing-submenu-target.json"));
-
-        REQUIRE(!result.success);
-        REQUIRE(!result.errors.empty());
-    }
-
-    {
-        auto result = parser.parseFile(testFile("submenu-cycle.json"));
-
-        REQUIRE(!result.success);
-        REQUIRE(!result.errors.empty());
-    }
-
-    {
-        auto result = parser.parseFile(testFile("invalid-colors.json"));
-
-        REQUIRE(!result.success);
-        REQUIRE(!result.errors.empty());
-    }
-
-    {
-        auto result = parser.parseFile(testFile("empty-values.json"));
-
-        REQUIRE(!result.success);
-        REQUIRE(!result.errors.empty());
-    }
+    REQUIRE(requiresException(testFile("invalid-json-format.json")));
+    REQUIRE(requiresException(testFile("missing-root-menu.json")));
+    REQUIRE(requiresException(testFile("duplicate-menu-id.json")));
+    REQUIRE(requiresException(testFile("missing-submenu-target.json")));
+    REQUIRE(requiresException(testFile("submenu-cycle.json")));
+    REQUIRE(requiresException(testFile("invalid-colors.json")));
+    REQUIRE(requiresException(testFile("empty-values.json")));
 
     {
         auto result = parser.parseFile(testFile("long-values.json"));
@@ -92,19 +63,8 @@ int main() {
         REQUIRE(result.errors.empty());
     }
 
-    {
-        auto result = parser.parseFile(testFile("multiple-actions.json"));
-
-        REQUIRE(!result.success);
-        REQUIRE(!result.errors.empty());
-    }
-
-    {
-        auto result = parser.parseFile(testFile("unsupported-action.json"));
-
-        REQUIRE(!result.success);
-        REQUIRE(!result.errors.empty());
-    }
+    REQUIRE(requiresException(testFile("multiple-actions.json")));
+    REQUIRE(requiresException(testFile("unsupported-action.json")));
 
     std::cout << "All JsonMenuParser tests passed." << std::endl;
 

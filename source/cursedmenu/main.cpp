@@ -15,8 +15,10 @@
 
 #include "ActionLogger.hpp"
 #include "CursedMenu.hpp"
+#include "CursedMenuExceptions.hpp"
 #include "CursedMenuLoader.hpp"
 #include "CursedMenuRunner.hpp"
+#include "MenuParserFactory.hpp"
 #include "debug.hpp"
 
 #define PACKAGE_NAME "cursedmenu"
@@ -129,61 +131,95 @@ std::string resolveMenuFilePath(const std::string& requestedMenuFile) {
 } // namespace
 
 int main(int argc, char** argv) {
-    ActionLogger logger;
+    try {
+        ActionLogger logger;
 
-    logger.log("cursedmenu begin");
+        logger.log("cursedmenu begin");
 
-    ensureEnvironmentVariable(
-        "TERMINFO",
-        "/usr/share/terminfo");
+        ensureEnvironmentVariable(
+            "TERMINFO",
+            "/usr/share/terminfo");
 
-    std::string menuFile = "default.cmd";
-    bool performMenuCheck = false;
-    bool debugIsOn = false;
+        std::string menuFile = "default.cmd";
+        bool performMenuCheck = false;
+        bool debugIsOn = false;
 
-    const int parseResult = parseArgs(
-        argc,
-        argv,
-        menuFile,
-        performMenuCheck);
+        const int parseResult = parseArgs(
+            argc,
+            argv,
+            menuFile,
+            performMenuCheck);
 
-    menuFile = resolveMenuFilePath(menuFile);
+        menuFile = resolveMenuFilePath(menuFile);
 
-    if (parseResult != SUCCESS) {
-        displayUsage();
-        return parseResult;
-    }
-
-    if (performMenuCheck) {
-        std::vector<CursedMenu> menus =
-            CursedMenuLoader::loadConfig(
-                menuFile,
-                debugIsOn);
-
-        for (const auto& menu : menus) {
-            std::cout << menu.toString() << std::endl;
+        if (parseResult != SUCCESS) {
+            displayUsage();
+            return parseResult;
         }
 
-        std::cout
-            << "Number of menus correctly parsed: "
-            << menus.size()
-            << std::endl;
+        if (performMenuCheck) {
+            cursedmenu::MenuParserFactory parserFactory;
+            const cursedmenu::MenuParser* parser =
+                parserFactory.getParserForFile(menuFile);
+
+            if (parser == nullptr) {
+                throw cursedmenu::ParserException(
+                    "No parser available for file: " + menuFile);
+            }
+
+            const auto parseResult = parser->parseFile(menuFile);
+
+            std::cout
+                << "Number of menus correctly parsed: "
+                << parseResult.menuDefinition.menus.size()
+                << std::endl;
+
+            return SUCCESS;
+        }
+
+        std::stack<CursedMenu> menus;
+
+        menus.push(CursedMenu(debugIsOn, menuFile));
+
+        if (menus.top().getNumOfItems() == 0) {
+            throw cursedmenu::MenuLoadException(
+                "No menu items found in: " + menuFile);
+        }
+
+        cursedmenu::CursedMenuRunner runner(logger);
+
+        runner.run(menus);
 
         return SUCCESS;
-    }
-
-    std::stack<CursedMenu> menus;
-
-    menus.push(CursedMenu(debugIsOn, menuFile));
-
-    if (menus.top().getNumOfItems() == 0) {
-        std::cerr << "No menu found..." << std::endl;
+    } catch (const cursedmenu::ValidationException& exception) {
+        std::cerr
+            << "validation error: " << exception.what()
+            << std::endl;
         return ERROR_INVALID_FILENAME;
+    } catch (const cursedmenu::ParserException& exception) {
+        std::cerr
+            << "parser error: " << exception.what()
+            << std::endl;
+        return ERROR_INVALID_FILENAME;
+    } catch (const cursedmenu::MenuLoadException& exception) {
+        std::cerr
+            << "menu load error: " << exception.what()
+            << std::endl;
+        return ERROR_INVALID_FILENAME;
+    } catch (const cursedmenu::RuntimeException& exception) {
+        std::cerr
+            << "runtime error: " << exception.what()
+            << std::endl;
+        return ERROR_UNKNOWN;
+    } catch (const cursedmenu::CursedMenuException& exception) {
+        std::cerr
+            << "cursedmenu error: " << exception.what()
+            << std::endl;
+        return ERROR_INVALID_FILENAME;
+    } catch (const std::exception& exception) {
+        std::cerr
+            << "unexpected error: " << exception.what()
+            << std::endl;
+        return ERROR_UNKNOWN;
     }
-
-    cursedmenu::CursedMenuRunner runner(logger);
-
-    runner.run(menus);
-
-    return SUCCESS;
 }

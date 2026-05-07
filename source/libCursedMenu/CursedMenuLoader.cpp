@@ -58,6 +58,7 @@
 #include <vector>
 
 #include "CursedMenu.hpp"
+#include "CursedMenuExceptions.hpp"
 #include "CursedMenuItem.hpp"
 #include "CursedMenuLoader.hpp"
 #include "debug.hpp"
@@ -182,6 +183,11 @@ CursedMenu CursedMenuLoader::load(
     const bool debugFlag) {
     const std::vector<CursedMenu> menus = loadConfig(configFile, debugFlag);
 
+    if (menus.empty()) {
+        throw cursedmenu::MenuLoadException(
+            "No menus were loaded from file: " + configFile);
+    }
+
     return menus.at(menus.size() - 1);
 }
 
@@ -213,8 +219,8 @@ std::vector<CursedMenu> CursedMenuLoader::loadConfig(
     std::ifstream fileInput(configFile.c_str());
 
     if (!fileInput.is_open()) {
-        std::cerr << "Unable to open file: " << configFile << std::endl;
-        return menus;
+        throw cursedmenu::MenuLoadException(
+            "Unable to open menu file: " + configFile);
     }
 
     if (debugFlag) {

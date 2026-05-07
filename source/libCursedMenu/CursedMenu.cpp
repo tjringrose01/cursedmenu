@@ -12,6 +12,7 @@
 #include <string>
 
 #include "CursedMenu.hpp"
+#include "CursedMenuExceptions.hpp"
 #include "CursedMenuItem.hpp"
 #include "CursedMenuLoader.hpp"
 #include "debug.hpp"
@@ -52,9 +53,11 @@ CursedMenuItem const& CursedMenu::getItem(const int index) const {
         return menuItems.at(index);
     }
 
-    std::cerr << "Error: item out of bounds." << std::endl;
-
-    return menuItems.back();
+    throw cursedmenu::RuntimeException(
+        "Menu item index out of bounds: index="
+        + std::to_string(index)
+        + ", size="
+        + std::to_string(menuItems.size()));
 }
 
 CursedMenuItem const& CursedMenu::getItem(
@@ -65,9 +68,8 @@ CursedMenuItem const& CursedMenu::getItem(
         }
     }
 
-    std::cerr << "Error: item out of bounds." << std::endl;
-
-    return menuItems.back();
+    throw cursedmenu::RuntimeException(
+        "Menu item not found: name=\"" + name + "\"");
 }
 
 std::string CursedMenu::toString() const {

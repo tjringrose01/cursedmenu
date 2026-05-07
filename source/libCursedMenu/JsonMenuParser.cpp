@@ -6,6 +6,7 @@
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
 
+#include "CursedMenuExceptions.hpp"
 #include "MenuValidator.hpp"
 
 namespace cursedmenu {
@@ -31,6 +32,40 @@ bool hasStringField(
         && jsonObject[fieldName].IsString();
 }
 
+[[noreturn]] void throwParserErrors(const MenuParseResult& result) {
+    std::string message = "JSON parser failure";
+
+    if (!result.errors.empty()) {
+        message += ": ";
+        for (std::size_t index = 0; index < result.errors.size(); ++index) {
+            const auto& error = result.errors[index];
+            message += "[" + error.location + "] " + error.message;
+            if (index + 1 < result.errors.size()) {
+                message += "; ";
+            }
+        }
+    }
+
+    throw ParserException(message);
+}
+
+[[noreturn]] void throwValidationErrors(const std::vector<MenuParseError>& errors) {
+    std::string message = "Menu validation failure";
+
+    if (!errors.empty()) {
+        message += ": ";
+        for (std::size_t index = 0; index < errors.size(); ++index) {
+            const auto& error = errors[index];
+            message += "[" + error.location + "] " + error.message;
+            if (index + 1 < errors.size()) {
+                message += "; ";
+            }
+        }
+    }
+
+    throw ValidationException(message);
+}
+
 } // namespace
 
 bool JsonMenuParser::supportsFile(
@@ -50,8 +85,7 @@ MenuParseResult JsonMenuParser::parseFile(
             path,
             "file",
             "Unable to open JSON menu file");
-
-        return result;
+        throwParserErrors(result);
     }
 
     std::stringstream buffer;
@@ -69,7 +103,7 @@ MenuParseResult JsonMenuParser::parseFile(
             std::string("Failed to parse JSON: ")
                 + rapidjson::GetParseError_En(document.GetParseError()));
 
-        return result;
+        throwParserErrors(result);
     }
 
     if (!document.IsObject()) {
@@ -79,7 +113,7 @@ MenuParseResult JsonMenuParser::parseFile(
             "root",
             "Top-level JSON element must be an object");
 
-        return result;
+        throwParserErrors(result);
     }
 
     if (!document.HasMember("version")
@@ -128,7 +162,7 @@ MenuParseResult JsonMenuParser::parseFile(
             "menus",
             "Missing or invalid menus array");
 
-        return result;
+        throwParserErrors(result);
     }
 
     const auto& menusJson = document["menus"];
@@ -295,6 +329,14 @@ MenuParseResult JsonMenuParser::parseFile(
         validationErrors.end());
 
     result.success = result.errors.empty();
+
+    if (!validationErrors.empty()) {
+        throwValidationErrors(validationErrors);
+    }
+
+    if (!result.success) {
+        throwParserErrors(result);
+    }
 
     return result;
 }

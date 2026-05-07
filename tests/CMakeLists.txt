@@ -51,3 +51,39 @@ add_test(
     COMMAND RuntimeActionTests
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
+
+add_executable(CursedMenuLoaderExceptionTests
+    CursedMenuLoaderExceptionTests.cpp
+)
+
+target_include_directories(CursedMenuLoaderExceptionTests PRIVATE
+    ../source/include
+)
+
+target_link_libraries(CursedMenuLoaderExceptionTests PRIVATE
+    CursedMenu
+)
+
+add_test(
+    NAME CursedMenuLoaderExceptionTests
+    COMMAND CursedMenuLoaderExceptionTests
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+add_executable(CursedMenuExceptionTests
+    CursedMenuExceptionTests.cpp
+)
+
+target_include_directories(CursedMenuExceptionTests PRIVATE
+    ../source/include
+)
+
+target_link_libraries(CursedMenuExceptionTests PRIVATE
+    CursedMenu
+)
+
+add_test(
+    NAME CursedMenuExceptionTests
+    COMMAND CursedMenuExceptionTests
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
