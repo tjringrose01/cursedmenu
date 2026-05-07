@@ -46,7 +46,7 @@ int CursedMenu::getNumOfItems() const noexcept {
     return static_cast<int>(menuItems.size());
 }
 
-CursedMenuItem CursedMenu::getItem(const int index) const {
+CursedMenuItem const& CursedMenu::getItem(const int index) const {
     if (index >= 0 &&
         static_cast<size_t>(index) < menuItems.size()) {
         return menuItems.at(index);
@@ -57,7 +57,7 @@ CursedMenuItem CursedMenu::getItem(const int index) const {
     return menuItems.back();
 }
 
-CursedMenuItem CursedMenu::getItem(
+CursedMenuItem const& CursedMenu::getItem(
     const std::string& name) const {
     for (const auto& item : menuItems) {
         if (item.getName() == name) {

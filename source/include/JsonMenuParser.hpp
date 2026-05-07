@@ -10,7 +10,7 @@ namespace cursedmenu {
  */
 class JsonMenuParser final : public MenuParser {
 public:
-    bool supportsFile(const std::filesystem::path& path) const override;
+    bool supportsFile(const std::filesystem::path& path) const noexcept override;
 
     MenuParseResult parseFile(
         const std::filesystem::path& path) const override;

@@ -54,8 +54,8 @@ public:
 
     [[nodiscard]] std::string toString() const;
 
-    [[nodiscard]] CursedMenuItem getItem(int index) const;
-    [[nodiscard]] CursedMenuItem getItem(const std::string& name) const;
+    [[nodiscard]] const CursedMenuItem& getItem(int index) const;
+    [[nodiscard]] const CursedMenuItem& getItem(const std::string& name) const;
 
     void addItem(const CursedMenuItem& item);
 

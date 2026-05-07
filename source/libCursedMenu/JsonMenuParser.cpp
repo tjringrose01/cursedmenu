@@ -34,7 +34,7 @@ bool hasStringField(
 } // namespace
 
 bool JsonMenuParser::supportsFile(
-    const std::filesystem::path& path) const {
+    const std::filesystem::path& path) const noexcept {
     return path.extension() == ".json";
 }
 
