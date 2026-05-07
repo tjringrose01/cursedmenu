@@ -1,0 +1,30 @@
+Checks: >
+  -*,
+  bugprone-*,
+  performance-*,
+  readability-*,
+  modernize-*,
+  cppcoreguidelines-avoid-c-arrays,
+  cppcoreguidelines-init-variables,
+  cppcoreguidelines-slicing,
+  cppcoreguidelines-special-member-functions
+
+WarningsAsErrors: ''
+
+HeaderFilterRegex: 'source/.*|tests/.*'
+
+CheckOptions:
+  - key: modernize-use-trailing-return-type.MinTypeNameLength
+    value: '0'
+
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+
+  - key: readability-identifier-naming.FunctionCase
+    value: camelBack
+
+  - key: readability-identifier-naming.MethodCase
+    value: camelBack
+
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case

@@ -35,24 +35,52 @@ A typical Linux development environment needs:
 - Ninja
 - Python 3 and pip
 - ncurses development headers and libraries
+- clang-tidy (for static analysis / CI code-quality checks)
+- AddressSanitizer and UndefinedBehaviorSanitizer runtime libraries
+  (for sanitizer CI/builds)
 
 On Ubuntu or Debian-based systems:
 
 ```bash
 sudo apt update
-sudo apt install build-essential cmake ninja-build python3-pip libncurses-dev
+sudo apt install -y \
+  build-essential \
+  cmake \
+  ninja-build \
+  python3 \
+  python3-pip \
+  libncurses-dev \
+  clang-tidy \
+  libasan8 \
+  libubsan1
+```
+
+On RHEL, Rocky, AlmaLinux, or Fedora-based systems:
+
+```bash
+sudo dnf install -y \
+  gcc \
+  gcc-c++ \
+  cmake \
+  ninja-build \
+  python3 \
+  python3-pip \
+  ncurses-devel \
+  clang-tools-extra \
+  libasan \
+  libubsan
 ```
 
 Install Conan:
 
 ```bash
-pip install conan
+python3 -m pip install --user conan
 ```
 
 Initialize a Conan profile:
 
 ```bash
-conan profile detect --force
+~/.local/bin/conan profile detect --force
 ```
 
 ## Build System

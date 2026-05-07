@@ -1,0 +1,117 @@
+name: Code Quality
+
+on:
+  push:
+    branches:
+      - dev
+      - 'feature/**'
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  clang-tidy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            gcc \
+            g++ \
+            cmake \
+            clang-tidy \
+            ninja-build \
+            python3-pip
+
+      - name: Install Conan
+        run: |
+          pip install conan
+
+      - name: Detect Conan profile
+        run: |
+          conan profile detect --force
+
+      - name: Install Conan dependencies
+        run: |
+          conan install . \
+            --build=missing \
+            -s build_type=Release
+
+      - name: Verify Conan toolchain
+        run: |
+          test -f build/Release/generators/conan_toolchain.cmake
+
+      - name: Configure CMake
+        run: |
+          cmake --preset=cursedmenu-release \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Verify compilation database
+        run: |
+          test -f build/Release/compile_commands.json
+
+      - name: Run clang-tidy
+        run: |
+          find source -name '*.cpp' | \
+          xargs clang-tidy \
+            -p build/Release \
+            --quiet
+
+  sanitizer-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            gcc \
+            g++ \
+            cmake \
+            ninja-build \
+            python3-pip
+
+      - name: Install Conan
+        run: |
+          pip install conan
+
+      - name: Detect Conan profile
+        run: |
+          conan profile detect --force
+
+      - name: Install Conan dependencies
+        run: |
+          conan install . \
+            --output-folder=build/sanitized \
+            --build=missing \
+            -s build_type=Debug
+
+      - name: Verify Conan toolchain
+        run: |
+          test -f build/sanitized/build/Debug/generators/conan_toolchain.cmake
+
+      - name: Configure sanitizer build
+        run: |
+          cmake -B build/sanitized \
+            -S . \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_TOOLCHAIN_FILE=build/sanitized/build/Debug/generators/conan_toolchain.cmake \
+            -DCMAKE_C_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer" \
+            -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer" \
+            -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer" \
+            -DCMAKE_SHARED_LINKER_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer"
+
+      - name: Build sanitizer target
+        run: |
+          cmake --build build/sanitized --verbose

@@ -2,24 +2,6 @@
  *  CursedMenu.cpp - CursedMenu Class Implementation - This class is
  *                  responsible for reading in the configuration file and
  *                  storing it's informtion within it's class members
- *
- *  Copyright 2007, 2008, 2024 Timothy Ringrose
- *
- *  This file is part of cursedmenu.
- *
- *  cursedmenu is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  cursedmenu is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with cursedmenu.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #include <curses.h>
@@ -38,7 +20,7 @@
 
 CursedMenu::CursedMenu(
     const bool debugFlag,
-    const std::string configFile) {
+    const std::string& configFile) {
     setDebugFlag(debugFlag);
 
     CursedMenu tmpMenu =
@@ -51,7 +33,7 @@ CursedMenu::CursedMenu() {
     setDebugFlag(false);
 }
 
-CursedMenu::CursedMenu(const std::string configFile) {
+CursedMenu::CursedMenu(const std::string& configFile) {
     setDebugFlag(false);
 
     CursedMenu tmpMenu =
@@ -60,82 +42,52 @@ CursedMenu::CursedMenu(const std::string configFile) {
     *this = tmpMenu;
 }
 
-int CursedMenu::getNumOfItems() {
-    return menuItems.size();
+int CursedMenu::getNumOfItems() const noexcept {
+    return static_cast<int>(menuItems.size());
 }
 
-CursedMenu::~CursedMenu() {
-}
-
-CursedMenuItem CursedMenu::getItem(int index) {
-    int i = 0;
-
-    std::vector<CursedMenuItem>::iterator it;
-
-    for (it = menuItems.begin(); it != menuItems.end(); it++) {
-        if (index == i) {
-            return *it;
-        }
-
-        ++i;
+CursedMenuItem const& CursedMenu::getItem(const int index) const {
+    if (index >= 0 &&
+        static_cast<size_t>(index) < menuItems.size()) {
+        return menuItems.at(index);
     }
 
     std::cerr << "Error: item out of bounds." << std::endl;
 
-    return menuItems[menuItems.size() - 1];
+    return menuItems.back();
 }
 
-CursedMenuItem CursedMenu::getItem(std::string name) {
-    std::vector<CursedMenuItem>::iterator it;
-
-    for (it = menuItems.begin(); it != menuItems.end(); it++) {
-        if (it->getName() == name) {
-            return *it;
+CursedMenuItem const& CursedMenu::getItem(
+    const std::string& name) const {
+    for (const auto& item : menuItems) {
+        if (item.getName() == name) {
+            return item;
         }
     }
 
     std::cerr << "Error: item out of bounds." << std::endl;
 
-    return menuItems[menuItems.size() - 1];
+    return menuItems.back();
 }
 
 std::string CursedMenu::toString() const {
-    if (debugFlag) {
-        std::cerr
-            << "Entered CursedMenu::toString()"
-            << std::endl;
-    }
-
     std::ostringstream sout;
 
     unsigned int itemCount = 0;
 
-    sout
-        << "Menu: =================================================="
-        << std::endl;
-
     sout << "Title: " << menuTitle << std::endl;
 
-    std::vector<CursedMenuItem>::const_iterator it;
-
-    for (it = menuItems.begin(); it != menuItems.end(); it++) {
-        sout << "-----------------" << std::endl;
+    for (const auto& item : menuItems) {
         sout << "Item Number: " << itemCount++ << std::endl;
-        sout << it->toString();
+        sout << item.toString();
     }
-
-    sout
-        << "========================================================"
-        << std::endl;
 
     return sout.str();
 }
 
-void CursedMenu::addItem(CursedMenuItem item) {
-    std::vector<CursedMenuItem>::iterator it;
-
-    for (it = menuItems.begin(); it != menuItems.end(); it++) {
-        if (it->getName() == item.getName()) {
+void CursedMenu::addItem(const CursedMenuItem& item) {
+    for (const auto& existingItem : menuItems) {
+        if (existingItem.getName() == item.getName()) {
             return;
         }
     }
@@ -143,53 +95,53 @@ void CursedMenu::addItem(CursedMenuItem item) {
     menuItems.push_back(item);
 }
 
-void CursedMenu::setDebugFlag(bool debugFlag) {
+void CursedMenu::setDebugFlag(const bool debugFlag) noexcept {
     this->debugFlag = debugFlag;
 }
 
-int CursedMenu::getForeColor() {
+int CursedMenu::getForeColor() const noexcept {
     return foreMenuColor;
 }
 
-int CursedMenu::getBackColor() {
+int CursedMenu::getBackColor() const noexcept {
     return backMenuColor;
 }
 
-int CursedMenu::getMenuCenterX() {
-    std::vector<CursedMenuItem>::iterator it;
+int CursedMenu::getMenuCenterX() const noexcept {
+    size_t lengthOfLongestItem = 0;
 
-    unsigned int lengthOfLongestItem = 0;
-
-    for (it = menuItems.begin(); it != menuItems.end(); it++) {
-        if (it->getName().length() > lengthOfLongestItem) {
-            lengthOfLongestItem = it->getName().length();
+    for (const auto& item : menuItems) {
+        if (item.getName().length() > lengthOfLongestItem) {
+            lengthOfLongestItem = item.getName().length();
         }
     }
 
-    return lengthOfLongestItem;
+    return static_cast<int>(lengthOfLongestItem);
 }
 
-std::string CursedMenu::getMenuTitle() {
+const std::string& CursedMenu::getMenuTitle() const noexcept {
     return menuTitle;
 }
 
-void CursedMenu::setMenuTitle(std::string menuTitle) {
+void CursedMenu::setMenuTitle(
+    const std::string& menuTitle) {
     this->menuTitle = menuTitle;
 }
 
-std::string CursedMenu::getMenuName() {
+const std::string& CursedMenu::getMenuName() const noexcept {
     return menuName;
 }
 
-void CursedMenu::setMenuName(std::string menuName) {
+void CursedMenu::setMenuName(
+    const std::string& menuName) {
     this->menuName = menuName;
 }
 
-void CursedMenu::setForeColor(int foreColor) {
+void CursedMenu::setForeColor(const int foreColor) noexcept {
     this->foreMenuColor = foreColor;
 }
 
-void CursedMenu::setBackColor(int backColor) {
+void CursedMenu::setBackColor(const int backColor) noexcept {
     this->backMenuColor = backColor;
 }
 
@@ -200,12 +152,7 @@ CursedMenu& CursedMenu::operator=(const CursedMenu& cm) {
         foreMenuColor = cm.foreMenuColor;
         backMenuColor = cm.backMenuColor;
         debugFlag = cm.debugFlag;
-
-        menuItems.clear();
-
-        for (size_t x = 0; x < cm.menuItems.size(); x++) {
-            menuItems.push_back(cm.menuItems.at(x));
-        }
+        menuItems = cm.menuItems;
     }
 
     return *this;

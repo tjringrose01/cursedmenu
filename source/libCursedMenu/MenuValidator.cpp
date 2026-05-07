@@ -36,7 +36,7 @@ bool detectCycle(
     visited.insert(menuId);
     recursionStack.insert(menuId);
 
-    auto graphIterator = graph.find(menuId);
+    const auto graphIterator = graph.find(menuId);
 
     if (graphIterator != graph.end()) {
         for (const auto& childMenu : graphIterator->second) {
@@ -60,6 +60,9 @@ std::vector<MenuParseError> MenuValidator::validate(
 
     std::unordered_map<std::string, const Menu*> menuMap;
     std::unordered_map<std::string, std::set<std::string>> submenuGraph;
+
+    menuMap.reserve(menuDefinition.menus.size());
+    submenuGraph.reserve(menuDefinition.menus.size());
 
     for (std::size_t menuIndex = 0;
          menuIndex < menuDefinition.menus.size();
@@ -151,6 +154,8 @@ std::vector<MenuParseError> MenuValidator::validate(
     }
 
     for (const auto& [menuId, submenuTargets] : submenuGraph) {
+        (void)menuId;
+
         for (const auto& submenuTarget : submenuTargets) {
             if (menuMap.find(submenuTarget) == menuMap.end()) {
                 addError(
@@ -166,7 +171,12 @@ std::vector<MenuParseError> MenuValidator::validate(
     std::unordered_set<std::string> visited;
     std::unordered_set<std::string> recursionStack;
 
+    visited.reserve(menuMap.size());
+    recursionStack.reserve(menuMap.size());
+
     for (const auto& [menuId, menuPointer] : menuMap) {
+        (void)menuPointer;
+
         if (detectCycle(
                 menuId,
                 submenuGraph,

@@ -35,7 +35,6 @@
 
 class CursedMenu {
 private:
-    /* Private Members */
     std::string menuName;
     std::string menuTitle;
 
@@ -46,35 +45,34 @@ private:
     bool debugFlag;
 
 public:
-    /* Public Methods */
     CursedMenu();
-    CursedMenu(std::string configFile);
-    CursedMenu(bool debugFlag, std::string configFile);
-    ~CursedMenu();
+    explicit CursedMenu(const std::string& configFile);
+    CursedMenu(bool debugFlag, const std::string& configFile);
+    ~CursedMenu() noexcept = default;
 
-    int getNumOfItems();
+    [[nodiscard]] int getNumOfItems() const noexcept;
 
-    std::string toString() const;
+    [[nodiscard]] std::string toString() const;
 
-    CursedMenuItem getItem(int index);
-    CursedMenuItem getItem(std::string name);
+    [[nodiscard]] const CursedMenuItem& getItem(int index) const;
+    [[nodiscard]] const CursedMenuItem& getItem(const std::string& name) const;
 
-    void addItem(CursedMenuItem item);
+    void addItem(const CursedMenuItem& item);
 
-    void setDebugFlag(bool debugFlag);
+    void setDebugFlag(bool debugFlag) noexcept;
 
-    int getForeColor();
-    int getBackColor();
-    int getMenuCenterX();
+    [[nodiscard]] int getForeColor() const noexcept;
+    [[nodiscard]] int getBackColor() const noexcept;
+    [[nodiscard]] int getMenuCenterX() const noexcept;
 
-    void setForeColor(int foreColor);
-    void setBackColor(int backColor);
+    void setForeColor(int foreColor) noexcept;
+    void setBackColor(int backColor) noexcept;
 
-    std::string getMenuTitle();
-    void setMenuTitle(std::string menuTitle);
+    [[nodiscard]] const std::string& getMenuTitle() const noexcept;
+    void setMenuTitle(const std::string& menuTitle);
 
-    std::string getMenuName();
-    void setMenuName(std::string menuName);
+    [[nodiscard]] const std::string& getMenuName() const noexcept;
+    void setMenuName(const std::string& menuName);
 
     CursedMenu& operator=(const CursedMenu& cm);
 };

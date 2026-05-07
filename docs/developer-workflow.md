@@ -48,16 +48,50 @@ The repository now includes committed `CMakePresets.json` presets for consistent
 
 ## Conan Setup
 
+Install base build dependencies first.
+
+Ubuntu / Debian:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y \
+  build-essential \
+  cmake \
+  ninja-build \
+  python3 \
+  python3-pip \
+  libncurses-dev \
+  clang-tidy \
+  libasan8 \
+  libubsan1
+```
+
+RHEL / Rocky / AlmaLinux / Fedora:
+
+```bash
+sudo dnf install -y \
+  gcc \
+  gcc-c++ \
+  cmake \
+  ninja-build \
+  python3 \
+  python3-pip \
+  ncurses-devel \
+  clang-tools-extra \
+  libasan \
+  libubsan
+```
+
 Install Conan:
 
 ```bash
-pip install conan
+python3 -m pip install --user conan
 ```
 
 Detect a local Conan profile:
 
 ```bash
-conan profile detect --force
+~/.local/bin/conan profile detect --force
 ```
 
 ## Recommended Local Build

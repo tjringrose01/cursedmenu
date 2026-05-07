@@ -14,7 +14,11 @@ namespace {
 
 #define PROGRAM "cursedmenu"
 
-void dispDesc(WINDOW* win, std::string desc, int pos_x, int pos_y) {
+void dispDesc(
+    WINDOW* win,
+    const std::string& desc,
+    const int pos_x,
+    const int pos_y) {
     for (int y = 1; y < pos_x - 1; y++) {
         mvwprintw(win, pos_y - 2, y, " ");
     }
@@ -22,11 +26,13 @@ void dispDesc(WINDOW* win, std::string desc, int pos_x, int pos_y) {
     mvwprintw(win, pos_y - 2, 1, "%s", desc.c_str());
 }
 
-int xCtr(std::string str, int width) {
+int xCtr(const std::string& str, const int width) {
     return static_cast<int>((width - str.length()) / 2);
 }
 
-void dispMenuTitle(CursedMenu mc, WINDOW* menu_window) {
+void dispMenuTitle(
+    const CursedMenu& mc,
+    WINDOW* menu_window) {
     std::string title = mc.getMenuTitle();
 
     if (title.length() == 0) {
@@ -53,7 +59,10 @@ void dispMenuTitle(CursedMenu mc, WINDOW* menu_window) {
     mvwprintw(menu_window, 3, centerX, "%s", title.c_str());
 }
 
-void clearScreen(WINDOW* win, int lines, int cols) {
+void clearScreen(
+    WINDOW* win,
+    const int lines,
+    const int cols) {
     for (int x = 1; x < lines - 1; x++) {
         for (int y = 1; y < cols - 1; y++) {
             mvwprintw(win, x, y, " ");
@@ -61,11 +70,11 @@ void clearScreen(WINDOW* win, int lines, int cols) {
     }
 }
 
-void loadMenuColor(CursedMenu* menu) {
+void loadMenuColor(const CursedMenu* menu) {
     init_pair(1, menu->getForeColor(), menu->getBackColor());
 }
 
-void loadCurses(CursedMenu* menu) {
+void loadCurses(const CursedMenu* menu) {
     initscr();
 
     start_color();

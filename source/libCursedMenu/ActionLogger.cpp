@@ -24,11 +24,12 @@
 #include <time.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <cstdlib>
 #include "ActionLogger.hpp"
 #define PACKAGE_NAME "cursedmenu"
 
-std::string ActionLogger::getSysTime() {
-    char * timeStr = new char[25];
+std::string ActionLogger::getSysTime() const {
+    char timeStr[25];
     struct tm *ptr;
     time_t tm;
 
@@ -37,20 +38,19 @@ std::string ActionLogger::getSysTime() {
 
     strftime(timeStr, 25, "%Y/%m/%d %H:%M:%S", ptr);
     
-    std::string returnStr = timeStr;
-    return(returnStr);
+    return timeStr;
 }
 
-std::string ActionLogger::getUserId() {
+std::string ActionLogger::getUserId() const {
     std::string logname = getenv("LOGNAME");
     if ( logname.size() <= 0 )
         logname = "unknown";
 
-    return(logname);
+    return logname;
 }
 
-int ActionLogger::getPid() {
-    return((int) getpid());
+int ActionLogger::getPid() const {
+    return static_cast<int>(getpid());
 }
 
 /**
@@ -64,26 +64,28 @@ ActionLogger::ActionLogger() {
     this->pid = getPid();
 }
 
-ActionLogger::ActionLogger(bool debugMode, std::string logFile) {
+ActionLogger::ActionLogger(
+    bool debugMode,
+    const std::string& logFile) {
     this->debugMode = debugMode;
     this->logFile = logFile;
     this->userId = getUserId();
     this->pid = getPid();
 }
 
-bool ActionLogger::debugModeIsOn() {
-    return(debugMode);
+bool ActionLogger::debugModeIsOn() const {
+    return debugMode;
 }
 
-bool ActionLogger::getDebugMode() {
-    return(debugMode);
+bool ActionLogger::getDebugMode() const {
+    return debugMode;
 }
 
 /**
  * Log straight text to logfile.
  * Note: For menu calls and program execution, please use logMnu and logCmd
  */
-void ActionLogger::log(std::string logText) {
+void ActionLogger::log(const std::string& logText) const {
     std::ofstream logf(logFile.c_str(), std::ios::app);
 
     logf << getSysTime() << " " << pid << " " << userId << ": " << logText
@@ -94,12 +96,12 @@ void ActionLogger::log(std::string logText) {
     return;
 }
 
-std::string ActionLogger::toString() {
+std::string ActionLogger::toString() const {
     std::string returnStr = "";
-    return(returnStr);
+    return returnStr;
 }
 
-void ActionLogger::logCmd(std::string logText) {
+void ActionLogger::logCmd(const std::string& logText) const {
     std::ofstream logf(logFile.c_str(), std::ios::app);
 
     logf << getSysTime() << " " << pid << " " << userId << ": " 
@@ -112,7 +114,9 @@ void ActionLogger::logCmd(std::string logText) {
     return;
 }
 
-void ActionLogger::logMenu(bool coming, std::string menuTitle) {
+void ActionLogger::logMenu(
+    const bool coming,
+    const std::string& menuTitle) const {
     std::ofstream logf(logFile.c_str(), std::ios::app);
 
     if ( coming )

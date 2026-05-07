@@ -36,23 +36,25 @@ private:
 
 public:
     CursedMenuItem(
-        const std::string name,
-        const std::string description,
-        const std::string command);
+        const std::string& name,
+        const std::string& description,
+        const std::string& command);
 
     CursedMenuItem(
-        const std::string name,
-        const std::string description,
-        const std::string command,
-        const bool postCommandPause);
+        const std::string& name,
+        const std::string& description,
+        const std::string& command,
+        bool postCommandPause);
 
-    ~CursedMenuItem();
+    ~CursedMenuItem() noexcept = default;
 
-    std::string getName() const;
-    std::string getDesc() const;
-    std::string getExec() const;
+    [[nodiscard]] const std::string& getName() const noexcept;
+    [[nodiscard]] const std::string& getDesc() const noexcept;
+    [[nodiscard]] const std::string& getExec() const noexcept;
 
-    std::string toString() const;
+    [[nodiscard]] bool shouldPauseAfterCommand() const noexcept;
+
+    [[nodiscard]] std::string toString() const;
 };
 
 #endif // __CURSEDMENUITEM__

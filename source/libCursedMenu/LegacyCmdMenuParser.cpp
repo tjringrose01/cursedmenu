@@ -5,7 +5,7 @@
 namespace cursedmenu {
 
 bool LegacyCmdMenuParser::supportsFile(
-    const std::filesystem::path& path) const {
+    const std::filesystem::path& path) const noexcept {
     return path.extension() == ".cmd";
 }
 
