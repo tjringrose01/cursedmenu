@@ -49,7 +49,12 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cmake . --preset=cursedmenu-release
+          cmake --preset=cursedmenu-release \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Verify compilation database
+        run: |
+          test -f build/Release/compile_commands.json
 
       - name: Run clang-tidy
         run: |

@@ -13,8 +13,6 @@ WarningsAsErrors: ''
 
 HeaderFilterRegex: 'source/.*|tests/.*'
 
-AnalyzeTemporaryDtors: false
-
 CheckOptions:
   - key: modernize-use-trailing-return-type.MinTypeNameLength
     value: '0'
