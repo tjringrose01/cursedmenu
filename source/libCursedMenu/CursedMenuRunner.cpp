@@ -1,278 +1,154 @@
 #include "CursedMenuRunner.hpp"
 
+#include <exception>
 #include <iostream>
-#include <vector>
 
 #include <curses.h>
 #include <menu.h>
 
-#include "debug.hpp"
+#include "MenuRenderer.hpp"
+#include "NcursesMenu.hpp"
+#include "NcursesSession.hpp"
+#include "NcursesWindow.hpp"
+#include "RuntimeAction.hpp"
 
 namespace cursedmenu {
 
 namespace {
 
-#define PROGRAM "cursedmenu"
-
-void dispDesc(
-    WINDOW* win,
-    const std::string& desc,
-    const int pos_x,
-    const int pos_y) {
-    for (int y = 1; y < pos_x - 1; y++) {
-        mvwprintw(win, pos_y - 2, y, " ");
+class NcursesCommandScope {
+public:
+    NcursesCommandScope(
+        NcursesSession& session,
+        const CursedMenu& menu)
+        : session(session),
+          menu(menu) {
+        session.suspend();
     }
 
-    mvwprintw(win, pos_y - 2, 1, "%s", desc.c_str());
-}
-
-int xCtr(const std::string& str, const int width) {
-    return static_cast<int>((width - str.length()) / 2);
-}
-
-void dispMenuTitle(
-    const CursedMenu& mc,
-    WINDOW* menu_window) {
-    std::string title = mc.getMenuTitle();
-
-    if (title.length() == 0) {
-        title = "Cursed Menu";
+    ~NcursesCommandScope() noexcept {
+        session.resume(menu);
     }
 
-    unsigned int centerX = xCtr(title, COLS);
-    unsigned int titleLen = title.length();
+    NcursesCommandScope(const NcursesCommandScope&) = delete;
+    NcursesCommandScope& operator=(const NcursesCommandScope&) = delete;
 
-    mvwaddch(menu_window, 2, centerX - 2, ACS_ULCORNER);
-
-    wmove(menu_window, 2, centerX - 1);
-    whline(menu_window, ACS_HLINE, titleLen + 2);
-
-    mvwaddch(menu_window, 2, centerX + titleLen + 1, ACS_URCORNER);
-    mvwaddch(menu_window, 3, centerX + titleLen + 1, ACS_VLINE);
-    mvwaddch(menu_window, 4, centerX + titleLen + 1, ACS_LRCORNER);
-    mvwaddch(menu_window, 3, centerX - 2, ACS_VLINE);
-    mvwaddch(menu_window, 4, centerX - 2, ACS_LLCORNER);
-
-    wmove(menu_window, 4, centerX - 1);
-    whline(menu_window, ACS_HLINE, titleLen + 2);
-
-    mvwprintw(menu_window, 3, centerX, "%s", title.c_str());
-}
-
-void clearScreen(
-    WINDOW* win,
-    const int lines,
-    const int cols) {
-    for (int x = 1; x < lines - 1; x++) {
-        for (int y = 1; y < cols - 1; y++) {
-            mvwprintw(win, x, y, " ");
-        }
-    }
-}
-
-void loadMenuColor(const CursedMenu* menu) {
-    init_pair(1, menu->getForeColor(), menu->getBackColor());
-}
-
-void loadCurses(const CursedMenu* menu) {
-    initscr();
-
-    start_color();
-
-    loadMenuColor(menu);
-
-    cbreak();
-    noecho();
-    keypad(stdscr, TRUE);
-}
-
-void refreshWin(WINDOW* win, MENU* menu) {
-    pos_menu_cursor(menu);
-    refresh();
-    wrefresh(win);
-}
+private:
+    NcursesSession& session;
+    const CursedMenu& menu;
+};
 
 void runMenu(
     ActionLogger& actionLogger,
-    std::stack<CursedMenu>* menus) {
-    actionLogger.logMenu(COMING, menus->top().getMenuTitle());
+    std::stack<CursedMenu>& menus) {
+    actionLogger.logMenu(COMING, menus.top().getMenuTitle());
 
     bool debugIsOn = actionLogger.getDebugMode();
 
     std::string selName;
 
-    int menuCenter;
     int userInput;
     int retVal;
 
-    MENU* curses_menu;
-    WINDOW* menu_window;
-    ITEM** menu_items;
-    std::vector<std::string> itemNames;
-    std::vector<std::string> itemDescriptions;
+    CursedMenu currentMenu = menus.top();
+    NcursesSession ncursesSession(currentMenu);
 
-    CursedMenu currentMenu = menus->top();
+    NcursesWindow menuWindow(LINES, COLS, 0, 0);
+    WINDOW* menu_window = menuWindow.get();
+    MenuRenderer renderer(menu_window);
 
-    loadCurses(&currentMenu);
+    renderer.initializeFrame();
 
-    menu_window = newwin(LINES, COLS, 0, 0);
+    renderer.clearScreen(LINES, COLS);
 
-    wattron(menu_window, COLOR_PAIR(1));
-    box(menu_window, 0, 0);
-    keypad(menu_window, TRUE);
+    renderer.drawTitle(currentMenu);
 
-    clearScreen(menu_window, LINES, COLS);
+    NcursesMenu cursesMenu(menu_window, currentMenu);
+    cursesMenu.post();
 
-    dispMenuTitle(currentMenu, menu_window);
-
-    menu_items = new ITEM*[currentMenu.getNumOfItems() + 1];
-    itemNames.reserve(currentMenu.getNumOfItems());
-    itemDescriptions.reserve(currentMenu.getNumOfItems());
-
-    for (int i = 0; i < currentMenu.getNumOfItems(); i++) {
-        CursedMenuItem currentItem = currentMenu.getItem(i);
-        itemNames.push_back(currentItem.getName());
-        itemDescriptions.push_back(currentItem.getDesc());
-
-        menu_items[i] = new_item(
-            itemNames.back().c_str(),
-            itemDescriptions.back().c_str());
-    }
-
-    menu_items[currentMenu.getNumOfItems()] = NULL;
-
-    curses_menu = new_menu((ITEM**)menu_items);
-
-    set_menu_format(curses_menu, LINES - 2, 0);
-
-    menu_opts_on(curses_menu, O_ROWMAJOR);
-    menu_opts_off(curses_menu, O_SHOWDESC);
-    menu_opts_off(curses_menu, O_NONCYCLIC);
-
-    set_menu_win(curses_menu, menu_window);
-
-    menuCenter =
-        (COLS / 2) - (currentMenu.getMenuCenterX() / 2);
-
-    set_menu_sub(
-        curses_menu,
-        derwin(menu_window, 0, 0, 6, menuCenter));
-
-    set_menu_fore(curses_menu, COLOR_PAIR(1) | A_REVERSE);
-    set_menu_back(curses_menu, COLOR_PAIR(1));
-
-    post_menu(curses_menu);
-
-    dispDesc(
-        menu_window,
-        item_description(current_item(curses_menu)),
+    renderer.drawDescription(
+        cursesMenu.currentItemDescription(),
         COLS,
         LINES);
 
-    refreshWin(menu_window, curses_menu);
+    renderer.refresh(cursesMenu.get());
 
-    while ((userInput = getch())) {
+    while ((userInput = ncursesSession.readInput())) {
         switch (userInput) {
             case KEY_DOWN:
-                menu_driver(curses_menu, REQ_DOWN_ITEM);
+                cursesMenu.driver(REQ_DOWN_ITEM);
                 break;
 
             case KEY_UP:
-                menu_driver(curses_menu, REQ_UP_ITEM);
+                cursesMenu.driver(REQ_UP_ITEM);
                 break;
 
             case 10:
-                selName = item_name(current_item(curses_menu));
+                selName = cursesMenu.currentItemName();
 
-                if (currentMenu.getItem(selName).getExec() == "MenuExit") {
-                    unpost_menu(curses_menu);
-                    free_menu(curses_menu);
-                    endwin();
+                const RuntimeAction action =
+                    classifyRuntimeAction(
+                        currentMenu.getItem(selName).getExec());
 
+                if (action.type == RuntimeActionType::ExitMenu) {
                     actionLogger.logMenu(
                         GOING,
-                        menus->top().getMenuTitle());
+                        menus.top().getMenuTitle());
 
                     return;
                 }
 
-                if (menus->top()
-                        .getItem(selName)
-                        .getExec()
-                        .find("MenuSub ")
-                    != std::string::npos) {
-                    std::string temp =
-                        currentMenu.getItem(selName).getExec();
+                if (action.type == RuntimeActionType::OpenSubmenu) {
+                    menus.push(CursedMenu(debugIsOn, action.value));
 
-                    std::string subMenuFile = temp.substr(8);
-
-                    menus->push(CursedMenu(debugIsOn, subMenuFile));
-
-                    currentMenu = menus->top();
+                    currentMenu = menus.top();
 
                     runMenu(actionLogger, menus);
 
-                    menus->pop();
-                    currentMenu = menus->top();
+                    menus.pop();
+                    currentMenu = menus.top();
 
-                    loadMenuColor(&menus->top());
+                    ncursesSession.applyMenuColor(menus.top());
 
-                    clearScreen(menu_window, LINES, COLS);
+                    renderer.clearScreen(LINES, COLS);
 
-                    dispMenuTitle(menus->top(), menu_window);
+                    renderer.drawTitle(menus.top());
 
-                    menu_driver(curses_menu, REQ_UP_ITEM);
-                    menu_driver(curses_menu, REQ_DOWN_ITEM);
+                    cursesMenu.nudgeSelection();
 
-                    pos_menu_cursor(curses_menu);
-
-                    wrefresh(menu_window);
+                    renderer.refresh(cursesMenu.get());
                 } else {
-                    endwin();
+                    NcursesCommandScope commandScope(
+                        ncursesSession,
+                        currentMenu);
 
                     actionLogger.logCmd(
-                        menus->top().getItem(selName).getExec());
+                        action.value);
 
                     retVal = system(
-                        menus->top()
-                            .getItem(selName)
-                            .getExec()
-                            .c_str());
+                        action.value.c_str());
 
                     if (debugIsOn || retVal != 0) {
                         std::cerr
                             << "Press <ENTER> to continue..."
                             << std::endl;
 
-                        getch();
+                        ncursesSession.waitForAcknowledge();
                     }
 
-                    loadCurses(&currentMenu);
-
-                    refresh();
-                    wrefresh(menu_window);
+                    renderer.refresh(cursesMenu.get());
                 }
 
                 break;
         }
 
-        dispDesc(
-            menu_window,
-            item_description(current_item(curses_menu)),
+        renderer.drawDescription(
+            cursesMenu.currentItemDescription(),
             COLS,
             LINES);
 
-        refreshWin(menu_window, curses_menu);
+        renderer.refresh(cursesMenu.get());
     }
-
-    unpost_menu(curses_menu);
-
-    for (int i = 0; i < currentMenu.getNumOfItems(); ++i) {
-        free_item(menu_items[i]);
-    }
-
-    free_menu(curses_menu);
-    endwin();
 }
 
 } // namespace
@@ -282,7 +158,19 @@ CursedMenuRunner::CursedMenuRunner(ActionLogger& actionLogger)
 }
 
 void CursedMenuRunner::run(std::stack<CursedMenu>& menus) {
-    runMenu(actionLogger, &menus);
+    try {
+        runMenu(actionLogger, menus);
+    } catch (const std::exception& exception) {
+        std::cerr
+            << "Runtime error: " << exception.what()
+            << std::endl;
+        throw;
+    } catch (...) {
+        std::cerr
+            << "Unknown runtime error in CursedMenuRunner"
+            << std::endl;
+        throw;
+    }
 }
 
 } // namespace cursedmenu
