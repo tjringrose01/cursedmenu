@@ -98,7 +98,7 @@ jobs:
 
       - name: Verify Conan toolchain
         run: |
-          test -f build/sanitized/generators/conan_toolchain.cmake
+          test -f build/sanitized/build/Debug/generators/conan_toolchain.cmake
 
       - name: Configure sanitizer build
         env:
@@ -110,7 +110,7 @@ jobs:
             -S . \
             -G Ninja \
             -DCMAKE_BUILD_TYPE=Debug \
-            -DCMAKE_TOOLCHAIN_FILE=build/sanitized/generators/conan_toolchain.cmake
+            -DCMAKE_TOOLCHAIN_FILE=build/sanitized/build/Debug/generators/conan_toolchain.cmake
 
       - name: Build sanitizer target
         env:
