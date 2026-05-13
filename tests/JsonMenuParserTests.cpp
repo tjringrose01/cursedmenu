@@ -53,7 +53,6 @@ int main() {
     REQUIRE(requiresException(testFile("missing-root-menu.json")));
     REQUIRE(requiresException(testFile("duplicate-menu-id.json")));
     REQUIRE(requiresException(testFile("missing-submenu-target.json")));
-    REQUIRE(requiresException(testFile("submenu-cycle.json")));
     REQUIRE(requiresException(testFile("invalid-colors.json")));
     REQUIRE(requiresException(testFile("empty-values.json")));
 
@@ -64,8 +63,22 @@ int main() {
         REQUIRE(result.errors.empty());
     }
 
+    {
+        auto result = parser.parseFile(testFile("submenu-cycle.json"));
+
+        REQUIRE(result.success);
+        REQUIRE(result.errors.empty());
+    }
+
     REQUIRE(requiresException(testFile("multiple-actions.json")));
     REQUIRE(requiresException(testFile("unsupported-action.json")));
+    REQUIRE(requiresException(testFile("duplicate-json-key.json")));
+    REQUIRE(requiresException(testFile("duplicate-json-key-nested.json")));
+    REQUIRE(requiresException(testFile("invalid-settings-types.json")));
+    REQUIRE(requiresException(testFile("invalid-command-control-char.json")));
+    REQUIRE(requiresException(testFile("deep-submenu-chain.json")));
+    REQUIRE(requiresException(testFile("unknown-root-field.json")));
+    REQUIRE(requiresException(testFile("unknown-nested-field.json")));
 
     {
         const auto tempPath = testFile("oversized-field.json");
@@ -83,6 +96,42 @@ int main() {
                 << "        {\n"
                 << "          \"name\": \"" << std::string(5000, 'N') << "\",\n"
                 << "          \"command\": \"echo hi\"\n"
+                << "        }\n"
+                << "      ]\n"
+                << "    }\n"
+                << "  ]\n"
+                << "}\n";
+        }
+
+        REQUIRE(requiresException(tempPath));
+        std::filesystem::remove(tempPath);
+    }
+
+    {
+        const auto tempPath = testFile("invalid-utf8.json");
+        {
+            std::ofstream output(
+                tempPath,
+                std::ios::binary);
+            output
+                << "{\n"
+                << "  \"version\": 1,\n"
+                << "  \"rootMenu\": \"main\",\n"
+                << "  \"menus\": [\n"
+                << "    {\n"
+                << "      \"id\": \"main\",\n"
+                << "      \"title\": \"Main\",\n"
+                << "      \"items\": [\n"
+                << "        {\n"
+                << "          \"name\": \"Bad";
+            const char invalidUtf8[2] = {
+                static_cast<char>(0xC3),
+                static_cast<char>(0x28)
+            };
+            output.write(invalidUtf8, sizeof(invalidUtf8));
+            output
+                << "\",\n"
+                << "          \"action\": \"exit\"\n"
                 << "        }\n"
                 << "      ]\n"
                 << "    }\n"

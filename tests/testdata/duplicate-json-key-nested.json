@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "rootMenu": "main",
+  "menus": [
+    {
+      "id": "main",
+      "title": "Main",
+      "items": [
+        {
+          "name": "Exit",
+          "name": "Exit Duplicate",
+          "action": "exit"
+        }
+      ]
+    }
+  ]
+}

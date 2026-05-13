@@ -168,6 +168,9 @@ Example:
 ./build/Release/source/cursedmenu/cursedmenu
 ```
 
+By default, the application now attempts to load `default.json` (resolved from
+the current directory, `source/cursedmenu/`, or `examples/`).
+
 ## Menu Files
 
 ### Preferred Format: JSON
@@ -223,34 +226,56 @@ The modernization effort now includes:
 
 The goal is for runtime code to operate on a shared menu model independent of file format.
 
-## Run with a Menu File
+### JSON Validation Policy
 
-Example using a legacy `.cmd` file:
+JSON validation is strict:
+
+- unknown fields are rejected at root, settings, menu, and item levels
+- duplicate object keys are rejected (including nested objects)
+- semantic validation is enforced after parse (colors, submenu targets, depth limits, action consistency, etc.)
+
+## Run Helper Script
+
+Use the helper script to launch from `examples/`:
 
 ```bash
-./build/Release/source/cursedmenu/cursedmenu -m default.cmd
+./run
 ```
 
-Future JSON example:
+Pass arguments through to `cursedmenu`:
 
 ```bash
-./build/Release/source/cursedmenu/cursedmenu -m default.json
+./run -m large-32x10.json -c
+```
+
+## Run with a Menu File
+
+Example using a JSON file:
+
+```bash
+./build/Release/source/cursedmenu/cursedmenu -m examples/default.json
+```
+
+Legacy `.cmd` example:
+
+```bash
+./build/Release/source/cursedmenu/cursedmenu -m source/cursedmenu/default.cmd
 ```
 
 ## Validation / Check Mode
 
 Use `-c` to validate or check menu definitions without running the interactive UI.
 
+JSON example:
+
+```bash
+./build/Release/source/cursedmenu/cursedmenu -m examples/default.json -c
+```
+
 Legacy `.cmd` example:
 
 ```bash
-./build/Release/source/cursedmenu/cursedmenu -m default.cmd -c
-```
-
-Future JSON example:
-
-```bash
-./build/Release/source/cursedmenu/cursedmenu -m default.json -c
+./build/Release/source/cursedmenu/cursedmenu -m source/cursedmenu/default.cmd -c
 ```
 
 ## Help

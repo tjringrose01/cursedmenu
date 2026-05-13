@@ -1,0 +1,1866 @@
+{
+  "version": 1,
+  "settings": {
+    "debug": false,
+    "pauseAfterExecution": false
+  },
+  "rootMenu": "m0",
+  "menus": [
+    {
+      "id": "m0",
+      "title": "Menu 0",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 0 Command 0",
+          "description": "Run command 0 from menu 0",
+          "command": "echo menu 0 command 0"
+        },
+        {
+          "name": "Menu 0 Command 1",
+          "description": "Run command 1 from menu 0",
+          "command": "echo menu 0 command 1"
+        },
+        {
+          "name": "Menu 0 Command 2",
+          "description": "Run command 2 from menu 0",
+          "command": "echo menu 0 command 2"
+        },
+        {
+          "name": "Menu 0 Command 3",
+          "description": "Run command 3 from menu 0",
+          "command": "echo menu 0 command 3"
+        },
+        {
+          "name": "Menu 0 Command 4",
+          "description": "Run command 4 from menu 0",
+          "command": "echo menu 0 command 4"
+        },
+        {
+          "name": "Menu 0 Command 5",
+          "description": "Run command 5 from menu 0",
+          "command": "echo menu 0 command 5"
+        },
+        {
+          "name": "Menu 0 Command 6",
+          "description": "Run command 6 from menu 0",
+          "command": "echo menu 0 command 6"
+        },
+        {
+          "name": "Menu 0 Command 7",
+          "description": "Run command 7 from menu 0",
+          "command": "echo menu 0 command 7"
+        },
+        {
+          "name": "Go to Menu 1",
+          "description": "Open submenu m1",
+          "submenu": "m1"
+        },
+        {
+          "name": "Exit Menu 0",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m1",
+      "title": "Menu 1",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 1 Command 0",
+          "description": "Run command 0 from menu 1",
+          "command": "echo menu 1 command 0"
+        },
+        {
+          "name": "Menu 1 Command 1",
+          "description": "Run command 1 from menu 1",
+          "command": "echo menu 1 command 1"
+        },
+        {
+          "name": "Menu 1 Command 2",
+          "description": "Run command 2 from menu 1",
+          "command": "echo menu 1 command 2"
+        },
+        {
+          "name": "Menu 1 Command 3",
+          "description": "Run command 3 from menu 1",
+          "command": "echo menu 1 command 3"
+        },
+        {
+          "name": "Menu 1 Command 4",
+          "description": "Run command 4 from menu 1",
+          "command": "echo menu 1 command 4"
+        },
+        {
+          "name": "Menu 1 Command 5",
+          "description": "Run command 5 from menu 1",
+          "command": "echo menu 1 command 5"
+        },
+        {
+          "name": "Menu 1 Command 6",
+          "description": "Run command 6 from menu 1",
+          "command": "echo menu 1 command 6"
+        },
+        {
+          "name": "Menu 1 Command 7",
+          "description": "Run command 7 from menu 1",
+          "command": "echo menu 1 command 7"
+        },
+        {
+          "name": "Go to Menu 2",
+          "description": "Open submenu m2",
+          "submenu": "m2"
+        },
+        {
+          "name": "Exit Menu 1",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m2",
+      "title": "Menu 2",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 2 Command 0",
+          "description": "Run command 0 from menu 2",
+          "command": "echo menu 2 command 0"
+        },
+        {
+          "name": "Menu 2 Command 1",
+          "description": "Run command 1 from menu 2",
+          "command": "echo menu 2 command 1"
+        },
+        {
+          "name": "Menu 2 Command 2",
+          "description": "Run command 2 from menu 2",
+          "command": "echo menu 2 command 2"
+        },
+        {
+          "name": "Menu 2 Command 3",
+          "description": "Run command 3 from menu 2",
+          "command": "echo menu 2 command 3"
+        },
+        {
+          "name": "Menu 2 Command 4",
+          "description": "Run command 4 from menu 2",
+          "command": "echo menu 2 command 4"
+        },
+        {
+          "name": "Menu 2 Command 5",
+          "description": "Run command 5 from menu 2",
+          "command": "echo menu 2 command 5"
+        },
+        {
+          "name": "Menu 2 Command 6",
+          "description": "Run command 6 from menu 2",
+          "command": "echo menu 2 command 6"
+        },
+        {
+          "name": "Menu 2 Command 7",
+          "description": "Run command 7 from menu 2",
+          "command": "echo menu 2 command 7"
+        },
+        {
+          "name": "Go to Menu 3",
+          "description": "Open submenu m3",
+          "submenu": "m3"
+        },
+        {
+          "name": "Exit Menu 2",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m3",
+      "title": "Menu 3",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 3 Command 0",
+          "description": "Run command 0 from menu 3",
+          "command": "echo menu 3 command 0"
+        },
+        {
+          "name": "Menu 3 Command 1",
+          "description": "Run command 1 from menu 3",
+          "command": "echo menu 3 command 1"
+        },
+        {
+          "name": "Menu 3 Command 2",
+          "description": "Run command 2 from menu 3",
+          "command": "echo menu 3 command 2"
+        },
+        {
+          "name": "Menu 3 Command 3",
+          "description": "Run command 3 from menu 3",
+          "command": "echo menu 3 command 3"
+        },
+        {
+          "name": "Menu 3 Command 4",
+          "description": "Run command 4 from menu 3",
+          "command": "echo menu 3 command 4"
+        },
+        {
+          "name": "Menu 3 Command 5",
+          "description": "Run command 5 from menu 3",
+          "command": "echo menu 3 command 5"
+        },
+        {
+          "name": "Menu 3 Command 6",
+          "description": "Run command 6 from menu 3",
+          "command": "echo menu 3 command 6"
+        },
+        {
+          "name": "Menu 3 Command 7",
+          "description": "Run command 7 from menu 3",
+          "command": "echo menu 3 command 7"
+        },
+        {
+          "name": "Go to Menu 4",
+          "description": "Open submenu m4",
+          "submenu": "m4"
+        },
+        {
+          "name": "Exit Menu 3",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m4",
+      "title": "Menu 4",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 4 Command 0",
+          "description": "Run command 0 from menu 4",
+          "command": "echo menu 4 command 0"
+        },
+        {
+          "name": "Menu 4 Command 1",
+          "description": "Run command 1 from menu 4",
+          "command": "echo menu 4 command 1"
+        },
+        {
+          "name": "Menu 4 Command 2",
+          "description": "Run command 2 from menu 4",
+          "command": "echo menu 4 command 2"
+        },
+        {
+          "name": "Menu 4 Command 3",
+          "description": "Run command 3 from menu 4",
+          "command": "echo menu 4 command 3"
+        },
+        {
+          "name": "Menu 4 Command 4",
+          "description": "Run command 4 from menu 4",
+          "command": "echo menu 4 command 4"
+        },
+        {
+          "name": "Menu 4 Command 5",
+          "description": "Run command 5 from menu 4",
+          "command": "echo menu 4 command 5"
+        },
+        {
+          "name": "Menu 4 Command 6",
+          "description": "Run command 6 from menu 4",
+          "command": "echo menu 4 command 6"
+        },
+        {
+          "name": "Menu 4 Command 7",
+          "description": "Run command 7 from menu 4",
+          "command": "echo menu 4 command 7"
+        },
+        {
+          "name": "Go to Menu 5",
+          "description": "Open submenu m5",
+          "submenu": "m5"
+        },
+        {
+          "name": "Exit Menu 4",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m5",
+      "title": "Menu 5",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 5 Command 0",
+          "description": "Run command 0 from menu 5",
+          "command": "echo menu 5 command 0"
+        },
+        {
+          "name": "Menu 5 Command 1",
+          "description": "Run command 1 from menu 5",
+          "command": "echo menu 5 command 1"
+        },
+        {
+          "name": "Menu 5 Command 2",
+          "description": "Run command 2 from menu 5",
+          "command": "echo menu 5 command 2"
+        },
+        {
+          "name": "Menu 5 Command 3",
+          "description": "Run command 3 from menu 5",
+          "command": "echo menu 5 command 3"
+        },
+        {
+          "name": "Menu 5 Command 4",
+          "description": "Run command 4 from menu 5",
+          "command": "echo menu 5 command 4"
+        },
+        {
+          "name": "Menu 5 Command 5",
+          "description": "Run command 5 from menu 5",
+          "command": "echo menu 5 command 5"
+        },
+        {
+          "name": "Menu 5 Command 6",
+          "description": "Run command 6 from menu 5",
+          "command": "echo menu 5 command 6"
+        },
+        {
+          "name": "Menu 5 Command 7",
+          "description": "Run command 7 from menu 5",
+          "command": "echo menu 5 command 7"
+        },
+        {
+          "name": "Go to Menu 6",
+          "description": "Open submenu m6",
+          "submenu": "m6"
+        },
+        {
+          "name": "Exit Menu 5",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m6",
+      "title": "Menu 6",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 6 Command 0",
+          "description": "Run command 0 from menu 6",
+          "command": "echo menu 6 command 0"
+        },
+        {
+          "name": "Menu 6 Command 1",
+          "description": "Run command 1 from menu 6",
+          "command": "echo menu 6 command 1"
+        },
+        {
+          "name": "Menu 6 Command 2",
+          "description": "Run command 2 from menu 6",
+          "command": "echo menu 6 command 2"
+        },
+        {
+          "name": "Menu 6 Command 3",
+          "description": "Run command 3 from menu 6",
+          "command": "echo menu 6 command 3"
+        },
+        {
+          "name": "Menu 6 Command 4",
+          "description": "Run command 4 from menu 6",
+          "command": "echo menu 6 command 4"
+        },
+        {
+          "name": "Menu 6 Command 5",
+          "description": "Run command 5 from menu 6",
+          "command": "echo menu 6 command 5"
+        },
+        {
+          "name": "Menu 6 Command 6",
+          "description": "Run command 6 from menu 6",
+          "command": "echo menu 6 command 6"
+        },
+        {
+          "name": "Menu 6 Command 7",
+          "description": "Run command 7 from menu 6",
+          "command": "echo menu 6 command 7"
+        },
+        {
+          "name": "Go to Menu 7",
+          "description": "Open submenu m7",
+          "submenu": "m7"
+        },
+        {
+          "name": "Exit Menu 6",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m7",
+      "title": "Menu 7",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 7 Command 0",
+          "description": "Run command 0 from menu 7",
+          "command": "echo menu 7 command 0"
+        },
+        {
+          "name": "Menu 7 Command 1",
+          "description": "Run command 1 from menu 7",
+          "command": "echo menu 7 command 1"
+        },
+        {
+          "name": "Menu 7 Command 2",
+          "description": "Run command 2 from menu 7",
+          "command": "echo menu 7 command 2"
+        },
+        {
+          "name": "Menu 7 Command 3",
+          "description": "Run command 3 from menu 7",
+          "command": "echo menu 7 command 3"
+        },
+        {
+          "name": "Menu 7 Command 4",
+          "description": "Run command 4 from menu 7",
+          "command": "echo menu 7 command 4"
+        },
+        {
+          "name": "Menu 7 Command 5",
+          "description": "Run command 5 from menu 7",
+          "command": "echo menu 7 command 5"
+        },
+        {
+          "name": "Menu 7 Command 6",
+          "description": "Run command 6 from menu 7",
+          "command": "echo menu 7 command 6"
+        },
+        {
+          "name": "Menu 7 Command 7",
+          "description": "Run command 7 from menu 7",
+          "command": "echo menu 7 command 7"
+        },
+        {
+          "name": "Go to Menu 8",
+          "description": "Open submenu m8",
+          "submenu": "m8"
+        },
+        {
+          "name": "Exit Menu 7",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m8",
+      "title": "Menu 8",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 8 Command 0",
+          "description": "Run command 0 from menu 8",
+          "command": "echo menu 8 command 0"
+        },
+        {
+          "name": "Menu 8 Command 1",
+          "description": "Run command 1 from menu 8",
+          "command": "echo menu 8 command 1"
+        },
+        {
+          "name": "Menu 8 Command 2",
+          "description": "Run command 2 from menu 8",
+          "command": "echo menu 8 command 2"
+        },
+        {
+          "name": "Menu 8 Command 3",
+          "description": "Run command 3 from menu 8",
+          "command": "echo menu 8 command 3"
+        },
+        {
+          "name": "Menu 8 Command 4",
+          "description": "Run command 4 from menu 8",
+          "command": "echo menu 8 command 4"
+        },
+        {
+          "name": "Menu 8 Command 5",
+          "description": "Run command 5 from menu 8",
+          "command": "echo menu 8 command 5"
+        },
+        {
+          "name": "Menu 8 Command 6",
+          "description": "Run command 6 from menu 8",
+          "command": "echo menu 8 command 6"
+        },
+        {
+          "name": "Menu 8 Command 7",
+          "description": "Run command 7 from menu 8",
+          "command": "echo menu 8 command 7"
+        },
+        {
+          "name": "Go to Menu 9",
+          "description": "Open submenu m9",
+          "submenu": "m9"
+        },
+        {
+          "name": "Exit Menu 8",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m9",
+      "title": "Menu 9",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 9 Command 0",
+          "description": "Run command 0 from menu 9",
+          "command": "echo menu 9 command 0"
+        },
+        {
+          "name": "Menu 9 Command 1",
+          "description": "Run command 1 from menu 9",
+          "command": "echo menu 9 command 1"
+        },
+        {
+          "name": "Menu 9 Command 2",
+          "description": "Run command 2 from menu 9",
+          "command": "echo menu 9 command 2"
+        },
+        {
+          "name": "Menu 9 Command 3",
+          "description": "Run command 3 from menu 9",
+          "command": "echo menu 9 command 3"
+        },
+        {
+          "name": "Menu 9 Command 4",
+          "description": "Run command 4 from menu 9",
+          "command": "echo menu 9 command 4"
+        },
+        {
+          "name": "Menu 9 Command 5",
+          "description": "Run command 5 from menu 9",
+          "command": "echo menu 9 command 5"
+        },
+        {
+          "name": "Menu 9 Command 6",
+          "description": "Run command 6 from menu 9",
+          "command": "echo menu 9 command 6"
+        },
+        {
+          "name": "Menu 9 Command 7",
+          "description": "Run command 7 from menu 9",
+          "command": "echo menu 9 command 7"
+        },
+        {
+          "name": "Go to Menu 10",
+          "description": "Open submenu m10",
+          "submenu": "m10"
+        },
+        {
+          "name": "Exit Menu 9",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m10",
+      "title": "Menu 10",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 10 Command 0",
+          "description": "Run command 0 from menu 10",
+          "command": "echo menu 10 command 0"
+        },
+        {
+          "name": "Menu 10 Command 1",
+          "description": "Run command 1 from menu 10",
+          "command": "echo menu 10 command 1"
+        },
+        {
+          "name": "Menu 10 Command 2",
+          "description": "Run command 2 from menu 10",
+          "command": "echo menu 10 command 2"
+        },
+        {
+          "name": "Menu 10 Command 3",
+          "description": "Run command 3 from menu 10",
+          "command": "echo menu 10 command 3"
+        },
+        {
+          "name": "Menu 10 Command 4",
+          "description": "Run command 4 from menu 10",
+          "command": "echo menu 10 command 4"
+        },
+        {
+          "name": "Menu 10 Command 5",
+          "description": "Run command 5 from menu 10",
+          "command": "echo menu 10 command 5"
+        },
+        {
+          "name": "Menu 10 Command 6",
+          "description": "Run command 6 from menu 10",
+          "command": "echo menu 10 command 6"
+        },
+        {
+          "name": "Menu 10 Command 7",
+          "description": "Run command 7 from menu 10",
+          "command": "echo menu 10 command 7"
+        },
+        {
+          "name": "Go to Menu 11",
+          "description": "Open submenu m11",
+          "submenu": "m11"
+        },
+        {
+          "name": "Exit Menu 10",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m11",
+      "title": "Menu 11",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 11 Command 0",
+          "description": "Run command 0 from menu 11",
+          "command": "echo menu 11 command 0"
+        },
+        {
+          "name": "Menu 11 Command 1",
+          "description": "Run command 1 from menu 11",
+          "command": "echo menu 11 command 1"
+        },
+        {
+          "name": "Menu 11 Command 2",
+          "description": "Run command 2 from menu 11",
+          "command": "echo menu 11 command 2"
+        },
+        {
+          "name": "Menu 11 Command 3",
+          "description": "Run command 3 from menu 11",
+          "command": "echo menu 11 command 3"
+        },
+        {
+          "name": "Menu 11 Command 4",
+          "description": "Run command 4 from menu 11",
+          "command": "echo menu 11 command 4"
+        },
+        {
+          "name": "Menu 11 Command 5",
+          "description": "Run command 5 from menu 11",
+          "command": "echo menu 11 command 5"
+        },
+        {
+          "name": "Menu 11 Command 6",
+          "description": "Run command 6 from menu 11",
+          "command": "echo menu 11 command 6"
+        },
+        {
+          "name": "Menu 11 Command 7",
+          "description": "Run command 7 from menu 11",
+          "command": "echo menu 11 command 7"
+        },
+        {
+          "name": "Go to Menu 12",
+          "description": "Open submenu m12",
+          "submenu": "m12"
+        },
+        {
+          "name": "Exit Menu 11",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m12",
+      "title": "Menu 12",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 12 Command 0",
+          "description": "Run command 0 from menu 12",
+          "command": "echo menu 12 command 0"
+        },
+        {
+          "name": "Menu 12 Command 1",
+          "description": "Run command 1 from menu 12",
+          "command": "echo menu 12 command 1"
+        },
+        {
+          "name": "Menu 12 Command 2",
+          "description": "Run command 2 from menu 12",
+          "command": "echo menu 12 command 2"
+        },
+        {
+          "name": "Menu 12 Command 3",
+          "description": "Run command 3 from menu 12",
+          "command": "echo menu 12 command 3"
+        },
+        {
+          "name": "Menu 12 Command 4",
+          "description": "Run command 4 from menu 12",
+          "command": "echo menu 12 command 4"
+        },
+        {
+          "name": "Menu 12 Command 5",
+          "description": "Run command 5 from menu 12",
+          "command": "echo menu 12 command 5"
+        },
+        {
+          "name": "Menu 12 Command 6",
+          "description": "Run command 6 from menu 12",
+          "command": "echo menu 12 command 6"
+        },
+        {
+          "name": "Menu 12 Command 7",
+          "description": "Run command 7 from menu 12",
+          "command": "echo menu 12 command 7"
+        },
+        {
+          "name": "Go to Menu 13",
+          "description": "Open submenu m13",
+          "submenu": "m13"
+        },
+        {
+          "name": "Exit Menu 12",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m13",
+      "title": "Menu 13",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 13 Command 0",
+          "description": "Run command 0 from menu 13",
+          "command": "echo menu 13 command 0"
+        },
+        {
+          "name": "Menu 13 Command 1",
+          "description": "Run command 1 from menu 13",
+          "command": "echo menu 13 command 1"
+        },
+        {
+          "name": "Menu 13 Command 2",
+          "description": "Run command 2 from menu 13",
+          "command": "echo menu 13 command 2"
+        },
+        {
+          "name": "Menu 13 Command 3",
+          "description": "Run command 3 from menu 13",
+          "command": "echo menu 13 command 3"
+        },
+        {
+          "name": "Menu 13 Command 4",
+          "description": "Run command 4 from menu 13",
+          "command": "echo menu 13 command 4"
+        },
+        {
+          "name": "Menu 13 Command 5",
+          "description": "Run command 5 from menu 13",
+          "command": "echo menu 13 command 5"
+        },
+        {
+          "name": "Menu 13 Command 6",
+          "description": "Run command 6 from menu 13",
+          "command": "echo menu 13 command 6"
+        },
+        {
+          "name": "Menu 13 Command 7",
+          "description": "Run command 7 from menu 13",
+          "command": "echo menu 13 command 7"
+        },
+        {
+          "name": "Go to Menu 14",
+          "description": "Open submenu m14",
+          "submenu": "m14"
+        },
+        {
+          "name": "Exit Menu 13",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m14",
+      "title": "Menu 14",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 14 Command 0",
+          "description": "Run command 0 from menu 14",
+          "command": "echo menu 14 command 0"
+        },
+        {
+          "name": "Menu 14 Command 1",
+          "description": "Run command 1 from menu 14",
+          "command": "echo menu 14 command 1"
+        },
+        {
+          "name": "Menu 14 Command 2",
+          "description": "Run command 2 from menu 14",
+          "command": "echo menu 14 command 2"
+        },
+        {
+          "name": "Menu 14 Command 3",
+          "description": "Run command 3 from menu 14",
+          "command": "echo menu 14 command 3"
+        },
+        {
+          "name": "Menu 14 Command 4",
+          "description": "Run command 4 from menu 14",
+          "command": "echo menu 14 command 4"
+        },
+        {
+          "name": "Menu 14 Command 5",
+          "description": "Run command 5 from menu 14",
+          "command": "echo menu 14 command 5"
+        },
+        {
+          "name": "Menu 14 Command 6",
+          "description": "Run command 6 from menu 14",
+          "command": "echo menu 14 command 6"
+        },
+        {
+          "name": "Menu 14 Command 7",
+          "description": "Run command 7 from menu 14",
+          "command": "echo menu 14 command 7"
+        },
+        {
+          "name": "Go to Menu 15",
+          "description": "Open submenu m15",
+          "submenu": "m15"
+        },
+        {
+          "name": "Exit Menu 14",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m15",
+      "title": "Menu 15",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 15 Command 0",
+          "description": "Run command 0 from menu 15",
+          "command": "echo menu 15 command 0"
+        },
+        {
+          "name": "Menu 15 Command 1",
+          "description": "Run command 1 from menu 15",
+          "command": "echo menu 15 command 1"
+        },
+        {
+          "name": "Menu 15 Command 2",
+          "description": "Run command 2 from menu 15",
+          "command": "echo menu 15 command 2"
+        },
+        {
+          "name": "Menu 15 Command 3",
+          "description": "Run command 3 from menu 15",
+          "command": "echo menu 15 command 3"
+        },
+        {
+          "name": "Menu 15 Command 4",
+          "description": "Run command 4 from menu 15",
+          "command": "echo menu 15 command 4"
+        },
+        {
+          "name": "Menu 15 Command 5",
+          "description": "Run command 5 from menu 15",
+          "command": "echo menu 15 command 5"
+        },
+        {
+          "name": "Menu 15 Command 6",
+          "description": "Run command 6 from menu 15",
+          "command": "echo menu 15 command 6"
+        },
+        {
+          "name": "Menu 15 Command 7",
+          "description": "Run command 7 from menu 15",
+          "command": "echo menu 15 command 7"
+        },
+        {
+          "name": "Go to Menu 16",
+          "description": "Open submenu m16",
+          "submenu": "m16"
+        },
+        {
+          "name": "Exit Menu 15",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m16",
+      "title": "Menu 16",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 16 Command 0",
+          "description": "Run command 0 from menu 16",
+          "command": "echo menu 16 command 0"
+        },
+        {
+          "name": "Menu 16 Command 1",
+          "description": "Run command 1 from menu 16",
+          "command": "echo menu 16 command 1"
+        },
+        {
+          "name": "Menu 16 Command 2",
+          "description": "Run command 2 from menu 16",
+          "command": "echo menu 16 command 2"
+        },
+        {
+          "name": "Menu 16 Command 3",
+          "description": "Run command 3 from menu 16",
+          "command": "echo menu 16 command 3"
+        },
+        {
+          "name": "Menu 16 Command 4",
+          "description": "Run command 4 from menu 16",
+          "command": "echo menu 16 command 4"
+        },
+        {
+          "name": "Menu 16 Command 5",
+          "description": "Run command 5 from menu 16",
+          "command": "echo menu 16 command 5"
+        },
+        {
+          "name": "Menu 16 Command 6",
+          "description": "Run command 6 from menu 16",
+          "command": "echo menu 16 command 6"
+        },
+        {
+          "name": "Menu 16 Command 7",
+          "description": "Run command 7 from menu 16",
+          "command": "echo menu 16 command 7"
+        },
+        {
+          "name": "Go to Menu 17",
+          "description": "Open submenu m17",
+          "submenu": "m17"
+        },
+        {
+          "name": "Exit Menu 16",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m17",
+      "title": "Menu 17",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 17 Command 0",
+          "description": "Run command 0 from menu 17",
+          "command": "echo menu 17 command 0"
+        },
+        {
+          "name": "Menu 17 Command 1",
+          "description": "Run command 1 from menu 17",
+          "command": "echo menu 17 command 1"
+        },
+        {
+          "name": "Menu 17 Command 2",
+          "description": "Run command 2 from menu 17",
+          "command": "echo menu 17 command 2"
+        },
+        {
+          "name": "Menu 17 Command 3",
+          "description": "Run command 3 from menu 17",
+          "command": "echo menu 17 command 3"
+        },
+        {
+          "name": "Menu 17 Command 4",
+          "description": "Run command 4 from menu 17",
+          "command": "echo menu 17 command 4"
+        },
+        {
+          "name": "Menu 17 Command 5",
+          "description": "Run command 5 from menu 17",
+          "command": "echo menu 17 command 5"
+        },
+        {
+          "name": "Menu 17 Command 6",
+          "description": "Run command 6 from menu 17",
+          "command": "echo menu 17 command 6"
+        },
+        {
+          "name": "Menu 17 Command 7",
+          "description": "Run command 7 from menu 17",
+          "command": "echo menu 17 command 7"
+        },
+        {
+          "name": "Go to Menu 18",
+          "description": "Open submenu m18",
+          "submenu": "m18"
+        },
+        {
+          "name": "Exit Menu 17",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m18",
+      "title": "Menu 18",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 18 Command 0",
+          "description": "Run command 0 from menu 18",
+          "command": "echo menu 18 command 0"
+        },
+        {
+          "name": "Menu 18 Command 1",
+          "description": "Run command 1 from menu 18",
+          "command": "echo menu 18 command 1"
+        },
+        {
+          "name": "Menu 18 Command 2",
+          "description": "Run command 2 from menu 18",
+          "command": "echo menu 18 command 2"
+        },
+        {
+          "name": "Menu 18 Command 3",
+          "description": "Run command 3 from menu 18",
+          "command": "echo menu 18 command 3"
+        },
+        {
+          "name": "Menu 18 Command 4",
+          "description": "Run command 4 from menu 18",
+          "command": "echo menu 18 command 4"
+        },
+        {
+          "name": "Menu 18 Command 5",
+          "description": "Run command 5 from menu 18",
+          "command": "echo menu 18 command 5"
+        },
+        {
+          "name": "Menu 18 Command 6",
+          "description": "Run command 6 from menu 18",
+          "command": "echo menu 18 command 6"
+        },
+        {
+          "name": "Menu 18 Command 7",
+          "description": "Run command 7 from menu 18",
+          "command": "echo menu 18 command 7"
+        },
+        {
+          "name": "Go to Menu 19",
+          "description": "Open submenu m19",
+          "submenu": "m19"
+        },
+        {
+          "name": "Exit Menu 18",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m19",
+      "title": "Menu 19",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 19 Command 0",
+          "description": "Run command 0 from menu 19",
+          "command": "echo menu 19 command 0"
+        },
+        {
+          "name": "Menu 19 Command 1",
+          "description": "Run command 1 from menu 19",
+          "command": "echo menu 19 command 1"
+        },
+        {
+          "name": "Menu 19 Command 2",
+          "description": "Run command 2 from menu 19",
+          "command": "echo menu 19 command 2"
+        },
+        {
+          "name": "Menu 19 Command 3",
+          "description": "Run command 3 from menu 19",
+          "command": "echo menu 19 command 3"
+        },
+        {
+          "name": "Menu 19 Command 4",
+          "description": "Run command 4 from menu 19",
+          "command": "echo menu 19 command 4"
+        },
+        {
+          "name": "Menu 19 Command 5",
+          "description": "Run command 5 from menu 19",
+          "command": "echo menu 19 command 5"
+        },
+        {
+          "name": "Menu 19 Command 6",
+          "description": "Run command 6 from menu 19",
+          "command": "echo menu 19 command 6"
+        },
+        {
+          "name": "Menu 19 Command 7",
+          "description": "Run command 7 from menu 19",
+          "command": "echo menu 19 command 7"
+        },
+        {
+          "name": "Go to Menu 20",
+          "description": "Open submenu m20",
+          "submenu": "m20"
+        },
+        {
+          "name": "Exit Menu 19",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m20",
+      "title": "Menu 20",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 20 Command 0",
+          "description": "Run command 0 from menu 20",
+          "command": "echo menu 20 command 0"
+        },
+        {
+          "name": "Menu 20 Command 1",
+          "description": "Run command 1 from menu 20",
+          "command": "echo menu 20 command 1"
+        },
+        {
+          "name": "Menu 20 Command 2",
+          "description": "Run command 2 from menu 20",
+          "command": "echo menu 20 command 2"
+        },
+        {
+          "name": "Menu 20 Command 3",
+          "description": "Run command 3 from menu 20",
+          "command": "echo menu 20 command 3"
+        },
+        {
+          "name": "Menu 20 Command 4",
+          "description": "Run command 4 from menu 20",
+          "command": "echo menu 20 command 4"
+        },
+        {
+          "name": "Menu 20 Command 5",
+          "description": "Run command 5 from menu 20",
+          "command": "echo menu 20 command 5"
+        },
+        {
+          "name": "Menu 20 Command 6",
+          "description": "Run command 6 from menu 20",
+          "command": "echo menu 20 command 6"
+        },
+        {
+          "name": "Menu 20 Command 7",
+          "description": "Run command 7 from menu 20",
+          "command": "echo menu 20 command 7"
+        },
+        {
+          "name": "Go to Menu 21",
+          "description": "Open submenu m21",
+          "submenu": "m21"
+        },
+        {
+          "name": "Exit Menu 20",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m21",
+      "title": "Menu 21",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 21 Command 0",
+          "description": "Run command 0 from menu 21",
+          "command": "echo menu 21 command 0"
+        },
+        {
+          "name": "Menu 21 Command 1",
+          "description": "Run command 1 from menu 21",
+          "command": "echo menu 21 command 1"
+        },
+        {
+          "name": "Menu 21 Command 2",
+          "description": "Run command 2 from menu 21",
+          "command": "echo menu 21 command 2"
+        },
+        {
+          "name": "Menu 21 Command 3",
+          "description": "Run command 3 from menu 21",
+          "command": "echo menu 21 command 3"
+        },
+        {
+          "name": "Menu 21 Command 4",
+          "description": "Run command 4 from menu 21",
+          "command": "echo menu 21 command 4"
+        },
+        {
+          "name": "Menu 21 Command 5",
+          "description": "Run command 5 from menu 21",
+          "command": "echo menu 21 command 5"
+        },
+        {
+          "name": "Menu 21 Command 6",
+          "description": "Run command 6 from menu 21",
+          "command": "echo menu 21 command 6"
+        },
+        {
+          "name": "Menu 21 Command 7",
+          "description": "Run command 7 from menu 21",
+          "command": "echo menu 21 command 7"
+        },
+        {
+          "name": "Go to Menu 22",
+          "description": "Open submenu m22",
+          "submenu": "m22"
+        },
+        {
+          "name": "Exit Menu 21",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m22",
+      "title": "Menu 22",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 22 Command 0",
+          "description": "Run command 0 from menu 22",
+          "command": "echo menu 22 command 0"
+        },
+        {
+          "name": "Menu 22 Command 1",
+          "description": "Run command 1 from menu 22",
+          "command": "echo menu 22 command 1"
+        },
+        {
+          "name": "Menu 22 Command 2",
+          "description": "Run command 2 from menu 22",
+          "command": "echo menu 22 command 2"
+        },
+        {
+          "name": "Menu 22 Command 3",
+          "description": "Run command 3 from menu 22",
+          "command": "echo menu 22 command 3"
+        },
+        {
+          "name": "Menu 22 Command 4",
+          "description": "Run command 4 from menu 22",
+          "command": "echo menu 22 command 4"
+        },
+        {
+          "name": "Menu 22 Command 5",
+          "description": "Run command 5 from menu 22",
+          "command": "echo menu 22 command 5"
+        },
+        {
+          "name": "Menu 22 Command 6",
+          "description": "Run command 6 from menu 22",
+          "command": "echo menu 22 command 6"
+        },
+        {
+          "name": "Menu 22 Command 7",
+          "description": "Run command 7 from menu 22",
+          "command": "echo menu 22 command 7"
+        },
+        {
+          "name": "Go to Menu 23",
+          "description": "Open submenu m23",
+          "submenu": "m23"
+        },
+        {
+          "name": "Exit Menu 22",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m23",
+      "title": "Menu 23",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 23 Command 0",
+          "description": "Run command 0 from menu 23",
+          "command": "echo menu 23 command 0"
+        },
+        {
+          "name": "Menu 23 Command 1",
+          "description": "Run command 1 from menu 23",
+          "command": "echo menu 23 command 1"
+        },
+        {
+          "name": "Menu 23 Command 2",
+          "description": "Run command 2 from menu 23",
+          "command": "echo menu 23 command 2"
+        },
+        {
+          "name": "Menu 23 Command 3",
+          "description": "Run command 3 from menu 23",
+          "command": "echo menu 23 command 3"
+        },
+        {
+          "name": "Menu 23 Command 4",
+          "description": "Run command 4 from menu 23",
+          "command": "echo menu 23 command 4"
+        },
+        {
+          "name": "Menu 23 Command 5",
+          "description": "Run command 5 from menu 23",
+          "command": "echo menu 23 command 5"
+        },
+        {
+          "name": "Menu 23 Command 6",
+          "description": "Run command 6 from menu 23",
+          "command": "echo menu 23 command 6"
+        },
+        {
+          "name": "Menu 23 Command 7",
+          "description": "Run command 7 from menu 23",
+          "command": "echo menu 23 command 7"
+        },
+        {
+          "name": "Go to Menu 24",
+          "description": "Open submenu m24",
+          "submenu": "m24"
+        },
+        {
+          "name": "Exit Menu 23",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m24",
+      "title": "Menu 24",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 24 Command 0",
+          "description": "Run command 0 from menu 24",
+          "command": "echo menu 24 command 0"
+        },
+        {
+          "name": "Menu 24 Command 1",
+          "description": "Run command 1 from menu 24",
+          "command": "echo menu 24 command 1"
+        },
+        {
+          "name": "Menu 24 Command 2",
+          "description": "Run command 2 from menu 24",
+          "command": "echo menu 24 command 2"
+        },
+        {
+          "name": "Menu 24 Command 3",
+          "description": "Run command 3 from menu 24",
+          "command": "echo menu 24 command 3"
+        },
+        {
+          "name": "Menu 24 Command 4",
+          "description": "Run command 4 from menu 24",
+          "command": "echo menu 24 command 4"
+        },
+        {
+          "name": "Menu 24 Command 5",
+          "description": "Run command 5 from menu 24",
+          "command": "echo menu 24 command 5"
+        },
+        {
+          "name": "Menu 24 Command 6",
+          "description": "Run command 6 from menu 24",
+          "command": "echo menu 24 command 6"
+        },
+        {
+          "name": "Menu 24 Command 7",
+          "description": "Run command 7 from menu 24",
+          "command": "echo menu 24 command 7"
+        },
+        {
+          "name": "Go to Menu 25",
+          "description": "Open submenu m25",
+          "submenu": "m25"
+        },
+        {
+          "name": "Exit Menu 24",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m25",
+      "title": "Menu 25",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 25 Command 0",
+          "description": "Run command 0 from menu 25",
+          "command": "echo menu 25 command 0"
+        },
+        {
+          "name": "Menu 25 Command 1",
+          "description": "Run command 1 from menu 25",
+          "command": "echo menu 25 command 1"
+        },
+        {
+          "name": "Menu 25 Command 2",
+          "description": "Run command 2 from menu 25",
+          "command": "echo menu 25 command 2"
+        },
+        {
+          "name": "Menu 25 Command 3",
+          "description": "Run command 3 from menu 25",
+          "command": "echo menu 25 command 3"
+        },
+        {
+          "name": "Menu 25 Command 4",
+          "description": "Run command 4 from menu 25",
+          "command": "echo menu 25 command 4"
+        },
+        {
+          "name": "Menu 25 Command 5",
+          "description": "Run command 5 from menu 25",
+          "command": "echo menu 25 command 5"
+        },
+        {
+          "name": "Menu 25 Command 6",
+          "description": "Run command 6 from menu 25",
+          "command": "echo menu 25 command 6"
+        },
+        {
+          "name": "Menu 25 Command 7",
+          "description": "Run command 7 from menu 25",
+          "command": "echo menu 25 command 7"
+        },
+        {
+          "name": "Go to Menu 26",
+          "description": "Open submenu m26",
+          "submenu": "m26"
+        },
+        {
+          "name": "Exit Menu 25",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m26",
+      "title": "Menu 26",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 26 Command 0",
+          "description": "Run command 0 from menu 26",
+          "command": "echo menu 26 command 0"
+        },
+        {
+          "name": "Menu 26 Command 1",
+          "description": "Run command 1 from menu 26",
+          "command": "echo menu 26 command 1"
+        },
+        {
+          "name": "Menu 26 Command 2",
+          "description": "Run command 2 from menu 26",
+          "command": "echo menu 26 command 2"
+        },
+        {
+          "name": "Menu 26 Command 3",
+          "description": "Run command 3 from menu 26",
+          "command": "echo menu 26 command 3"
+        },
+        {
+          "name": "Menu 26 Command 4",
+          "description": "Run command 4 from menu 26",
+          "command": "echo menu 26 command 4"
+        },
+        {
+          "name": "Menu 26 Command 5",
+          "description": "Run command 5 from menu 26",
+          "command": "echo menu 26 command 5"
+        },
+        {
+          "name": "Menu 26 Command 6",
+          "description": "Run command 6 from menu 26",
+          "command": "echo menu 26 command 6"
+        },
+        {
+          "name": "Menu 26 Command 7",
+          "description": "Run command 7 from menu 26",
+          "command": "echo menu 26 command 7"
+        },
+        {
+          "name": "Go to Menu 27",
+          "description": "Open submenu m27",
+          "submenu": "m27"
+        },
+        {
+          "name": "Exit Menu 26",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m27",
+      "title": "Menu 27",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 27 Command 0",
+          "description": "Run command 0 from menu 27",
+          "command": "echo menu 27 command 0"
+        },
+        {
+          "name": "Menu 27 Command 1",
+          "description": "Run command 1 from menu 27",
+          "command": "echo menu 27 command 1"
+        },
+        {
+          "name": "Menu 27 Command 2",
+          "description": "Run command 2 from menu 27",
+          "command": "echo menu 27 command 2"
+        },
+        {
+          "name": "Menu 27 Command 3",
+          "description": "Run command 3 from menu 27",
+          "command": "echo menu 27 command 3"
+        },
+        {
+          "name": "Menu 27 Command 4",
+          "description": "Run command 4 from menu 27",
+          "command": "echo menu 27 command 4"
+        },
+        {
+          "name": "Menu 27 Command 5",
+          "description": "Run command 5 from menu 27",
+          "command": "echo menu 27 command 5"
+        },
+        {
+          "name": "Menu 27 Command 6",
+          "description": "Run command 6 from menu 27",
+          "command": "echo menu 27 command 6"
+        },
+        {
+          "name": "Menu 27 Command 7",
+          "description": "Run command 7 from menu 27",
+          "command": "echo menu 27 command 7"
+        },
+        {
+          "name": "Go to Menu 28",
+          "description": "Open submenu m28",
+          "submenu": "m28"
+        },
+        {
+          "name": "Exit Menu 27",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m28",
+      "title": "Menu 28",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 28 Command 0",
+          "description": "Run command 0 from menu 28",
+          "command": "echo menu 28 command 0"
+        },
+        {
+          "name": "Menu 28 Command 1",
+          "description": "Run command 1 from menu 28",
+          "command": "echo menu 28 command 1"
+        },
+        {
+          "name": "Menu 28 Command 2",
+          "description": "Run command 2 from menu 28",
+          "command": "echo menu 28 command 2"
+        },
+        {
+          "name": "Menu 28 Command 3",
+          "description": "Run command 3 from menu 28",
+          "command": "echo menu 28 command 3"
+        },
+        {
+          "name": "Menu 28 Command 4",
+          "description": "Run command 4 from menu 28",
+          "command": "echo menu 28 command 4"
+        },
+        {
+          "name": "Menu 28 Command 5",
+          "description": "Run command 5 from menu 28",
+          "command": "echo menu 28 command 5"
+        },
+        {
+          "name": "Menu 28 Command 6",
+          "description": "Run command 6 from menu 28",
+          "command": "echo menu 28 command 6"
+        },
+        {
+          "name": "Menu 28 Command 7",
+          "description": "Run command 7 from menu 28",
+          "command": "echo menu 28 command 7"
+        },
+        {
+          "name": "Go to Menu 29",
+          "description": "Open submenu m29",
+          "submenu": "m29"
+        },
+        {
+          "name": "Exit Menu 28",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m29",
+      "title": "Menu 29",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 29 Command 0",
+          "description": "Run command 0 from menu 29",
+          "command": "echo menu 29 command 0"
+        },
+        {
+          "name": "Menu 29 Command 1",
+          "description": "Run command 1 from menu 29",
+          "command": "echo menu 29 command 1"
+        },
+        {
+          "name": "Menu 29 Command 2",
+          "description": "Run command 2 from menu 29",
+          "command": "echo menu 29 command 2"
+        },
+        {
+          "name": "Menu 29 Command 3",
+          "description": "Run command 3 from menu 29",
+          "command": "echo menu 29 command 3"
+        },
+        {
+          "name": "Menu 29 Command 4",
+          "description": "Run command 4 from menu 29",
+          "command": "echo menu 29 command 4"
+        },
+        {
+          "name": "Menu 29 Command 5",
+          "description": "Run command 5 from menu 29",
+          "command": "echo menu 29 command 5"
+        },
+        {
+          "name": "Menu 29 Command 6",
+          "description": "Run command 6 from menu 29",
+          "command": "echo menu 29 command 6"
+        },
+        {
+          "name": "Menu 29 Command 7",
+          "description": "Run command 7 from menu 29",
+          "command": "echo menu 29 command 7"
+        },
+        {
+          "name": "Go to Menu 30",
+          "description": "Open submenu m30",
+          "submenu": "m30"
+        },
+        {
+          "name": "Exit Menu 29",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m30",
+      "title": "Menu 30",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 30 Command 0",
+          "description": "Run command 0 from menu 30",
+          "command": "echo menu 30 command 0"
+        },
+        {
+          "name": "Menu 30 Command 1",
+          "description": "Run command 1 from menu 30",
+          "command": "echo menu 30 command 1"
+        },
+        {
+          "name": "Menu 30 Command 2",
+          "description": "Run command 2 from menu 30",
+          "command": "echo menu 30 command 2"
+        },
+        {
+          "name": "Menu 30 Command 3",
+          "description": "Run command 3 from menu 30",
+          "command": "echo menu 30 command 3"
+        },
+        {
+          "name": "Menu 30 Command 4",
+          "description": "Run command 4 from menu 30",
+          "command": "echo menu 30 command 4"
+        },
+        {
+          "name": "Menu 30 Command 5",
+          "description": "Run command 5 from menu 30",
+          "command": "echo menu 30 command 5"
+        },
+        {
+          "name": "Menu 30 Command 6",
+          "description": "Run command 6 from menu 30",
+          "command": "echo menu 30 command 6"
+        },
+        {
+          "name": "Menu 30 Command 7",
+          "description": "Run command 7 from menu 30",
+          "command": "echo menu 30 command 7"
+        },
+        {
+          "name": "Go to Menu 31",
+          "description": "Open submenu m31",
+          "submenu": "m31"
+        },
+        {
+          "name": "Exit Menu 30",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    },
+    {
+      "id": "m31",
+      "title": "Menu 31",
+      "foreground": "WHITE",
+      "background": "BLUE",
+      "items": [
+        {
+          "name": "Menu 31 Command 0",
+          "description": "Run command 0 from menu 31",
+          "command": "echo menu 31 command 0"
+        },
+        {
+          "name": "Menu 31 Command 1",
+          "description": "Run command 1 from menu 31",
+          "command": "echo menu 31 command 1"
+        },
+        {
+          "name": "Menu 31 Command 2",
+          "description": "Run command 2 from menu 31",
+          "command": "echo menu 31 command 2"
+        },
+        {
+          "name": "Menu 31 Command 3",
+          "description": "Run command 3 from menu 31",
+          "command": "echo menu 31 command 3"
+        },
+        {
+          "name": "Menu 31 Command 4",
+          "description": "Run command 4 from menu 31",
+          "command": "echo menu 31 command 4"
+        },
+        {
+          "name": "Menu 31 Command 5",
+          "description": "Run command 5 from menu 31",
+          "command": "echo menu 31 command 5"
+        },
+        {
+          "name": "Menu 31 Command 6",
+          "description": "Run command 6 from menu 31",
+          "command": "echo menu 31 command 6"
+        },
+        {
+          "name": "Menu 31 Command 7",
+          "description": "Run command 7 from menu 31",
+          "command": "echo menu 31 command 7"
+        },
+        {
+          "name": "Return to Root",
+          "description": "Open submenu m0",
+          "submenu": "m0"
+        },
+        {
+          "name": "Exit Menu 31",
+          "description": "Exit this menu",
+          "action": "exit"
+        }
+      ]
+    }
+  ]
+}

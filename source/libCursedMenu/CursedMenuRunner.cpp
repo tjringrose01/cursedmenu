@@ -2,6 +2,7 @@
 
 #include <exception>
 #include <iostream>
+#include <utility>
 
 #include <curses.h>
 #include <menu.h>
@@ -49,7 +50,8 @@ private:
 
 void runMenu(
     ActionLogger& actionLogger,
-    std::stack<CursedMenu>& menus) {
+    std::stack<CursedMenu>& menus,
+    const std::function<std::optional<CursedMenu>(const std::string&)>& submenuResolver) {
     actionLogger.logMenu(COMING, menus.top().getMenuTitle());
 
     bool debugIsOn = actionLogger.getDebugMode();
@@ -119,11 +121,20 @@ void runMenu(
                             + selName);
                     }
 
-                    menus.push(CursedMenu(debugIsOn, action.value));
+                    if (submenuResolver) {
+                        const auto resolvedSubmenu = submenuResolver(action.value);
+                        if (!resolvedSubmenu.has_value()) {
+                            throw RuntimeException(
+                                "Unable to resolve submenu: " + action.value);
+                        }
+                        menus.push(resolvedSubmenu.value());
+                    } else {
+                        menus.push(CursedMenu(debugIsOn, action.value));
+                    }
 
                     currentMenu = menus.top();
 
-                    runMenu(actionLogger, menus);
+                    runMenu(actionLogger, menus, submenuResolver);
 
                     menus.pop();
                     currentMenu = menus.top();
@@ -188,9 +199,16 @@ CursedMenuRunner::CursedMenuRunner(ActionLogger& actionLogger)
     : actionLogger(actionLogger) {
 }
 
+CursedMenuRunner::CursedMenuRunner(
+    ActionLogger& actionLogger,
+    std::function<std::optional<CursedMenu>(const std::string&)> submenuResolver)
+    : actionLogger(actionLogger),
+      submenuResolver(std::move(submenuResolver)) {
+}
+
 void CursedMenuRunner::run(std::stack<CursedMenu>& menus) {
     try {
-        runMenu(actionLogger, menus);
+        runMenu(actionLogger, menus, submenuResolver);
     } catch (const RuntimeException&) {
         throw;
     } catch (const std::exception& exception) {
