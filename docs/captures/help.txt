@@ -1,0 +1,10 @@
+cursedmenu - cursedmenu
+
+usage: cursedmenu [-h|--help] [-m <menu file>] [-c]
+
+options:
+  -h or --help    - show program usage
+  -m <menu file>  - specify the cursed menu definition
+  -c              - check all menu definition files
+CursedMenuLoader::loadConfig(default.yaml, 0);
+menu load error: No menu items found in: default.yaml

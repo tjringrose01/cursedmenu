@@ -16,6 +16,8 @@ int main() {
     MenuParserFactory factory;
 
     REQUIRE(factory.getParserForFile("menu.json") != nullptr);
+    REQUIRE(factory.getParserForFile("menu.yaml") != nullptr);
+    REQUIRE(factory.getParserForFile("menu.yml") != nullptr);
     REQUIRE(factory.getParserForFile("menu.cmd") != nullptr);
     REQUIRE(factory.getParserForFile("menu.txt") == nullptr);
     REQUIRE(factory.getParserForFile("menu.invalid") == nullptr);

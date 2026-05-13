@@ -14,6 +14,7 @@ add_library(CursedMenu SHARED
     NcursesSession.cpp
     NcursesWindow.cpp
     RuntimeAction.cpp
+    YamlMenuParser.cpp
     debug.cpp
 )
 
@@ -27,4 +28,5 @@ target_include_directories(CursedMenu
 
 target_link_libraries(CursedMenu PUBLIC
     Curses::Curses
+    yaml-cpp::yaml-cpp
 )

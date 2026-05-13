@@ -16,6 +16,24 @@ add_test(
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
+add_executable(YamlMenuParserTests
+    YamlMenuParserTests.cpp
+)
+
+target_include_directories(YamlMenuParserTests PRIVATE
+    ../source/include
+)
+
+target_link_libraries(YamlMenuParserTests PRIVATE
+    CursedMenu
+)
+
+add_test(
+    NAME YamlMenuParserTests
+    COMMAND YamlMenuParserTests
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
 add_executable(MenuParserFactoryTests
     MenuParserFactoryTests.cpp
 )

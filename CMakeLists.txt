@@ -10,6 +10,7 @@ include(CTest)
 
 find_package(Curses REQUIRED)
 find_package(RapidJSON REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 include_directories(
     ${CURSES_INCLUDE_DIR}

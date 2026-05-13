@@ -1,0 +1,31 @@
+version: 1
+settings:
+  debug: false
+  pauseAfterExecution: false
+rootMenu: main
+menus:
+  - id: main
+    title: Main Menu
+    foreground: WHITE
+    background: BLUE
+    items:
+      - name: System Information
+        description: Display system information
+        command: "uname -a"
+      - name: Utilities
+        description: Open the utilities submenu
+        submenu: utilities
+      - name: Exit
+        description: Exit the application
+        action: exit
+  - id: utilities
+    title: Utilities
+    foreground: CYAN
+    background: MAGENTA
+    items:
+      - name: List Files
+        description: List files in the current directory
+        command: "ls -la"
+      - name: Return
+        description: Exit the application
+        action: exit

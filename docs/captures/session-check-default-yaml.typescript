@@ -1,0 +1,4 @@
+Script started on 2026-05-13 00:28:23-04:00 [COMMAND="cd /home/timr/source/cursedmenu/examples && ../build/Release/source/cursedmenu/cursedmenu -m default.yaml -c" <not executed on terminal>]
+Number of menus correctly parsed: 2
+
+Script done on 2026-05-13 00:28:23-04:00 [COMMAND_EXIT_CODE="0"]

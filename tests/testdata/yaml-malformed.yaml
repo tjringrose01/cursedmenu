@@ -1,0 +1,10 @@
+version: 1
+rootMenu: main
+menus:
+  - id: main
+    title: Broken
+    items:
+      - name: bad
+        command: "echo bad"
+      - name: missing-colon
+        action "exit"

@@ -1,0 +1,10 @@
+version: 1
+rootMenu: main
+menus:
+  - id: main
+    title: Main
+    extraMenuField: true
+    items:
+      - name: Exit
+        description: Exit
+        action: exit

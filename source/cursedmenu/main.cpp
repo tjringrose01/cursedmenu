@@ -182,7 +182,7 @@ int main(int argc, char** argv) {
             "TERMINFO",
             "/usr/share/terminfo");
 
-        std::string menuFile = "default.json";
+        std::string menuFile = "default";
         bool performMenuCheck = false;
         bool showHelp = false;
         bool debugIsOn = false;

@@ -10,14 +10,15 @@ This repository is being modernized on the following working branch:
 modernization-2026-05-05
 ```
 
-The modernization roadmap is tracked in [`APP_PLAN.md`](APP_PLAN.md). That plan captures the current goals around maintainability, JSON menu files, parser architecture, ncurses runtime separation, memory safety, testing, CI, and developer workflow modernization.
+The modernization roadmap is tracked in [`APP_PLAN.md`](APP_PLAN.md). That plan captures the current goals around maintainability, YAML/JSON menu files, parser architecture, ncurses runtime separation, memory safety, testing, CI, and developer workflow modernization.
 
 ## Current Goals
 
 The current modernization effort focuses on:
 
 - Keeping existing behavior working while improving the codebase.
-- Making JSON the default menu definition format for new work.
+- Making YAML the default menu definition format for new work.
+- Supporting JSON alongside YAML and legacy `.cmd` files.
 - Continuing to support legacy `.cmd` menu files during a deprecation period.
 - Moving ncurses runtime behavior out of `main.cpp` and into `libCursedMenu`.
 - Improving readability, maintainability, comments, and C++ formatting.
@@ -173,11 +174,11 @@ the current directory, `source/cursedmenu/`, or `examples/`).
 
 ## Menu Files
 
-### Preferred Format: JSON
+### Preferred Format: YAML
 
-JSON is the planned default menu definition format for new menus.
+YAML is the default menu definition format for new menus.
 
-Goals of the JSON migration:
+Goals of the YAML/JSON migration:
 
 - Easier validation
 - Easier tooling
@@ -186,7 +187,7 @@ Goals of the JSON migration:
 - Better automated testing
 - Extensible parser architecture
 
-Planned JSON shape:
+Example JSON shape:
 
 ```json
 {
@@ -211,12 +212,14 @@ Planned JSON shape:
 }
 ```
 
-### Legacy Format: `.cmd`
+### Also Supported: JSON and Legacy `.cmd`
 
+JSON is supported for structured configurations.
 The existing `.cmd` format remains supported during migration.
 
 The modernization effort now includes:
 
+- `YamlMenuParser`
 - `JsonMenuParser`
 - `LegacyCmdMenuParser`
 - `MenuParser`
@@ -281,7 +284,34 @@ Legacy `.cmd` example:
 ## Help
 
 ```bash
-./build/Release/source/cursedmenu/cursedmenu --help
+cd examples
+../build/Release/source/cursedmenu/cursedmenu --help
+```
+
+## Run Helper Script
+
+The `run` script now starts in `examples/` and forwards any arguments:
+
+```bash
+./run -m default.yaml
+./run -m default.json -c
+```
+
+## Terminal-Only Captures
+
+If you are running without X11/Wayland, use terminal captures instead of screenshots.
+
+Captured examples in this repository:
+
+- `docs/captures/help.txt`
+- `docs/captures/check-default-yaml.txt`
+- `docs/captures/session-check-default-yaml.typescript`
+
+Create a fresh terminal capture:
+
+```bash
+script -q -c 'cd examples && ../build/Release/source/cursedmenu/cursedmenu -m default.yaml -c' \
+  docs/captures/session-check-default-yaml.typescript
 ```
 
 ## CI Workflow
