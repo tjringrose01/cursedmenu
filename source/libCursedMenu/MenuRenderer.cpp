@@ -4,6 +4,9 @@
 #include <menu.h>
 
 #include <algorithm>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 #include <string>
 
 #include "CursedMenu.hpp"
@@ -62,6 +65,51 @@ void MenuRenderer::drawTitle(const CursedMenu& menu) const {
 
     if (titleWidth > 2) {
         mvwaddnstr(window, 3, centerX, title.c_str(), titleWidth - 2);
+    }
+}
+
+MenuRenderer::DateTimeParts MenuRenderer::formatLocalDateTime(
+    const std::time_t now) {
+    std::tm localTime {};
+#if defined(_WIN32)
+    localtime_s(&localTime, &now);
+#else
+    localtime_r(&now, &localTime);
+#endif
+
+    std::ostringstream dateStream;
+    std::ostringstream timeStream;
+    dateStream << std::put_time(&localTime, "%Y-%m-%d");
+    timeStream << std::put_time(&localTime, "%I:%M:%S %p");
+    return {dateStream.str(), timeStream.str()};
+}
+
+void MenuRenderer::drawDateTime(const int cols) const {
+    if (cols <= 2) {
+        return;
+    }
+
+    const DateTimeParts parts = formatLocalDateTime(std::time(nullptr));
+    const std::string fullText = parts.date + " " + parts.time;
+    const int contentWidth = cols - 2;
+
+    std::string displayText;
+    if (static_cast<int>(fullText.size()) <= contentWidth) {
+        displayText = fullText;
+    } else if (static_cast<int>(parts.time.size()) <= contentWidth) {
+        displayText = parts.time;
+    } else {
+        displayText.clear();
+    }
+
+    if (!displayText.empty()) {
+        const int startCol = std::max(1, cols - 1 - static_cast<int>(displayText.size()));
+        mvwaddnstr(
+            window,
+            LINES - 2,
+            startCol,
+            displayText.c_str(),
+            cols - 1 - startCol);
     }
 }
 

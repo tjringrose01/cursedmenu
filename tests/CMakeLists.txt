@@ -123,3 +123,21 @@ add_test(
     COMMAND MenuFileResolverTests
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
+
+add_executable(MenuRendererTests
+    MenuRendererTests.cpp
+)
+
+target_include_directories(MenuRendererTests PRIVATE
+    ../source/include
+)
+
+target_link_libraries(MenuRendererTests PRIVATE
+    CursedMenu
+)
+
+add_test(
+    NAME MenuRendererTests
+    COMMAND MenuRendererTests
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)

@@ -6,6 +6,10 @@
 
 namespace cursedmenu {
 
+namespace {
+constexpr int kInputPollMs = 1000;
+}
+
 NcursesSession::NcursesSession(const CursedMenu& menu)
     : active(false) {
     resume(menu);
@@ -39,6 +43,7 @@ void NcursesSession::resume(const CursedMenu& menu) noexcept {
         cbreak();
         noecho();
         keypad(stdscr, TRUE);
+        timeout(kInputPollMs);
         active = true;
     }
 
@@ -50,7 +55,9 @@ int NcursesSession::readInput() const noexcept {
 }
 
 void NcursesSession::waitForAcknowledge() const noexcept {
+    timeout(-1);
     (void)getch();
+    timeout(kInputPollMs);
 }
 
 } // namespace cursedmenu
