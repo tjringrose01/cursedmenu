@@ -81,6 +81,7 @@ void runMenu(
         cursesMenu.currentItemDescription(),
         COLS,
         LINES);
+    renderer.drawDateTime(COLS);
 
     renderer.refresh(cursesMenu.get());
 
@@ -146,6 +147,7 @@ void runMenu(
                     renderer.drawTitle(menus.top());
 
                     cursesMenu.nudgeSelection();
+                    renderer.drawDateTime(COLS);
 
                     renderer.refresh(cursesMenu.get());
                 } else {
@@ -188,6 +190,7 @@ void runMenu(
             cursesMenu.currentItemDescription(),
             COLS,
             LINES);
+        renderer.drawDateTime(COLS);
 
         renderer.refresh(cursesMenu.get());
     }
