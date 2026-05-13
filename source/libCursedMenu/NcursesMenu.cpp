@@ -74,11 +74,19 @@ void NcursesMenu::driver(const int request) const noexcept {
 }
 
 const char* NcursesMenu::currentItemName() const noexcept {
-    return item_name(current_item(menu));
+    ITEM* current = current_item(menu);
+    if (current == nullptr) {
+        return "";
+    }
+    return item_name(current);
 }
 
 const char* NcursesMenu::currentItemDescription() const noexcept {
-    return item_description(current_item(menu));
+    ITEM* current = current_item(menu);
+    if (current == nullptr) {
+        return "";
+    }
+    return item_description(current);
 }
 
 void NcursesMenu::nudgeSelection() const noexcept {

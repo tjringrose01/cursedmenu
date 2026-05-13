@@ -12,6 +12,7 @@
 namespace cursedmenu {
 
 namespace {
+constexpr std::size_t kMaxMenuFieldLength = 4096;
 
 void addError(
     MenuParseResult& result,
@@ -30,6 +31,25 @@ bool hasStringField(
     const char* fieldName) {
     return jsonObject.HasMember(fieldName)
         && jsonObject[fieldName].IsString();
+}
+
+bool validateStringLength(
+    MenuParseResult& result,
+    const std::filesystem::path& path,
+    const std::string& location,
+    const std::string& value) {
+    if (value.length() <= kMaxMenuFieldLength) {
+        return true;
+    }
+
+    addError(
+        result,
+        path,
+        location,
+        "String value exceeds maximum length of "
+            + std::to_string(kMaxMenuFieldLength)
+            + " characters");
+    return false;
 }
 
 [[noreturn]] void throwParserErrors(const MenuParseResult& result) {
@@ -136,6 +156,11 @@ MenuParseResult JsonMenuParser::parseFile(
     } else {
         result.menuDefinition.rootMenu =
             document["rootMenu"].GetString();
+        validateStringLength(
+            result,
+            path,
+            "rootMenu",
+            result.menuDefinition.rootMenu);
     }
 
     if (document.HasMember("settings")
@@ -195,17 +220,39 @@ MenuParseResult JsonMenuParser::parseFile(
         }
 
         menu.id = menuJson["id"].GetString();
+        if (!validateStringLength(
+                result,
+                path,
+                "menus[" + std::to_string(menuIndex) + "].id",
+                menu.id)) {
+            continue;
+        }
 
         if (hasStringField(menuJson, "title")) {
             menu.title = menuJson["title"].GetString();
+            validateStringLength(
+                result,
+                path,
+                "menus[" + std::to_string(menuIndex) + "].title",
+                menu.title);
         }
 
         if (hasStringField(menuJson, "foreground")) {
             menu.foreground = menuJson["foreground"].GetString();
+            validateStringLength(
+                result,
+                path,
+                "menus[" + std::to_string(menuIndex) + "].foreground",
+                menu.foreground);
         }
 
         if (hasStringField(menuJson, "background")) {
             menu.background = menuJson["background"].GetString();
+            validateStringLength(
+                result,
+                path,
+                "menus[" + std::to_string(menuIndex) + "].background",
+                menu.background);
         }
 
         if (!menuJson.HasMember("items")
@@ -257,9 +304,29 @@ MenuParseResult JsonMenuParser::parseFile(
             }
 
             item.name = itemJson["name"].GetString();
+            if (!validateStringLength(
+                    result,
+                    path,
+                    "menus["
+                        + std::to_string(menuIndex)
+                        + "].items["
+                        + std::to_string(itemIndex)
+                        + "].name",
+                    item.name)) {
+                continue;
+            }
 
             if (hasStringField(itemJson, "description")) {
                 item.description = itemJson["description"].GetString();
+                validateStringLength(
+                    result,
+                    path,
+                    "menus["
+                        + std::to_string(menuIndex)
+                        + "].items["
+                        + std::to_string(itemIndex)
+                        + "].description",
+                    item.description);
             }
 
             int actionCount = 0;
@@ -267,18 +334,45 @@ MenuParseResult JsonMenuParser::parseFile(
             if (hasStringField(itemJson, "command")) {
                 item.action.type = MenuActionType::Command;
                 item.action.value = itemJson["command"].GetString();
+                validateStringLength(
+                    result,
+                    path,
+                    "menus["
+                        + std::to_string(menuIndex)
+                        + "].items["
+                        + std::to_string(itemIndex)
+                        + "].command",
+                    item.action.value);
                 ++actionCount;
             }
 
             if (hasStringField(itemJson, "submenu")) {
                 item.action.type = MenuActionType::Submenu;
                 item.action.value = itemJson["submenu"].GetString();
+                validateStringLength(
+                    result,
+                    path,
+                    "menus["
+                        + std::to_string(menuIndex)
+                        + "].items["
+                        + std::to_string(itemIndex)
+                        + "].submenu",
+                    item.action.value);
                 ++actionCount;
             }
 
             if (hasStringField(itemJson, "action")) {
                 const std::string actionValue =
                     itemJson["action"].GetString();
+                validateStringLength(
+                    result,
+                    path,
+                    "menus["
+                        + std::to_string(menuIndex)
+                        + "].items["
+                        + std::to_string(itemIndex)
+                        + "].action",
+                    actionValue);
 
                 if (actionValue == "exit") {
                     item.action.type = MenuActionType::Exit;

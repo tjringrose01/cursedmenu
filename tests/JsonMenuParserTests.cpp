@@ -1,4 +1,5 @@
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 
 #include "CursedMenuExceptions.hpp"
@@ -65,6 +66,33 @@ int main() {
 
     REQUIRE(requiresException(testFile("multiple-actions.json")));
     REQUIRE(requiresException(testFile("unsupported-action.json")));
+
+    {
+        const auto tempPath = testFile("oversized-field.json");
+        {
+            std::ofstream output(tempPath);
+            output
+                << "{\n"
+                << "  \"version\": 1,\n"
+                << "  \"rootMenu\": \"main\",\n"
+                << "  \"menus\": [\n"
+                << "    {\n"
+                << "      \"id\": \"main\",\n"
+                << "      \"title\": \"Main\",\n"
+                << "      \"items\": [\n"
+                << "        {\n"
+                << "          \"name\": \"" << std::string(5000, 'N') << "\",\n"
+                << "          \"command\": \"echo hi\"\n"
+                << "        }\n"
+                << "      ]\n"
+                << "    }\n"
+                << "  ]\n"
+                << "}\n";
+        }
+
+        REQUIRE(requiresException(tempPath));
+        std::filesystem::remove(tempPath);
+    }
 
     std::cout << "All JsonMenuParser tests passed." << std::endl;
 
