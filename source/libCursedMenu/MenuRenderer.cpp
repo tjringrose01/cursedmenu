@@ -3,6 +3,7 @@
 #include <curses.h>
 #include <menu.h>
 
+#include <algorithm>
 #include <string>
 
 #include "CursedMenu.hpp"
@@ -42,34 +43,41 @@ void MenuRenderer::drawTitle(const CursedMenu& menu) const {
         title = "Cursed Menu";
     }
 
-    const unsigned int centerX = xCtr(title, COLS);
-    const unsigned int titleLen = title.length();
+    const int titleLen = static_cast<int>(title.length());
+    const int centerX = std::max(2, xCtr(title, COLS));
+    const int titleWidth = std::max(0, std::min(titleLen + 2, COLS - centerX - 2));
 
     mvwaddch(window, 2, centerX - 2, ACS_ULCORNER);
     wmove(window, 2, centerX - 1);
-    whline(window, ACS_HLINE, titleLen + 2);
+    whline(window, ACS_HLINE, titleWidth);
 
-    mvwaddch(window, 2, centerX + titleLen + 1, ACS_URCORNER);
-    mvwaddch(window, 3, centerX + titleLen + 1, ACS_VLINE);
-    mvwaddch(window, 4, centerX + titleLen + 1, ACS_LRCORNER);
+    mvwaddch(window, 2, centerX + titleWidth - 1, ACS_URCORNER);
+    mvwaddch(window, 3, centerX + titleWidth - 1, ACS_VLINE);
+    mvwaddch(window, 4, centerX + titleWidth - 1, ACS_LRCORNER);
     mvwaddch(window, 3, centerX - 2, ACS_VLINE);
     mvwaddch(window, 4, centerX - 2, ACS_LLCORNER);
 
     wmove(window, 4, centerX - 1);
-    whline(window, ACS_HLINE, titleLen + 2);
+    whline(window, ACS_HLINE, titleWidth);
 
-    mvwprintw(window, 3, centerX, "%s", title.c_str());
+    if (titleWidth > 2) {
+        mvwaddnstr(window, 3, centerX, title.c_str(), titleWidth - 2);
+    }
 }
 
 void MenuRenderer::drawDescription(
     const char* description,
     const int cols,
     const int lines) const {
+    const char* safeDescription =
+        (description != nullptr) ? description : "";
+
     for (int y = 1; y < cols - 1; ++y) {
         mvwprintw(window, lines - 2, y, " ");
     }
 
-    mvwprintw(window, lines - 2, 1, "%s", description);
+    const int maxDescriptionWidth = std::max(0, cols - 2);
+    mvwaddnstr(window, lines - 2, 1, safeDescription, maxDescriptionWidth);
 }
 
 void MenuRenderer::refresh(MENU* menu) const noexcept {

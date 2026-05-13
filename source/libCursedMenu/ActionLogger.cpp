@@ -20,32 +20,31 @@
  *
  */
 
-#include <fstream>
-#include <time.h>
-#include <stdio.h>
-#include <unistd.h>
 #include <cstdlib>
+#include <ctime>
+#include <fstream>
+#include <unistd.h>
 #include "ActionLogger.hpp"
 #define PACKAGE_NAME "cursedmenu"
 
 std::string ActionLogger::getSysTime() const {
     char timeStr[25];
-    struct tm *ptr;
-    time_t tm;
+    const time_t now = time(nullptr);
+    struct tm localTime {};
 
-    tm = time(NULL);
-    ptr = localtime(&tm);
-
-    strftime(timeStr, 25, "%Y/%m/%d %H:%M:%S", ptr);
+    if (localtime_r(&now, &localTime) == nullptr) {
+        return "1970/01/01 00:00:00";
+    }
+    strftime(timeStr, sizeof(timeStr), "%Y/%m/%d %H:%M:%S", &localTime);
     
     return timeStr;
 }
 
 std::string ActionLogger::getUserId() const {
-    std::string logname = getenv("LOGNAME");
-    if ( logname.size() <= 0 )
-        logname = "unknown";
-
+    const char* logname = getenv("LOGNAME");
+    if (logname == nullptr || logname[0] == '\0') {
+        return "unknown";
+    }
     return logname;
 }
 

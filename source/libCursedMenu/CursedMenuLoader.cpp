@@ -52,9 +52,11 @@
 #include <curses.h>
 
 #include <fstream>
+#include <filesystem>
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "CursedMenu.hpp"
@@ -66,6 +68,28 @@
 #define PROGRAM "CursedMenuLoader"
 
 namespace {
+constexpr std::size_t kMaxIncludeDepth = 64;
+constexpr std::size_t kMaxLegacyConfigLineLength = 4096;
+
+struct IncludePathGuard {
+    explicit IncludePathGuard(
+        const std::string& path,
+        std::unordered_set<std::string>& includeStack)
+        : path(path),
+          includeStack(includeStack) {
+    }
+
+    ~IncludePathGuard() {
+        includeStack.erase(path);
+    }
+
+    std::string path;
+    std::unordered_set<std::string>& includeStack;
+};
+
+std::string normalizePath(const std::string& path) {
+    return std::filesystem::absolute(path).lexically_normal().string();
+}
 
 std::string trimLeadingSpaces(std::string value) {
     const auto firstNonSpace = value.find_first_not_of(' ');
@@ -176,24 +200,26 @@ std::string valueAfterEquals(const std::string& buffer) {
     return trimLeadingSpaces(buffer.substr(equalsPosition + 1));
 }
 
-} // namespace
-
-CursedMenu CursedMenuLoader::load(
+std::vector<CursedMenu> loadConfigImpl(
     const std::string& configFile,
-    const bool debugFlag) {
-    const std::vector<CursedMenu> menus = loadConfig(configFile, debugFlag);
-
-    if (menus.empty()) {
+    const bool debugFlag,
+    std::unordered_set<std::string>& includeStack,
+    const std::size_t depth) {
+    if (depth > kMaxIncludeDepth) {
         throw cursedmenu::MenuLoadException(
-            "No menus were loaded from file: " + configFile);
+            "Maximum submenu include depth exceeded while loading: "
+            + configFile);
     }
 
-    return menus.at(menus.size() - 1);
-}
+    const std::string normalizedPath = normalizePath(configFile);
+    if (includeStack.find(normalizedPath) != includeStack.end()) {
+        throw cursedmenu::MenuLoadException(
+            "Detected recursive submenu include: " + normalizedPath);
+    }
 
-std::vector<CursedMenu> CursedMenuLoader::loadConfig(
-    const std::string& configFile,
-    const bool debugFlag) {
+    includeStack.insert(normalizedPath);
+    IncludePathGuard includePathGuard(normalizedPath, includeStack);
+
     std::cout
         << "CursedMenuLoader::loadConfig("
         << configFile
@@ -228,6 +254,12 @@ std::vector<CursedMenu> CursedMenuLoader::loadConfig(
     }
 
     while (std::getline(fileInput, buffer)) {
+        if (buffer.length() > kMaxLegacyConfigLineLength) {
+            throw cursedmenu::MenuLoadException(
+                "Legacy menu line exceeds maximum length in file: "
+                + configFile);
+        }
+
         if (buffer.length() < 6) {
             continue;
         }
@@ -315,9 +347,11 @@ std::vector<CursedMenu> CursedMenuLoader::loadConfig(
 
                 if (submenuPosition != std::string::npos) {
                     std::vector<CursedMenu> subMenus =
-                        loadConfig(
+                        loadConfigImpl(
                             exec.substr(submenuPosition + 8),
-                            debugFlag);
+                            debugFlag,
+                            includeStack,
+                            depth + 1);
 
                     menus.insert(
                         menus.end(),
@@ -348,4 +382,26 @@ std::vector<CursedMenu> CursedMenuLoader::loadConfig(
     }
 
     return menus;
+}
+
+} // namespace
+
+CursedMenu CursedMenuLoader::load(
+    const std::string& configFile,
+    const bool debugFlag) {
+    const std::vector<CursedMenu> menus = loadConfig(configFile, debugFlag);
+
+    if (menus.empty()) {
+        throw cursedmenu::MenuLoadException(
+            "No menus were loaded from file: " + configFile);
+    }
+
+    return menus.at(menus.size() - 1);
+}
+
+std::vector<CursedMenu> CursedMenuLoader::loadConfig(
+    const std::string& configFile,
+    const bool debugFlag) {
+    std::unordered_set<std::string> includeStack;
+    return loadConfigImpl(configFile, debugFlag, includeStack, 0);
 }

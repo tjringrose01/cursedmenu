@@ -16,6 +16,14 @@
 namespace cursedmenu {
 
 namespace {
+bool containsUnsafeControlCharacter(const std::string& value) {
+    for (unsigned char character : value) {
+        if (character == '\n' || character == '\r' || character == '\0') {
+            return true;
+        }
+    }
+    return false;
+}
 
 class NcursesCommandScope {
 public:
@@ -100,6 +108,17 @@ void runMenu(
                 }
 
                 if (action.type == RuntimeActionType::OpenSubmenu) {
+                    if (action.value.empty()) {
+                        throw RuntimeException(
+                            "Encountered empty submenu target in menu item: "
+                            + selName);
+                    }
+                    if (containsUnsafeControlCharacter(action.value)) {
+                        throw RuntimeException(
+                            "Encountered unsafe submenu target in menu item: "
+                            + selName);
+                    }
+
                     menus.push(CursedMenu(debugIsOn, action.value));
 
                     currentMenu = menus.top();
@@ -119,6 +138,17 @@ void runMenu(
 
                     renderer.refresh(cursesMenu.get());
                 } else {
+                    if (action.value.empty()) {
+                        throw RuntimeException(
+                            "Encountered empty command in menu item: "
+                            + selName);
+                    }
+                    if (containsUnsafeControlCharacter(action.value)) {
+                        throw RuntimeException(
+                            "Encountered unsafe command in menu item: "
+                            + selName);
+                    }
+
                     NcursesCommandScope commandScope(
                         ncursesSession,
                         currentMenu);
