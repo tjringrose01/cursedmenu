@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "rootMenu": "main",
+  "settings": {
+    "debug": "yes",
+    "pauseAfterExecution": 1
+  },
+  "menus": [
+    {
+      "id": "main",
+      "title": "Main Menu",
+      "items": [
+        {
+          "name": "Exit",
+          "action": "exit"
+        }
+      ]
+    }
+  ]
+}

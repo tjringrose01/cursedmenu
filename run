@@ -2,4 +2,10 @@
 
 cp -v ./source/cursedmenu/*.cmd build/Release/source/cursedmenu/.
 
-cd build/Release/source/cursedmenu/ && ./cursedmenu
+cd examples
+
+if [ "$#" -gt 0 ]; then
+    ../build/Release/source/cursedmenu/cursedmenu "$@"
+else
+    ../build/Release/source/cursedmenu/cursedmenu -m default.json
+fi

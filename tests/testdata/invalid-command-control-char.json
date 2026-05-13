@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "rootMenu": "main",
+  "menus": [
+    {
+      "id": "main",
+      "title": "Main Menu",
+      "items": [
+        {
+          "name": "Bad Command",
+          "command": "echo one\nrm -rf /"
+        }
+      ]
+    }
+  ]
+}

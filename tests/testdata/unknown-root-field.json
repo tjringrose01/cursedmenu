@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "rootMenu": "main",
+  "menus": [
+    {
+      "id": "main",
+      "title": "Main",
+      "items": [
+        {
+          "name": "Exit",
+          "action": "exit"
+        }
+      ]
+    }
+  ],
+  "extraRootField": true
+}

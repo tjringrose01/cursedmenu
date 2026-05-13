@@ -1,7 +1,10 @@
 #ifndef CURSEDMENU_CURSED_MENU_RUNNER_HPP
 #define CURSEDMENU_CURSED_MENU_RUNNER_HPP
 
+#include <functional>
+#include <optional>
 #include <stack>
+#include <string>
 
 #include "ActionLogger.hpp"
 #include "CursedMenu.hpp"
@@ -19,6 +22,9 @@ namespace cursedmenu {
 class CursedMenuRunner {
 public:
     explicit CursedMenuRunner(ActionLogger& actionLogger);
+    CursedMenuRunner(
+        ActionLogger& actionLogger,
+        std::function<std::optional<CursedMenu>(const std::string&)> submenuResolver);
 
     /**
      * Runs the interactive menu stack until the user exits.
@@ -27,6 +33,7 @@ public:
 
 private:
     ActionLogger& actionLogger;
+    std::function<std::optional<CursedMenu>(const std::string&)> submenuResolver;
 };
 
 } // namespace cursedmenu
