@@ -118,11 +118,37 @@ std::string resolveMenuFilePath(const std::string& requestedMenuFile) {
         return requestedMenuFile;
     }
 
-    const fs::path sourceMenuPath =
-        fs::path("source") / "cursedmenu" / requestedMenuFile;
+    auto resolveInSearchRoots = [](const std::string& candidate) -> std::string {
+        const fs::path sourceMenuPath =
+            fs::path("source") / "cursedmenu" / candidate;
+        if (fs::exists(sourceMenuPath)) {
+            return sourceMenuPath.string();
+        }
 
-    if (fs::exists(sourceMenuPath)) {
-        return sourceMenuPath.string();
+        const fs::path examplesMenuPath =
+            fs::path("examples") / candidate;
+        if (fs::exists(examplesMenuPath)) {
+            return examplesMenuPath.string();
+        }
+        return "";
+    };
+
+    const std::string exactMatch = resolveInSearchRoots(requestedMenuFile);
+    if (!exactMatch.empty()) {
+        return exactMatch;
+    }
+
+    if (!directPath.has_extension()) {
+        for (const char* extension : {".yaml", ".yml", ".cmd", ".json"}) {
+            const std::string candidate = requestedMenuFile + extension;
+            if (fs::exists(candidate)) {
+                return candidate;
+            }
+            const std::string found = resolveInSearchRoots(candidate);
+            if (!found.empty()) {
+                return found;
+            }
+        }
     }
 
     return requestedMenuFile;
@@ -140,7 +166,7 @@ int main(int argc, char** argv) {
             "TERMINFO",
             "/usr/share/terminfo");
 
-        std::string menuFile = "default.cmd";
+        std::string menuFile = "default";
         bool performMenuCheck = false;
         bool debugIsOn = false;
 

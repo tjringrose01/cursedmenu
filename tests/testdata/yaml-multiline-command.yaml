@@ -1,0 +1,14 @@
+version: 1
+rootMenu: main
+menus:
+  - id: main
+    title: Main Menu
+    items:
+      - name: Multi Command
+        description: Block command
+        command: |
+          echo "line one"
+          echo "line two"
+      - name: Exit
+        description: Exit menu
+        action: exit

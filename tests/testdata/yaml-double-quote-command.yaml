@@ -1,0 +1,12 @@
+version: 1
+rootMenu: main
+menus:
+  - id: main
+    title: Main Menu
+    items:
+      - name: Show Double Quote
+        description: Double quote command
+        command: "printf \"double-quoted value\""
+      - name: Exit
+        description: Exit menu
+        action: exit

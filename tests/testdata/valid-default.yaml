@@ -1,0 +1,25 @@
+version: 1
+rootMenu: main
+settings:
+  debug: false
+  pauseAfterExecution: false
+menus:
+  - id: main
+    title: Main Menu
+    foreground: WHITE
+    background: BLUE
+    items:
+      - name: Utilities
+        description: Open utilities
+        submenu: utilities
+      - name: Exit
+        description: Exit menu
+        action: exit
+  - id: utilities
+    title: Utilities
+    foreground: GREEN
+    background: BLACK
+    items:
+      - name: List Files
+        description: List files
+        command: "ls -la"

@@ -2,11 +2,13 @@
 
 #include "JsonMenuParser.hpp"
 #include "LegacyCmdMenuParser.hpp"
+#include "YamlMenuParser.hpp"
 
 namespace cursedmenu {
 
 MenuParserFactory::MenuParserFactory() {
     parsers.push_back(std::make_unique<JsonMenuParser>());
+    parsers.push_back(std::make_unique<YamlMenuParser>());
     parsers.push_back(std::make_unique<LegacyCmdMenuParser>());
 }
 

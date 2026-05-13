@@ -41,8 +41,8 @@
         },
         {
           "name": "Return",
-          "description": "Return to the main menu",
-          "submenu": "main"
+          "description": "Exit the application",
+          "action": "exit"
         }
       ]
     }

@@ -1,0 +1,12 @@
+version: 1
+rootMenu: main
+menus:
+  - id: main
+    title: Main Menu
+    items:
+      - name: Show Single Quote
+        description: Single quote command
+        command: 'printf ''single-quoted value'''
+      - name: Exit
+        description: Exit menu
+        action: exit

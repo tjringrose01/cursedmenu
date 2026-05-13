@@ -1,5 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-cp -v ./source/cursedmenu/*.cmd build/Release/source/cursedmenu/.
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BIN_PATH="${ROOT_DIR}/build/Release/source/cursedmenu/cursedmenu"
 
-cd build/Release/source/cursedmenu/ && ./cursedmenu
+if [[ ! -x "${BIN_PATH}" ]]; then
+    echo "error: missing executable: ${BIN_PATH}" >&2
+    echo "build first with ./tt or cmake --build --preset=conan-release" >&2
+    exit 1
+fi
+
+cd "${ROOT_DIR}/examples"
+"${BIN_PATH}" "$@"

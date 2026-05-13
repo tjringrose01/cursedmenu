@@ -1,0 +1,12 @@
+version: 1
+rootMenu: main
+menus:
+  - id: main
+    title: Main
+    items:
+      - name: Missing submenu
+        description: Broken submenu
+        submenu: does-not-exist
+      - name: Exit
+        description: Exit
+        action: exit
