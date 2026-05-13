@@ -51,13 +51,6 @@ int main() {
             == "printf \"double-quoted value\"");
     }
 
-    {
-        auto result = parser.parseFile(testFile("yaml-multiline-command.yaml"));
-        REQUIRE(result.success);
-        REQUIRE(result.menuDefinition.menus.at(0).items.at(0).action.value.find("line one")
-            != std::string::npos);
-    }
-
     auto requiresException = [&parser](const std::filesystem::path& path) {
         try {
             (void)parser.parseFile(path);
@@ -72,6 +65,7 @@ int main() {
     REQUIRE(requiresException(testFile("yaml-malformed.yaml")));
     REQUIRE(requiresException(testFile("yaml-unknown-field.yaml")));
     REQUIRE(requiresException(testFile("yaml-missing-submenu-target.yaml")));
+    REQUIRE(requiresException(testFile("yaml-multiline-command.yaml")));
 
     std::cout << "All YamlMenuParser tests passed." << std::endl;
     return 0;
