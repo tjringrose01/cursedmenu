@@ -2,7 +2,9 @@
   "version": 1,
   "settings": {
     "debug": false,
-    "pauseAfterExecution": false
+    "pauseAfterExecution": false,
+    "showDate": true,
+    "showTime": true
   },
   "menus": [
     {

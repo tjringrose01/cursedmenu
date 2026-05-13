@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "rootMenu": "main",
+  "settings": {
+    "debugMode": true,
+    "pauseAfterCommand": true,
+    "displayDate": false,
+    "displayTime": true
+  },
+  "menus": [
+    {
+      "id": "main",
+      "title": "Main Menu",
+      "items": [
+        {
+          "name": "Exit",
+          "action": "exit"
+        }
+      ]
+    }
+  ]
+}

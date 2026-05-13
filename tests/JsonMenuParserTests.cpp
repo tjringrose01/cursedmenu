@@ -38,6 +38,16 @@ int main() {
         REQUIRE(result.menuDefinition.menus.size() == 2);
     }
 
+    {
+        auto result = parser.parseFile(testFile("settings-aliases.json"));
+        REQUIRE(result.success);
+        REQUIRE(result.errors.empty());
+        REQUIRE(result.menuDefinition.debug);
+        REQUIRE(result.menuDefinition.pauseAfterExecution);
+        REQUIRE(!result.menuDefinition.showDate);
+        REQUIRE(result.menuDefinition.showTime);
+    }
+
     auto requiresException = [&parser](const std::filesystem::path& path) {
         try {
             (void)parser.parseFile(path);

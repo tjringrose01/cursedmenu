@@ -1,0 +1,13 @@
+version: 1
+rootMenu: main
+settings:
+  debugMode: true
+  pause_after_command: true
+  display_date: false
+  display_time: true
+menus:
+  - id: main
+    title: Main Menu
+    items:
+      - name: Exit
+        action: exit

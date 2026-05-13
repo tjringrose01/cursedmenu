@@ -2,6 +2,8 @@ version: 1
 settings:
   debug: false
   pauseAfterExecution: false
+  showDate: true
+  showTime: true
 rootMenu: main
 menus:
   - id: main

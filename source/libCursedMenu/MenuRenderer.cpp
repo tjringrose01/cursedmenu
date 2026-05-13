@@ -84,20 +84,35 @@ MenuRenderer::DateTimeParts MenuRenderer::formatLocalDateTime(
     return {dateStream.str(), timeStream.str()};
 }
 
-void MenuRenderer::drawDateTime(const int cols) const {
+void MenuRenderer::drawDateTime(
+    const int cols,
+    const bool showDate,
+    const bool showTime) const {
     if (cols <= 2) {
+        return;
+    }
+    if (!showDate && !showTime) {
         return;
     }
 
     const DateTimeParts parts = formatLocalDateTime(std::time(nullptr));
-    const std::string fullText = parts.date + " " + parts.time;
+    std::string fullText;
+    if (showDate && showTime) {
+        fullText = parts.date + " " + parts.time;
+    } else if (showDate) {
+        fullText = parts.date;
+    } else {
+        fullText = parts.time;
+    }
     const int contentWidth = cols - 2;
 
     std::string displayText;
     if (static_cast<int>(fullText.size()) <= contentWidth) {
         displayText = fullText;
-    } else if (static_cast<int>(parts.time.size()) <= contentWidth) {
+    } else if (showTime && static_cast<int>(parts.time.size()) <= contentWidth) {
         displayText = parts.time;
+    } else if (showDate && static_cast<int>(parts.date.size()) <= contentWidth) {
+        displayText = parts.date;
     } else {
         displayText.clear();
     }

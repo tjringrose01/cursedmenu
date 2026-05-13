@@ -3,6 +3,8 @@ rootMenu: main
 settings:
   debug: false
   pauseAfterExecution: false
+  showDate: true
+  showTime: true
 menus:
   - id: main
     title: Main Menu

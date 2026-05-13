@@ -38,6 +38,16 @@ int main() {
     }
 
     {
+        auto result = parser.parseFile(testFile("settings-aliases.yaml"));
+        REQUIRE(result.success);
+        REQUIRE(result.errors.empty());
+        REQUIRE(result.menuDefinition.debug);
+        REQUIRE(result.menuDefinition.pauseAfterExecution);
+        REQUIRE(!result.menuDefinition.showDate);
+        REQUIRE(result.menuDefinition.showTime);
+    }
+
+    {
         auto result = parser.parseFile(testFile("yaml-single-quote-command.yaml"));
         REQUIRE(result.success);
         REQUIRE(result.menuDefinition.menus.at(0).items.at(0).action.value

@@ -24,7 +24,11 @@ public:
     explicit CursedMenuRunner(ActionLogger& actionLogger);
     CursedMenuRunner(
         ActionLogger& actionLogger,
-        std::function<std::optional<CursedMenu>(const std::string&)> submenuResolver);
+        std::function<std::optional<CursedMenu>(const std::string&)> submenuResolver,
+        bool debugMode,
+        bool pauseAfterExecution,
+        bool showDate,
+        bool showTime);
 
     /**
      * Runs the interactive menu stack until the user exits.
@@ -34,6 +38,10 @@ public:
 private:
     ActionLogger& actionLogger;
     std::function<std::optional<CursedMenu>(const std::string&)> submenuResolver;
+    bool debugMode;
+    bool pauseAfterExecution;
+    bool showDate;
+    bool showTime;
 };
 
 } // namespace cursedmenu

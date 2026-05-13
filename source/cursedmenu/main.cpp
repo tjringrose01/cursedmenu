@@ -238,6 +238,11 @@ int main(int argc, char** argv) {
         }
 
         const auto parsedResult = parser->parseFile(menuFile);
+        debugIsOn = parsedResult.menuDefinition.debug;
+        const bool pauseAfterExecution =
+            parsedResult.menuDefinition.pauseAfterExecution;
+        const bool showDate = parsedResult.menuDefinition.showDate;
+        const bool showTime = parsedResult.menuDefinition.showTime;
         std::unordered_map<std::string, CursedMenu> runtimeMenusById;
         runtimeMenusById.reserve(parsedResult.menuDefinition.menus.size());
 
@@ -271,7 +276,13 @@ int main(int argc, char** argv) {
                 "No menu items found in: " + menuFile);
         }
 
-        cursedmenu::CursedMenuRunner runner(logger, submenuResolver);
+        cursedmenu::CursedMenuRunner runner(
+            logger,
+            submenuResolver,
+            debugIsOn,
+            pauseAfterExecution,
+            showDate,
+            showTime);
 
         runner.run(menus);
 

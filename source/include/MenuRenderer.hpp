@@ -25,7 +25,7 @@ public:
     void initializeFrame() const noexcept;
     void clearScreen(int lines, int cols) const noexcept;
     void drawTitle(const CursedMenu& menu) const;
-    void drawDateTime(int cols) const;
+    void drawDateTime(int cols, bool showDate, bool showTime) const;
     void drawDescription(const char* description, int cols, int lines) const;
     void refresh(MENU* menu) const noexcept;
 
