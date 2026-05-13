@@ -51,6 +51,8 @@ struct MenuDefinition {
     int version = 1;
     bool debug = false;
     bool pauseAfterExecution = false;
+    bool showDate = true;
+    bool showTime = true;
     std::string rootMenu;
     std::vector<Menu> menus;
 };

@@ -51,10 +51,12 @@ private:
 void runMenu(
     ActionLogger& actionLogger,
     std::stack<CursedMenu>& menus,
-    const std::function<std::optional<CursedMenu>(const std::string&)>& submenuResolver) {
+    const std::function<std::optional<CursedMenu>(const std::string&)>& submenuResolver,
+    const bool debugIsOn,
+    const bool pauseAfterExecution,
+    const bool showDate,
+    const bool showTime) {
     actionLogger.logMenu(COMING, menus.top().getMenuTitle());
-
-    bool debugIsOn = actionLogger.getDebugMode();
 
     std::string selName;
 
@@ -81,7 +83,7 @@ void runMenu(
         cursesMenu.currentItemDescription(),
         COLS,
         LINES);
-    renderer.drawDateTime(COLS);
+    renderer.drawDateTime(COLS, showDate, showTime);
 
     renderer.refresh(cursesMenu.get());
 
@@ -135,7 +137,14 @@ void runMenu(
 
                     currentMenu = menus.top();
 
-                    runMenu(actionLogger, menus, submenuResolver);
+                    runMenu(
+                        actionLogger,
+                        menus,
+                        submenuResolver,
+                        debugIsOn,
+                        pauseAfterExecution,
+                        showDate,
+                        showTime);
 
                     menus.pop();
                     currentMenu = menus.top();
@@ -147,7 +156,7 @@ void runMenu(
                     renderer.drawTitle(menus.top());
 
                     cursesMenu.nudgeSelection();
-                    renderer.drawDateTime(COLS);
+                    renderer.drawDateTime(COLS, showDate, showTime);
 
                     renderer.refresh(cursesMenu.get());
                 } else {
@@ -172,7 +181,7 @@ void runMenu(
                     retVal = system(
                         action.value.c_str());
 
-                    if (debugIsOn || retVal != 0) {
+                    if (pauseAfterExecution || debugIsOn || retVal != 0) {
                         std::cerr
                             << "Press <ENTER> to continue..."
                             << std::endl;
@@ -190,7 +199,7 @@ void runMenu(
             cursesMenu.currentItemDescription(),
             COLS,
             LINES);
-        renderer.drawDateTime(COLS);
+        renderer.drawDateTime(COLS, showDate, showTime);
 
         renderer.refresh(cursesMenu.get());
     }
@@ -199,19 +208,38 @@ void runMenu(
 } // namespace
 
 CursedMenuRunner::CursedMenuRunner(ActionLogger& actionLogger)
-    : actionLogger(actionLogger) {
+    : actionLogger(actionLogger),
+      debugMode(false),
+      pauseAfterExecution(false),
+      showDate(true),
+      showTime(true) {
 }
 
 CursedMenuRunner::CursedMenuRunner(
     ActionLogger& actionLogger,
-    std::function<std::optional<CursedMenu>(const std::string&)> submenuResolver)
+    std::function<std::optional<CursedMenu>(const std::string&)> submenuResolver,
+    const bool debugMode,
+    const bool pauseAfterExecution,
+    const bool showDate,
+    const bool showTime)
     : actionLogger(actionLogger),
-      submenuResolver(std::move(submenuResolver)) {
+      submenuResolver(std::move(submenuResolver)),
+      debugMode(debugMode),
+      pauseAfterExecution(pauseAfterExecution),
+      showDate(showDate),
+      showTime(showTime) {
 }
 
 void CursedMenuRunner::run(std::stack<CursedMenu>& menus) {
     try {
-        runMenu(actionLogger, menus, submenuResolver);
+        runMenu(
+            actionLogger,
+            menus,
+            submenuResolver,
+            debugMode,
+            pauseAfterExecution,
+            showDate,
+            showTime);
     } catch (const RuntimeException&) {
         throw;
     } catch (const std::exception& exception) {

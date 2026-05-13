@@ -264,32 +264,60 @@ MenuParseResult JsonMenuParser::parseFile(
             path,
             settings,
             "settings",
-            {"debug", "pauseAfterExecution"});
+            {
+                "debug",
+                "debugMode",
+                "pauseAfterExecution",
+                "pauseAfterCommand",
+                "pause_after_execution",
+                "pause_after_command",
+                "showDate",
+                "displayDate",
+                "show_date",
+                "display_date",
+                "showTime",
+                "displayTime",
+                "show_time",
+                "display_time"
+            });
 
-        if (settings.HasMember("debug")
-            && !settings["debug"].IsBool()) {
-            addError(
-                result,
-                path,
-                "settings.debug",
-                "settings.debug must be a boolean");
-        } else if (settings.HasMember("debug")
-                   && settings["debug"].IsBool()) {
-            result.menuDefinition.debug = settings["debug"].GetBool();
-        }
+        const auto parseBoolSetting =
+            [&](const std::vector<std::string>& keys,
+                bool& targetValue) {
+                for (const auto& key : keys) {
+                    if (!settings.HasMember(key.c_str())) {
+                        continue;
+                    }
+                    if (!settings[key.c_str()].IsBool()) {
+                        addError(
+                            result,
+                            path,
+                            "settings." + key,
+                            "settings." + key + " must be a boolean");
+                        return;
+                    }
+                    targetValue = settings[key.c_str()].GetBool();
+                    return;
+                }
+            };
 
-        if (settings.HasMember("pauseAfterExecution")
-            && !settings["pauseAfterExecution"].IsBool()) {
-            addError(
-                result,
-                path,
-                "settings.pauseAfterExecution",
-                "settings.pauseAfterExecution must be a boolean");
-        } else if (settings.HasMember("pauseAfterExecution")
-                   && settings["pauseAfterExecution"].IsBool()) {
-            result.menuDefinition.pauseAfterExecution =
-                settings["pauseAfterExecution"].GetBool();
-        }
+        parseBoolSetting(
+            {"debug", "debugMode"},
+            result.menuDefinition.debug);
+        parseBoolSetting(
+            {
+                "pauseAfterExecution",
+                "pauseAfterCommand",
+                "pause_after_execution",
+                "pause_after_command"
+            },
+            result.menuDefinition.pauseAfterExecution);
+        parseBoolSetting(
+            {"showDate", "displayDate", "show_date", "display_date"},
+            result.menuDefinition.showDate);
+        parseBoolSetting(
+            {"showTime", "displayTime", "show_time", "display_time"},
+            result.menuDefinition.showTime);
     }
 
     if (!document.HasMember("menus")

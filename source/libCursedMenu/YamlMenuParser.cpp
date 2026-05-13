@@ -162,30 +162,62 @@ MenuParseResult YamlMenuParser::parseFile(const std::filesystem::path& path) con
             std::string unknownKey;
             if (!hasOnlyAllowedKeys(
                     root["settings"],
-                    {"debug", "pauseAfterExecution"},
+                    {
+                        "debug",
+                        "debugMode",
+                        "pauseAfterExecution",
+                        "pauseAfterCommand",
+                        "pause_after_execution",
+                        "pause_after_command",
+                        "showDate",
+                        "displayDate",
+                        "show_date",
+                        "display_date",
+                        "showTime",
+                        "displayTime",
+                        "show_time",
+                        "display_time"
+                    },
                     unknownKey)) {
                 addError(result, path, "settings", "Unknown field: " + unknownKey);
             }
 
-            if (root["settings"]["debug"]) {
-                try {
-                    result.menuDefinition.debug = root["settings"]["debug"].as<bool>();
-                } catch (const YAML::Exception&) {
-                    addError(result, path, "settings.debug", "settings.debug must be a boolean");
-                }
-            }
-            if (root["settings"]["pauseAfterExecution"]) {
-                try {
-                    result.menuDefinition.pauseAfterExecution =
-                        root["settings"]["pauseAfterExecution"].as<bool>();
-                } catch (const YAML::Exception&) {
-                    addError(
-                        result,
-                        path,
-                        "settings.pauseAfterExecution",
-                        "settings.pauseAfterExecution must be a boolean");
-                }
-            }
+            const auto parseBoolSetting =
+                [&](const std::vector<std::string>& keys, bool& targetValue) {
+                    for (const auto& key : keys) {
+                        if (!root["settings"][key]) {
+                            continue;
+                        }
+                        try {
+                            targetValue = root["settings"][key].as<bool>();
+                        } catch (const YAML::Exception&) {
+                            addError(
+                                result,
+                                path,
+                                "settings." + key,
+                                "settings." + key + " must be a boolean");
+                        }
+                        return;
+                    }
+                };
+
+            parseBoolSetting(
+                {"debug", "debugMode"},
+                result.menuDefinition.debug);
+            parseBoolSetting(
+                {
+                    "pauseAfterExecution",
+                    "pauseAfterCommand",
+                    "pause_after_execution",
+                    "pause_after_command"
+                },
+                result.menuDefinition.pauseAfterExecution);
+            parseBoolSetting(
+                {"showDate", "displayDate", "show_date", "display_date"},
+                result.menuDefinition.showDate);
+            parseBoolSetting(
+                {"showTime", "displayTime", "show_time", "display_time"},
+                result.menuDefinition.showTime);
         }
     }
 
