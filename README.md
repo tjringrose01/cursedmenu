@@ -169,6 +169,9 @@ Example:
 ./build/Release/source/cursedmenu/cursedmenu
 ```
 
+By default, the application now attempts to load `default.json` (resolved from
+the current directory, `source/cursedmenu/`, or `examples/`).
+
 ## Menu Files
 
 ### Preferred Format: YAML
@@ -226,52 +229,56 @@ The modernization effort now includes:
 
 The goal is for runtime code to operate on a shared menu model independent of file format.
 
+### JSON Validation Policy
+
+JSON validation is strict:
+
+- unknown fields are rejected at root, settings, menu, and item levels
+- duplicate object keys are rejected (including nested objects)
+- semantic validation is enforced after parse (colors, submenu targets, depth limits, action consistency, etc.)
+
+## Run Helper Script
+
+Use the helper script to launch from `examples/`:
+
+```bash
+./run
+```
+
+Pass arguments through to `cursedmenu`:
+
+```bash
+./run -m large-32x10.json -c
+```
+
 ## Run with a Menu File
 
-From the repository root, run menu files from the `examples/` directory:
+Example using a JSON file:
 
 ```bash
-cd examples
+./build/Release/source/cursedmenu/cursedmenu -m examples/default.json
 ```
 
-Example using a legacy `.cmd` file:
+Legacy `.cmd` example:
 
 ```bash
-../build/Release/source/cursedmenu/cursedmenu -m default.cmd
-```
-
-JSON example:
-
-```bash
-../build/Release/source/cursedmenu/cursedmenu -m default.json
-```
-
-YAML example:
-
-```bash
-../build/Release/source/cursedmenu/cursedmenu -m default.yaml
+./build/Release/source/cursedmenu/cursedmenu -m source/cursedmenu/default.cmd
 ```
 
 ## Validation / Check Mode
 
 Use `-c` to validate or check menu definitions without running the interactive UI.
 
-Legacy `.cmd` example:
-
-```bash
-../build/Release/source/cursedmenu/cursedmenu -m default.cmd -c
-```
-
 JSON example:
 
 ```bash
-../build/Release/source/cursedmenu/cursedmenu -m default.json -c
+./build/Release/source/cursedmenu/cursedmenu -m examples/default.json -c
 ```
 
-YAML example:
+Legacy `.cmd` example:
 
 ```bash
-../build/Release/source/cursedmenu/cursedmenu -m default.yaml -c
+./build/Release/source/cursedmenu/cursedmenu -m source/cursedmenu/default.cmd -c
 ```
 
 ## Help

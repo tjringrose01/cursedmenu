@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "rootMenu": "main",
+  "settings": {
+    "debug": false,
+    "pauseAfterExecution": false,
+    "theme": "retro"
+  },
+  "menus": [
+    {
+      "id": "main",
+      "title": "Main",
+      "items": [
+        {
+          "name": "Echo",
+          "description": "Echo text",
+          "command": "echo hello",
+          "shell": "/bin/bash"
+        }
+      ]
+    }
+  ]
+}

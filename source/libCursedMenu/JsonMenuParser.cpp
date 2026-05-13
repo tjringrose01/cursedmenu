@@ -1,7 +1,9 @@
 #include "JsonMenuParser.hpp"
 
 #include <fstream>
+#include <set>
 #include <sstream>
+#include <unordered_set>
 
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
@@ -33,6 +35,26 @@ bool hasStringField(
         && jsonObject[fieldName].IsString();
 }
 
+void validateAllowedKeys(
+    MenuParseResult& result,
+    const std::filesystem::path& path,
+    const rapidjson::Value& object,
+    const std::string& location,
+    const std::set<std::string>& allowedKeys) {
+    for (auto memberIterator = object.MemberBegin();
+         memberIterator != object.MemberEnd();
+         ++memberIterator) {
+        const std::string key = memberIterator->name.GetString();
+        if (allowedKeys.find(key) == allowedKeys.end()) {
+            addError(
+                result,
+                path,
+                location,
+                "Unknown field: " + key);
+        }
+    }
+}
+
 bool validateStringLength(
     MenuParseResult& result,
     const std::filesystem::path& path,
@@ -49,6 +71,52 @@ bool validateStringLength(
         "String value exceeds maximum length of "
             + std::to_string(kMaxMenuFieldLength)
             + " characters");
+    return false;
+}
+
+bool findDuplicateKeyPath(
+    const rapidjson::Value& value,
+    const std::string& currentPath,
+    std::string& duplicateKeyPath) {
+    if (value.IsObject()) {
+        std::unordered_set<std::string> keys;
+        keys.reserve(value.MemberCount());
+
+        for (auto memberIterator = value.MemberBegin();
+             memberIterator != value.MemberEnd();
+             ++memberIterator) {
+            const std::string key = memberIterator->name.GetString();
+            if (keys.find(key) != keys.end()) {
+                duplicateKeyPath = currentPath.empty()
+                    ? key
+                    : currentPath + "." + key;
+                return true;
+            }
+            keys.insert(key);
+
+            const std::string childPath = currentPath.empty()
+                ? key
+                : currentPath + "." + key;
+            if (findDuplicateKeyPath(
+                    memberIterator->value,
+                    childPath,
+                    duplicateKeyPath)) {
+                return true;
+            }
+        }
+    } else if (value.IsArray()) {
+        for (rapidjson::SizeType index = 0; index < value.Size(); ++index) {
+            const std::string childPath =
+                currentPath + "[" + std::to_string(index) + "]";
+            if (findDuplicateKeyPath(
+                    value[index],
+                    childPath,
+                    duplicateKeyPath)) {
+                return true;
+            }
+        }
+    }
+
     return false;
 }
 
@@ -113,7 +181,8 @@ MenuParseResult JsonMenuParser::parseFile(
 
     rapidjson::Document document;
 
-    document.Parse(buffer.str().c_str());
+    document.Parse<rapidjson::kParseValidateEncodingFlag>(
+        buffer.str().c_str());
 
     if (document.HasParseError()) {
         addError(
@@ -135,6 +204,23 @@ MenuParseResult JsonMenuParser::parseFile(
 
         throwParserErrors(result);
     }
+
+    std::string duplicateKeyPath;
+    if (findDuplicateKeyPath(document, "", duplicateKeyPath)) {
+        addError(
+            result,
+            path,
+            duplicateKeyPath.empty() ? "json" : duplicateKeyPath,
+            "Duplicate JSON object key detected");
+        throwParserErrors(result);
+    }
+
+    validateAllowedKeys(
+        result,
+        path,
+        document,
+        "root",
+        {"version", "rootMenu", "settings", "menus"});
 
     if (!document.HasMember("version")
         || !document["version"].IsInt()) {
@@ -164,16 +250,43 @@ MenuParseResult JsonMenuParser::parseFile(
     }
 
     if (document.HasMember("settings")
-        && document["settings"].IsObject()) {
+        && !document["settings"].IsObject()) {
+        addError(
+            result,
+            path,
+            "settings",
+            "settings must be an object when present");
+    } else if (document.HasMember("settings")
+               && document["settings"].IsObject()) {
         const auto& settings = document["settings"];
+        validateAllowedKeys(
+            result,
+            path,
+            settings,
+            "settings",
+            {"debug", "pauseAfterExecution"});
 
         if (settings.HasMember("debug")
-            && settings["debug"].IsBool()) {
+            && !settings["debug"].IsBool()) {
+            addError(
+                result,
+                path,
+                "settings.debug",
+                "settings.debug must be a boolean");
+        } else if (settings.HasMember("debug")
+                   && settings["debug"].IsBool()) {
             result.menuDefinition.debug = settings["debug"].GetBool();
         }
 
         if (settings.HasMember("pauseAfterExecution")
-            && settings["pauseAfterExecution"].IsBool()) {
+            && !settings["pauseAfterExecution"].IsBool()) {
+            addError(
+                result,
+                path,
+                "settings.pauseAfterExecution",
+                "settings.pauseAfterExecution must be a boolean");
+        } else if (settings.HasMember("pauseAfterExecution")
+                   && settings["pauseAfterExecution"].IsBool()) {
             result.menuDefinition.pauseAfterExecution =
                 settings["pauseAfterExecution"].GetBool();
         }
@@ -206,6 +319,12 @@ MenuParseResult JsonMenuParser::parseFile(
 
             continue;
         }
+        validateAllowedKeys(
+            result,
+            path,
+            menuJson,
+            "menus[" + std::to_string(menuIndex) + "]",
+            {"id", "title", "foreground", "background", "items"});
 
         Menu menu;
 
@@ -286,6 +405,16 @@ MenuParseResult JsonMenuParser::parseFile(
 
                 continue;
             }
+            validateAllowedKeys(
+                result,
+                path,
+                itemJson,
+                "menus["
+                    + std::to_string(menuIndex)
+                    + "].items["
+                    + std::to_string(itemIndex)
+                    + "]",
+                {"name", "description", "command", "submenu", "action"});
 
             MenuItem item;
 

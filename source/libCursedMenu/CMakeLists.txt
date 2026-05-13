@@ -9,6 +9,7 @@ add_library(CursedMenu SHARED
     MenuRenderer.cpp
     NcursesMenu.cpp
     MenuParserFactory.cpp
+    MenuFileResolver.cpp
     MenuValidator.cpp
     NcursesSession.cpp
     NcursesWindow.cpp

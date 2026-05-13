@@ -1,12 +1,16 @@
 #include "MenuValidator.hpp"
 
+#include <algorithm>
+#include <cctype>
 #include <set>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
 
 namespace cursedmenu {
 
 namespace {
+constexpr std::size_t kMaxSubmenuDepth = 32;
 
 void addError(
     std::vector<MenuParseError>& errors,
@@ -20,35 +24,43 @@ void addError(
     });
 }
 
-bool detectCycle(
+bool containsUnsafeControlCharacter(const std::string& value) {
+    return std::any_of(
+        value.begin(),
+        value.end(),
+        [](unsigned char character) {
+            return character == '\n'
+                || character == '\r'
+                || character == '\0';
+        });
+}
+
+std::size_t computeMaxDepth(
     const std::string& menuId,
     const std::unordered_map<std::string, std::set<std::string>>& graph,
-    std::unordered_set<std::string>& visited,
-    std::unordered_set<std::string>& recursionStack) {
-    if (recursionStack.find(menuId) != recursionStack.end()) {
-        return true;
+    std::unordered_set<std::string>& recursionPath) {
+    if (recursionPath.find(menuId) != recursionPath.end()) {
+        // Navigation cycles are allowed; stop depth expansion at cycle edge.
+        return 0;
     }
 
-    if (visited.find(menuId) != visited.end()) {
-        return false;
-    }
+    recursionPath.insert(menuId);
 
-    visited.insert(menuId);
-    recursionStack.insert(menuId);
-
+    std::size_t maxChildDepth = 0;
     const auto graphIterator = graph.find(menuId);
-
     if (graphIterator != graph.end()) {
         for (const auto& childMenu : graphIterator->second) {
-            if (detectCycle(childMenu, graph, visited, recursionStack)) {
-                return true;
-            }
+            maxChildDepth = std::max(
+                maxChildDepth,
+                computeMaxDepth(
+                    childMenu,
+                    graph,
+                    recursionPath));
         }
     }
 
-    recursionStack.erase(menuId);
-
-    return false;
+    recursionPath.erase(menuId);
+    return maxChildDepth + 1;
 }
 
 } // namespace
@@ -68,6 +80,8 @@ std::vector<MenuParseError> MenuValidator::validate(
          menuIndex < menuDefinition.menus.size();
          ++menuIndex) {
         const auto& menu = menuDefinition.menus[menuIndex];
+        std::unordered_set<std::string> itemNames;
+        itemNames.reserve(menu.items.size());
 
         if (menu.id.empty()) {
             addError(
@@ -95,6 +109,14 @@ std::vector<MenuParseError> MenuValidator::validate(
                 fileName,
                 "menus[" + std::to_string(menuIndex) + "].title",
                 "Menu title should not be empty");
+        }
+
+        if (menu.items.empty()) {
+            addError(
+                errors,
+                fileName,
+                "menus[" + std::to_string(menuIndex) + "].items",
+                "Menu must contain at least one item");
         }
 
         if (!menu.foreground.empty()
@@ -132,8 +154,67 @@ std::vector<MenuParseError> MenuValidator::validate(
                     "Menu item name cannot be empty");
             }
 
+            if (itemNames.find(item.name) != itemNames.end()) {
+                addError(
+                    errors,
+                    fileName,
+                    "menus["
+                        + std::to_string(menuIndex)
+                        + "].items["
+                        + std::to_string(itemIndex)
+                        + "].name",
+                    "Duplicate menu item name within menu: " + item.name);
+            }
+            itemNames.insert(item.name);
+
+            if (containsUnsafeControlCharacter(item.action.value)) {
+                addError(
+                    errors,
+                    fileName,
+                    "menus["
+                        + std::to_string(menuIndex)
+                        + "].items["
+                        + std::to_string(itemIndex)
+                        + "].action",
+                    "Action value contains unsafe control characters");
+            }
+
             if (item.action.type == MenuActionType::Submenu) {
+                if (item.action.value.empty()) {
+                    addError(
+                        errors,
+                        fileName,
+                        "menus["
+                            + std::to_string(menuIndex)
+                            + "].items["
+                            + std::to_string(itemIndex)
+                            + "].submenu",
+                        "Submenu target cannot be empty");
+                }
                 submenuGraph[menu.id].insert(item.action.value);
+            } else if (item.action.type == MenuActionType::Command) {
+                if (item.action.value.empty()) {
+                    addError(
+                        errors,
+                        fileName,
+                        "menus["
+                            + std::to_string(menuIndex)
+                            + "].items["
+                            + std::to_string(itemIndex)
+                            + "].command",
+                        "Command action cannot be empty");
+                }
+            } else if (item.action.type == MenuActionType::Exit
+                       && item.action.value != "exit") {
+                addError(
+                    errors,
+                    fileName,
+                    "menus["
+                        + std::to_string(menuIndex)
+                        + "].items["
+                        + std::to_string(itemIndex)
+                        + "].action",
+                    "Exit action must use value 'exit'");
             }
         }
     }
@@ -168,26 +249,23 @@ std::vector<MenuParseError> MenuValidator::validate(
         }
     }
 
-    std::unordered_set<std::string> visited;
-    std::unordered_set<std::string> recursionStack;
-
-    visited.reserve(menuMap.size());
-    recursionStack.reserve(menuMap.size());
-
     for (const auto& [menuId, menuPointer] : menuMap) {
         (void)menuPointer;
-
-        if (detectCycle(
-                menuId,
-                submenuGraph,
-                visited,
-                recursionStack)) {
+        std::unordered_set<std::string> recursionPath;
+        recursionPath.reserve(menuMap.size());
+        const std::size_t depth = computeMaxDepth(
+            menuId,
+            submenuGraph,
+            recursionPath);
+        if (depth > kMaxSubmenuDepth) {
             addError(
                 errors,
                 fileName,
                 "submenuGraph",
-                "Detected submenu cycle involving menu: " + menuId);
-
+                "Submenu depth exceeds maximum of "
+                    + std::to_string(kMaxSubmenuDepth)
+                    + " from menu: "
+                    + menuId);
             break;
         }
     }

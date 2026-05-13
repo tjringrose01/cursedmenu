@@ -7,17 +7,23 @@
  */
 
 #include <cstdlib>
+#include <curses.h>
 #include <filesystem>
 #include <iostream>
+#include <optional>
 #include <stack>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "ActionLogger.hpp"
 #include "CursedMenu.hpp"
 #include "CursedMenuExceptions.hpp"
+#include "CursedMenuItem.hpp"
+#include "MenuDefinition.hpp"
 #include "CursedMenuLoader.hpp"
 #include "CursedMenuRunner.hpp"
+#include "MenuFileResolver.hpp"
 #include "MenuParserFactory.hpp"
 #include "debug.hpp"
 
@@ -46,12 +52,13 @@ int parseArgs(
     int argc,
     char** argv,
     std::string& menuFile,
-    bool& performMenuCheck) {
+    bool& performMenuCheck,
+    bool& showHelp) {
     for (int index = 1; index < argc; ++index) {
         const std::string argument = argv[index];
 
         if (argument == "--help" || argument == "-h") {
-            displayUsage();
+            showHelp = true;
             return SUCCESS;
         }
 
@@ -102,21 +109,40 @@ void ensureEnvironmentVariable(
     }
 }
 
-std::string resolveMenuFilePath(const std::string& requestedMenuFile) {
-    namespace fs = std::filesystem;
-
-    if (requestedMenuFile.empty()) {
-        return requestedMenuFile;
+int colorFromName(const std::string& colorName) {
+    if (colorName == "BLACK") {
+        return COLOR_BLACK;
     }
-
-    const fs::path directPath(requestedMenuFile);
-    if (fs::exists(directPath)) {
-        return requestedMenuFile;
+    if (colorName == "RED") {
+        return COLOR_RED;
     }
-
-    if (directPath.has_parent_path()) {
-        return requestedMenuFile;
+    if (colorName == "GREEN") {
+        return COLOR_GREEN;
     }
+    if (colorName == "YELLOW") {
+        return COLOR_YELLOW;
+    }
+    if (colorName == "BLUE") {
+        return COLOR_BLUE;
+    }
+    if (colorName == "MAGENTA") {
+        return COLOR_MAGENTA;
+    }
+    if (colorName == "CYAN") {
+        return COLOR_CYAN;
+    }
+    return COLOR_WHITE;
+}
+
+std::string execTextFromAction(const cursedmenu::MenuAction& action) {
+    if (action.type == cursedmenu::MenuActionType::Exit) {
+        return "MenuExit";
+    }
+    if (action.type == cursedmenu::MenuActionType::Submenu) {
+        return "MenuSub " + action.value;
+    }
+    return action.value;
+}
 
     auto resolveInSearchRoots = [](const std::string& candidate) -> std::string {
         const fs::path sourceMenuPath =
@@ -149,9 +175,30 @@ std::string resolveMenuFilePath(const std::string& requestedMenuFile) {
                 return found;
             }
         }
+CursedMenu buildRuntimeMenuFromDefinition(
+    const cursedmenu::Menu& parsedMenu,
+    const bool debugIsOn) {
+    CursedMenu runtimeMenu;
+    runtimeMenu.setDebugFlag(debugIsOn);
+    runtimeMenu.setMenuName(parsedMenu.id);
+    runtimeMenu.setMenuTitle(parsedMenu.title);
+
+    if (!parsedMenu.foreground.empty()) {
+        runtimeMenu.setForeColor(colorFromName(parsedMenu.foreground));
+    }
+    if (!parsedMenu.background.empty()) {
+        runtimeMenu.setBackColor(colorFromName(parsedMenu.background));
     }
 
-    return requestedMenuFile;
+    for (const auto& parsedItem : parsedMenu.items) {
+        runtimeMenu.addItem(
+            CursedMenuItem(
+                parsedItem.name,
+                parsedItem.description,
+                execTextFromAction(parsedItem.action)));
+    }
+
+    return runtimeMenu;
 }
 
 } // namespace
@@ -168,15 +215,22 @@ int main(int argc, char** argv) {
 
         std::string menuFile = "default";
         bool performMenuCheck = false;
+        bool showHelp = false;
         bool debugIsOn = false;
 
         const int parseResult = parseArgs(
             argc,
             argv,
             menuFile,
-            performMenuCheck);
+            performMenuCheck,
+            showHelp);
 
-        menuFile = resolveMenuFilePath(menuFile);
+        if (showHelp) {
+            displayUsage();
+            return SUCCESS;
+        }
+
+        menuFile = cursedmenu::resolveMenuFilePath(menuFile);
 
         if (parseResult != SUCCESS) {
             displayUsage();
@@ -204,15 +258,51 @@ int main(int argc, char** argv) {
         }
 
         std::stack<CursedMenu> menus;
+        std::function<std::optional<CursedMenu>(const std::string&)> submenuResolver;
 
-        menus.push(CursedMenu(debugIsOn, menuFile));
+        cursedmenu::MenuParserFactory parserFactory;
+        const cursedmenu::MenuParser* parser =
+            parserFactory.getParserForFile(menuFile);
+        if (parser == nullptr) {
+            throw cursedmenu::ParserException(
+                "No parser available for file: " + menuFile);
+        }
+
+        const auto parsedResult = parser->parseFile(menuFile);
+        std::unordered_map<std::string, CursedMenu> runtimeMenusById;
+        runtimeMenusById.reserve(parsedResult.menuDefinition.menus.size());
+
+        for (const auto& parsedMenu : parsedResult.menuDefinition.menus) {
+            runtimeMenusById.emplace(
+                parsedMenu.id,
+                buildRuntimeMenuFromDefinition(parsedMenu, debugIsOn));
+        }
+
+        const auto rootMenuIterator =
+            runtimeMenusById.find(parsedResult.menuDefinition.rootMenu);
+        if (rootMenuIterator == runtimeMenusById.end()) {
+            throw cursedmenu::MenuLoadException(
+                "Root menu not found in parsed definition: "
+                + parsedResult.menuDefinition.rootMenu);
+        }
+
+        submenuResolver = [runtimeMenusById](const std::string& submenuId)
+            -> std::optional<CursedMenu> {
+            const auto iterator = runtimeMenusById.find(submenuId);
+            if (iterator == runtimeMenusById.end()) {
+                return std::nullopt;
+            }
+            return iterator->second;
+        };
+
+        menus.push(rootMenuIterator->second);
 
         if (menus.top().getNumOfItems() == 0) {
             throw cursedmenu::MenuLoadException(
                 "No menu items found in: " + menuFile);
         }
 
-        cursedmenu::CursedMenuRunner runner(logger);
+        cursedmenu::CursedMenuRunner runner(logger, submenuResolver);
 
         runner.run(menus);
 

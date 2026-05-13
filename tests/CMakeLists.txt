@@ -105,3 +105,21 @@ add_test(
     COMMAND CursedMenuExceptionTests
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
+
+add_executable(MenuFileResolverTests
+    MenuFileResolverTests.cpp
+)
+
+target_include_directories(MenuFileResolverTests PRIVATE
+    ../source/include
+)
+
+target_link_libraries(MenuFileResolverTests PRIVATE
+    CursedMenu
+)
+
+add_test(
+    NAME MenuFileResolverTests
+    COMMAND MenuFileResolverTests
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
